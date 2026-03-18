@@ -2,8 +2,12 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GhostBuster - Line Follower & Obstacle Avoider</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>GhostBuster - Robot Suiveur de Ligne</title>
+    <!-- Font Awesome pour les vraies icônes professionnelles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Inter (police fantôme moderne et professionnelle) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         /* ===== RESET & VARIABLES ===== */
         * {
@@ -13,67 +17,79 @@
         }
 
         :root {
-            /* Couleurs GhostBusters */
-            --primary: #00FF84;
-            --primary-dark: #00CC6A;
+            /* Couleurs GhostBusters - version plus professionnelle */
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
             --primary-light: #7AFFB5;
-            --secondary: #FFD700;
-            --accent: #FF3131;
+            --secondary: #f1c40f;
+            --accent: #e74c3c;
+            
+            /* Nouvelle couleur pour les icônes (orange/ambre) */
+            --icon-color: #4ac0e4;
+            --icon-hover: #27ae60;
             
             /* Mode sombre */
-            --bg-primary: #0A0A0F;
-            --bg-secondary: #1A1A24;
-            --bg-card: #1E1E2A;
-            --text-primary: #FFFFFF;
-            --text-secondary: #B0B0B0;
-            --border-color: rgba(0, 255, 132, 0.2);
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            --glow: 0 0 20px rgba(0, 255, 132, 0.3);
+            --bg-primary: #0a0c10;
+            --bg-secondary: #14181c;
+            --bg-card: #1a1f24;
+            --text-primary: #ecf0f1;
+            --text-secondary: #95a5a6;
+            --border-color: rgba(46, 204, 113, 0.15);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --glow: 0 0 20px rgba(46, 204, 113, 0.2);
             
             transition: all 0.3s ease;
+            
+            /* Tailles de police réduites pour mobile */
+            --font-size-xs: 0.75rem;    /* 11.2px */
+            --font-size-sm: 0.875rem;    /* 12.8px */
+            --font-size-base: 1rem;   /* 14.4px */
+            --font-size-lg: 1.125rem;       /* 16px */
+            --font-size-xl: 1.25rem;     /* 17.6px */
+            --font-size-2xl: 1.5rem;    /* 20.8px */
+            --font-size-3xl: 1.875rem;    /* 25.6px */
+            --font-size-4xl: 2.25rem;      /* 32px */
         }
 
         /* Mode clair */
         [data-theme="light"] {
-            --bg-primary: #F0F4F8;
-            --bg-secondary: #FFFFFF;
-            --bg-card: #FFFFFF;
-            --text-primary: #1A2B3C;
-            --text-secondary: #4A5568;
-            --border-color: rgba(0, 255, 132, 0.3);
+            --bg-primary: #f5f7fa;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #34495e;
+            --border-color: rgba(46, 204, 113, 0.3);
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            --glow: 0 0 20px rgba(0, 255, 132, 0.2);
+            --glow: 0 0 20px rgba(46, 204, 113, 0.2);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: var(--bg-primary);
             color: var(--text-primary);
-            line-height: 1.6;
+            line-height: 1.5;
             overflow-x: hidden;
             transition: background-color 0.3s ease, color 0.3s ease;
-            padding-top: 80px;
+            padding-top: 70px;
+            font-size: var(--font-size-base);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* ===== ANIMATIONS ===== */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-25px); }
         }
 
         @keyframes glowPulse {
-            0%, 100% { filter: drop-shadow(0 0 20px var(--primary)); }
-            50% { filter: drop-shadow(0 0 40px var(--primary)); }
+            0%, 100% { filter: drop-shadow(0 0 25px var(--primary)); }
+            50% { filter: drop-shadow(0 0 50px var(--primary)); }
         }
 
         @keyframes scrollTeam {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
-        }
-
-        @keyframes slidePole {
-            0% { opacity: 0; transform: translateX(100%); }
-            100% { opacity: 1; transform: translateX(0); }
         }
 
         .animate-float {
@@ -87,10 +103,10 @@
         /* ===== THEME TOGGLE ===== */
         .theme-toggle {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: var(--primary);
             border: none;
@@ -112,10 +128,10 @@
         /* ===== LANGUAGE TOGGLE ===== */
         .lang-toggle {
             position: fixed;
-            bottom: 100px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
+            bottom: 80px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: var(--primary);
             border: none;
@@ -124,8 +140,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            font-weight: bold;
+            font-size: 1rem;
+            font-weight: 600;
             box-shadow: var(--glow);
             transition: all 0.3s ease;
             color: var(--bg-primary);
@@ -140,40 +156,41 @@
             position: fixed;
             top: 0;
             width: 100%;
-            padding: 1rem 5%;
+            padding: 0.8rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            background: rgba(10, 10, 15, 0.95);
+            background: rgba(10, 12, 16, 0.98);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
             transition: all 0.3s ease;
         }
 
         [data-theme="light"] nav {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
         }
 
         .logo {
-            font-size: 2rem;
-            font-weight: 800;
+            font-size: 1.2rem;
+            font-weight: 700;
             color: var(--primary);
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .logo img {
-            height: 50px;
+            height: 35px;
             width: auto;
-            border-radius: 10px;
+            border-radius: 8px;
         }
 
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 1rem;
+            font-size: var(--font-size-xs);
         }
 
         .nav-links a {
@@ -181,7 +198,8 @@
             text-decoration: none;
             font-weight: 500;
             position: relative;
-            padding: 0.5rem 0;
+            padding: 0.3rem 0;
+            white-space: nowrap;
         }
 
         .nav-links a::after {
@@ -204,12 +222,29 @@
             color: var(--primary);
         }
 
+        /* Menu mobile */
+        @media (max-width: 768px) {
+            nav {
+                padding: 0.6rem 3%;
+            }
+            .nav-links {
+                gap: 0.5rem;
+                font-size: 0.65rem;
+            }
+            .logo {
+                font-size: 1rem;
+            }
+            .logo img {
+                height: 28px;
+            }
+        }
+
         /* ===== HERO SECTION ===== */
         .hero {
-            min-height: calc(100vh - 80px);
+            min-height: calc(100vh - 70px);
             display: flex;
             align-items: center;
-            padding: 2rem 5% 0;
+            padding: 1rem 5% 2rem;
             position: relative;
             overflow: hidden;
         }
@@ -227,25 +262,26 @@
 
         .hero-content {
             flex: 1;
-            margin-top: 2rem;
+            margin-top: 1rem;
         }
 
         .hero-badge {
             display: inline-block;
-            padding: 0.5rem 1rem;
-            background: rgba(0, 255, 132, 0.1);
+            padding: 0.3rem 0.8rem;
+            background: rgba(46, 204, 113, 0.1);
             border: 1px solid var(--primary);
             border-radius: 50px;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
+            font-size: var(--font-size-xs);
+            margin-bottom: 0.8rem;
             color: var(--primary);
+            font-weight: 600;
         }
 
         .hero-title {
-            font-size: 5rem;
+            font-size: clamp(1.8rem, 7vw, 3.5rem);
             font-weight: 800;
             line-height: 1.1;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.8rem;
         }
 
         .hero-title span {
@@ -255,16 +291,17 @@
         }
 
         .hero-description {
-            font-size: 1.2rem;
+            font-size: var(--font-size-sm);
             color: var(--text-secondary);
-            margin-bottom: 2rem;
+            margin-bottom: 1.2rem;
             max-width: 600px;
         }
 
         .hero-stats {
             display: flex;
-            gap: 3rem;
-            margin-top: 3rem;
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
         }
 
         .stat-item {
@@ -272,23 +309,25 @@
         }
 
         .stat-number {
-            font-size: 2.5rem;
-            font-weight: 800;
+            font-size: var(--font-size-lg);
+            font-weight: 700;
             color: var(--primary);
             display: block;
         }
 
         .stat-label {
-            font-size: 0.9rem;
+            font-size: 0.65rem;
             color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
 
         .hero-visual {
             flex: 1;
             position: relative;
-            animation: float 6s ease-in-out infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .hero-visual::before {
@@ -302,7 +341,7 @@
             background: var(--primary);
             border-radius: 50%;
             filter: blur(80px);
-            opacity: 0.2;
+            opacity: 0.15;
             z-index: -1;
         }
 
@@ -311,17 +350,19 @@
             text-align: center;
             filter: drop-shadow(var(--glow));
             animation: float 6s ease-in-out infinite, glowPulse 3s ease-in-out infinite;
+            line-height: 1;
         }
 
         .btn {
             display: inline-block;
-            padding: 1rem 2.5rem;
+            padding: 0.7rem 1.5rem;
             background: var(--primary);
             color: var(--bg-primary);
             text-decoration: none;
             border-radius: 50px;
             font-weight: 600;
-            letter-spacing: 1px;
+            font-size: var(--font-size-xs);
+            letter-spacing: 0.5px;
             transition: all 0.3s ease;
             border: none;
             cursor: pointer;
@@ -336,7 +377,7 @@
             background: transparent;
             border: 2px solid var(--primary);
             color: var(--primary);
-            margin-left: 1rem;
+            margin-left: 0.8rem;
         }
 
         .btn-outline:hover {
@@ -346,13 +387,13 @@
 
         /* ===== SECTIONS ===== */
         section {
-            padding: 5rem 5%;
+            padding: 2.5rem 5%;
         }
 
         .section-title {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 3rem;
+            font-size: clamp(1.6rem, 4.5vw, 2.2rem);
+            font-weight: 700;
+            margin-bottom: 1.8rem;
             position: relative;
             display: inline-block;
             color: var(--primary);
@@ -361,10 +402,10 @@
         .section-title::after {
             content: '';
             position: absolute;
-            bottom: -10px;
+            bottom: -8px;
             left: 0;
-            width: 80px;
-            height: 4px;
+            width: 50px;
+            height: 3px;
             background: var(--primary);
             border-radius: 2px;
         }
@@ -379,18 +420,18 @@
             transform: translateX(-50%);
         }
 
-        /* ===== TEAM SECTION - CORRECTION FINALE ===== */
+        /* ===== TEAM SECTION ===== */
         .team-slider-container {
             position: relative;
             width: 100%;
             overflow: hidden;
-            margin-top: 3rem;
+            margin-top: 1.5rem;
         }
 
         .team-slider-wrapper {
             display: flex;
             width: fit-content;
-            animation: scrollTeam 100s linear infinite;
+            animation: scrollTeam 80s linear infinite;
         }
 
         .team-slider-wrapper:hover {
@@ -399,21 +440,21 @@
 
         .team-slider {
             display: flex;
-            gap: 3rem;
-            padding: 2rem 1rem;
+            gap: 1.2rem;
+            padding: 1rem 0.5rem;
         }
 
         .team-card {
-            min-width: 320px; /* Uniforme pour tous */
-            width: 320px;
+            min-width: 240px;
+            width: 240px;
             background: var(--bg-card);
             border-radius: 20px;
-            padding: 2rem 1.5rem;
+            padding: 1.2rem 1rem;
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
             text-align: center;
             flex-shrink: 0;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow);
         }
 
         .team-card:hover {
@@ -423,10 +464,10 @@
         }
 
         .team-photo {
-            width: 150px;
-            height: 150px;
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
-            margin: 0 auto 1.5rem;
+            margin: 0 auto 1rem;
             overflow: hidden;
             border: 4px solid var(--primary);
             box-shadow: var(--glow);
@@ -439,27 +480,20 @@
         }
 
         .team-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
+            font-size: var(--font-size-sm);
+            margin-bottom: 0.3rem;
             color: var(--primary);
-            line-height: 1.4;
-            min-height: 3.6rem; /* Espace pour 2 lignes de texte */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            line-height: 1.3;
+            font-weight: 600;
         }
 
         .team-role {
-            font-size: 0.95rem;
+            font-size: 0.65rem;
             color: var(--secondary);
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             font-weight: 600;
-            min-height: 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 215, 0, 0.1);
-            padding: 0.3rem 1rem;
+            background: rgba(241, 196, 15, 0.1);
+            padding: 0.2rem 0.8rem;
             border-radius: 50px;
             width: fit-content;
             margin-left: auto;
@@ -469,33 +503,35 @@
         .team-contacts {
             display: flex;
             justify-content: center;
-            gap: 1.2rem;
-            margin-top: 1.2rem;
+            gap: 0.6rem;
+            margin-top: 0.8rem;
         }
 
         .team-contacts a {
-            color: var(--text-secondary);
+            color: var(--icon-color);
             text-decoration: none;
-            font-size: 1.3rem;
+            font-size: 1rem;
             transition: all 0.3s ease;
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: var(--bg-secondary);
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 1px solid transparent;
         }
 
         .team-contacts a:hover {
-            color: var(--bg-primary);
-            background: var(--primary);
+            color: white;
+            background: var(--icon-hover);
             transform: scale(1.1);
+            border-color: var(--icon-hover);
         }
 
-        /* ===== POLES SECTION - DÉFILEMENT AUTOMATIQUE SANS BOUTONS ===== */
+        /* ===== POLES SECTION ===== */
         .poles-container {
-            margin-top: 3rem;
+            margin-top: 1.5rem;
             position: relative;
             overflow: hidden;
         }
@@ -504,56 +540,55 @@
             position: relative;
             width: 100%;
             overflow: hidden;
-            min-height: 500px;
+            min-height: 350px;
         }
 
         .poles-slider {
             display: flex;
-            transition: transform 0.8s ease;
+            transition: transform 0.6s ease;
             width: 300%;
         }
 
         .pole-slide {
             width: 33.333%;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            padding: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 0.5rem;
         }
 
-        /* Style amélioré pour les cartes des pôles */
         .pole-slide .team-card {
-            min-width: 280px;
+            min-width: 180px;
             width: 100%;
             background: linear-gradient(145deg, var(--bg-card), var(--bg-secondary));
             border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
         }
 
         .pole-slide .team-card:hover {
             transform: translateY(-8px);
             border-color: var(--primary);
-            box-shadow: 0 15px 30px rgba(0, 255, 132, 0.2);
+            box-shadow: 0 15px 30px rgba(46, 204, 113, 0.2);
         }
 
         .pole-slide .team-photo {
-            width: 140px;
-            height: 140px;
+            width: 90px;
+            height: 90px;
             border-width: 3px;
         }
 
         .pole-slide .team-role {
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             color: var(--bg-primary);
-            font-weight: 700;
-            padding: 0.4rem 1.2rem;
+            font-weight: 600;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.65rem;
         }
 
         .pole-indicators {
             display: flex;
             justify-content: center;
-            gap: 0.8rem;
-            margin-top: 2rem;
+            gap: 0.6rem;
+            margin-top: 1.2rem;
         }
 
         .pole-indicator {
@@ -579,7 +614,7 @@
         .tech-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
+            gap: 1rem;
         }
 
         .tech-card {
@@ -592,6 +627,8 @@
             text-decoration: none;
             color: inherit;
             display: block;
+            padding: 1.2rem 0.5rem;
+            text-align: center;
         }
 
         .tech-card:hover {
@@ -600,56 +637,446 @@
             box-shadow: var(--glow);
         }
 
-        .tech-header {
-            padding: 2rem;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-
         .tech-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--icon-color);
         }
 
         .tech-header h3 {
-            font-size: 1.8rem;
+            font-size: var(--font-size-sm);
+            margin-bottom: 0.3rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .tech-header p {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+        }
+
+        /* ===== ROADMAP ===== */
+        .roadmap {
+            position: relative;
+        }
+
+        .roadmap::before {
+            content: '';
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: calc(100% - 200px);
+            background: var(--primary);
+            opacity: 0.3;
+        }
+
+        .roadmap-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .roadmap-item:hover .roadmap-content {
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+            transform: scale(1.02);
+        }
+
+        .roadmap-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .roadmap-content {
+            width: 45%;
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .roadmap-date {
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            background: var(--primary);
+            color: var(--bg-primary);
+            border-radius: 50px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .roadmap-content h3 {
+            font-size: var(--font-size-sm);
             margin-bottom: 0.5rem;
             color: var(--primary);
         }
 
-        .tech-header p {
+        .roadmap-content p {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .roadmap-dot {
+            width: 18px;
+            height: 18px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: var(--glow);
+        }
+
+        /* ===== FAQ ===== */
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: var(--primary);
+            transform: translateX(10px);
+        }
+
+        .faq-question {
+            font-size: var(--font-size-sm);
+            margin-bottom: 0.8rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .faq-question i {
+            font-size: 1.2rem;
+            color: var(--icon-color);
+        }
+
+        .faq-answer {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            padding-left: 2rem;
+        }
+
+        /* ===== CONTACT ===== */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .contact-info {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+            padding: 0.8rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: rgba(46, 204, 113, 0.1);
+            transform: translateX(10px);
+        }
+
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--icon-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--bg-primary);
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover .contact-icon {
+            background: var(--icon-hover);
+            transform: scale(1.1);
+        }
+
+        .contact-item h4 {
+            font-size: var(--font-size-xs);
+            margin-bottom: 0.2rem;
+        }
+
+        .contact-item p {
+            font-size: 0.7rem;
             color: var(--text-secondary);
         }
 
-        /* ===== PAGES PÔLES (ÉVOLUTION) ===== */
-        .pole-page {
-            min-height: 100vh;
-            padding: 100px 5% 5rem;
-            background: var(--bg-primary);
+        .contact-form {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
         }
 
-        .pole-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .pole-header h1 {
-            font-size: 4rem;
-            color: var(--primary);
+        .form-group {
             margin-bottom: 1rem;
         }
 
-        .pole-header p {
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin: 0 auto;
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: var(--font-size-xs);
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
         }
 
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        /* ===== STYLES POUR LES PAGES ===== */
+        .robot-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .spec-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 1.2rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .spec-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .spec-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--icon-color);
+        }
+
+        .spec-card h3 {
+            font-size: var(--font-size-sm);
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .spec-card p {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+        }
+
+        .spec-progress {
+            margin: 0.6rem 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.2rem;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-bar-spec {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-secondary);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill-spec {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .robot-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.6rem;
+            margin-top: 0.8rem;
+        }
+
+        .robot-stat {
+            text-align: center;
+            padding: 0.4rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+        }
+
+        .robot-stat .value {
+            font-size: var(--font-size-sm);
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+
+        .robot-stat .label {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+        }
+
+        .doc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .doc-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 1.2rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .doc-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .doc-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .doc-icon {
+            font-size: 1.6rem;
+            color: var(--icon-color);
+        }
+
+        .doc-header h3 {
+            font-size: var(--font-size-sm);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .doc-tag {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--bg-primary);
+            padding: 0.15rem 0.6rem;
+            border-radius: 50px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-left: 0.3rem;
+        }
+
+        .doc-list {
+            list-style: none;
+        }
+
+        .doc-list li {
+            padding: 0.4rem 0;
+            border-bottom: 1px dashed var(--border-color);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.65rem;
+        }
+
+        .doc-list li:last-child {
+            border-bottom: none;
+        }
+
+        .doc-list li i {
+            color: var(--icon-color);
+            font-size: 0.8rem;
+        }
+
+        .doc-link {
+            display: inline-block;
+            margin-top: 0.8rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+        }
+
+        .doc-link i {
+            margin-left: 0.3rem;
+            font-size: 0.7rem;
+            color: var(--icon-color);
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.6rem 1.5rem;
+            background: var(--primary);
+            color: var(--bg-primary);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: var(--font-size-xs);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn i {
+            margin-right: 0.5rem;
+            color: var(--bg-primary);
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+            box-shadow: var(--glow);
+        }
+
+        /* ===== TIMELINE POUR PAGES POLES ===== */
         .timeline {
             max-width: 1000px;
-            margin: 3rem auto;
+            margin: 1.5rem auto;
             position: relative;
         }
 
@@ -668,7 +1095,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
             position: relative;
         }
 
@@ -679,7 +1106,7 @@
         .timeline-content {
             width: 45%;
             background: var(--bg-card);
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 20px;
             border: 1px solid var(--border-color);
             position: relative;
@@ -704,31 +1131,32 @@
 
         .timeline-date {
             display: inline-block;
-            padding: 0.3rem 1rem;
+            padding: 0.2rem 0.8rem;
             background: var(--primary);
             color: var(--bg-primary);
             border-radius: 50px;
-            font-size: 0.9rem;
+            font-size: 0.65rem;
             font-weight: 600;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
         }
 
         .timeline-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+            font-size: var(--font-size-sm);
+            margin-bottom: 0.8rem;
             color: var(--primary);
         }
 
         .timeline-content ul {
             list-style: none;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
         }
 
         .timeline-content li {
-            margin-bottom: 0.5rem;
-            padding-left: 1.5rem;
+            margin-bottom: 0.4rem;
+            padding-left: 1.2rem;
             position: relative;
             color: var(--text-secondary);
+            font-size: var(--font-size-xs);
         }
 
         .timeline-content li::before {
@@ -741,24 +1169,24 @@
 
         .progress-bar {
             width: 100%;
-            height: 10px;
+            height: 8px;
             background: var(--bg-secondary);
-            border-radius: 5px;
-            margin: 1rem 0;
+            border-radius: 4px;
+            margin: 0.8rem 0;
             overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 5px;
+            border-radius: 4px;
             width: 0%;
             transition: width 0.3s ease;
         }
 
         .timeline-dot {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             background: var(--primary);
             border-radius: 50%;
             position: absolute;
@@ -768,194 +1196,10 @@
             box-shadow: var(--glow);
         }
 
-        .back-btn {
-            display: inline-block;
-            margin-top: 2rem;
-            padding: 0.8rem 2rem;
-            background: var(--primary);
-            color: var(--bg-primary);
-            text-decoration: none;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-        }
-
-        .back-btn:hover {
-            transform: translateX(-5px);
-            box-shadow: var(--glow);
-        }
-
-        /* ===== ROADMAP ===== */
-        .roadmap {
-            position: relative;
-        }
-
-        .roadmap::before {
-            content: '';
-            position: absolute;
-            top: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: calc(100% - 200px);
-            background: var(--primary);
-            opacity: 0.3;
-        }
-
-        .roadmap-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 3rem;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .roadmap-item:hover .roadmap-content {
-            border-color: var(--primary);
-            box-shadow: var(--glow);
-            transform: scale(1.02);
-        }
-
-        .roadmap-item:nth-child(even) {
-            flex-direction: row-reverse;
-        }
-
-        .roadmap-content {
-            width: 45%;
-            background: var(--bg-card);
-            padding: 2rem;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .roadmap-date {
-            display: inline-block;
-            padding: 0.3rem 1rem;
-            background: var(--primary);
-            color: var(--bg-primary);
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-        /* ===== FAQ ===== */
-        .faq-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-        }
-
-        .faq-item {
-            background: var(--bg-card);
-            padding: 2rem;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-
-        .faq-item:hover {
-            border-color: var(--primary);
-            transform: translateX(10px);
-        }
-
-        .faq-question {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .faq-answer {
-            color: var(--text-secondary);
-            padding-left: 3rem;
-        }
-
-        /* ===== CONTACT ===== */
-        .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 3rem;
-        }
-
-        .contact-info {
-            background: var(--bg-card);
-            padding: 3rem;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .contact-item:hover {
-            background: rgba(0, 255, 132, 0.1);
-            transform: translateX(10px);
-        }
-
-        .contact-icon {
-            width: 50px;
-            height: 50px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: var(--bg-primary);
-        }
-
-        .contact-form {
-            background: var(--bg-card);
-            padding: 3rem;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 1rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: var(--glow);
-        }
-
-        .form-group textarea {
-            height: 150px;
-            resize: vertical;
-        }
-
         /* ===== FOOTER ===== */
         footer {
             background: var(--bg-card);
-            padding: 3rem 5%;
+            padding: 2rem 5%;
             border-top: 1px solid var(--border-color);
         }
 
@@ -964,32 +1208,34 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 2rem;
+            gap: 1.2rem;
         }
 
         .footer-logo {
-            font-size: 2rem;
-            font-weight: 800;
+            font-size: 1.3rem;
+            font-weight: 700;
             color: var(--primary);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .footer-logo img {
-            height: 40px;
+            height: 35px;
             width: auto;
             border-radius: 8px;
         }
 
         .footer-links {
             display: flex;
-            gap: 2rem;
+            gap: 1.2rem;
+            flex-wrap: wrap;
         }
 
         .footer-links a {
             color: var(--text-primary);
             text-decoration: none;
+            font-size: var(--font-size-xs);
             transition: color 0.3s ease;
         }
 
@@ -999,35 +1245,41 @@
 
         .footer-social {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
         }
 
         .footer-social a {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             background: var(--bg-primary);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-primary);
+            color: var(--icon-color);
             text-decoration: none;
             transition: all 0.3s ease;
             border: 1px solid var(--border-color);
         }
 
+        .footer-social a i {
+            font-size: 1rem;
+        }
+
         .footer-social a:hover {
-            background: var(--primary);
-            color: var(--bg-primary);
+            background: var(--icon-hover);
+            color: white;
             transform: translateY(-3px);
+            border-color: var(--icon-hover);
         }
 
         .copyright {
             text-align: center;
-            margin-top: 2rem;
-            padding-top: 2rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
             border-top: 1px solid var(--border-color);
             color: var(--text-secondary);
+            font-size: 0.65rem;
         }
 
         .copyright a {
@@ -1036,20 +1288,8 @@
         }
 
         /* ===== PAGE NAVIGATION ===== */
-        #accueil-page, #informatique-page, #electronique-page, #mecanique-page {
-            display: none;
-        }
-
-        #accueil-page.active-page {
-            display: block;
-        }
-
-        #informatique-page.active-page,
-        #electronique-page.active-page,
-        #mecanique-page.active-page {
-            display: block;
-        }
-
+        /* Suppression des styles de pages multiples car on utilise des fichiers séparés */
+        
         /* ===== LANGUAGE STYLES ===== */
         .lang-fr, .lang-en {
             transition: opacity 0.3s ease;
@@ -1065,56 +1305,103 @@
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .hero-title {
-                font-size: 3rem;
-            }
-
             .hero {
                 flex-direction: column;
                 text-align: center;
-                padding-top: 4rem;
+                padding-top: 1.5rem;
+            }
+
+            .hero-content {
+                margin-top: 0;
+            }
+
+            .hero-description {
+                margin-left: auto;
+                margin-right: auto;
             }
 
             .hero-stats {
                 justify-content: center;
             }
 
-            .tech-grid,
-            .faq-grid,
-            .contact-grid {
-                grid-template-columns: 1fr;
+            .hero-visual {
+                margin-top: 1rem;
             }
 
-            .timeline::before {
+            .ghost-icon {
+                font-size: 12rem;
+            }
+
+            .roadmap::before {
                 left: 30px;
             }
 
-            .timeline-item,
-            .timeline-item:nth-child(even) {
+            .roadmap-item,
+            .roadmap-item:nth-child(even) {
                 flex-direction: column;
                 align-items: flex-start;
-                padding-left: 60px;
+                padding-left: 50px;
             }
 
-            .timeline-content {
+            .roadmap-content {
                 width: 100%;
             }
 
-            .timeline-content::before {
+            .roadmap-content::before {
                 display: none;
             }
 
-            .timeline-dot {
+            .roadmap-dot {
                 left: 30px;
             }
 
-            .nav-links {
-                display: none;
+            .faq-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
             }
 
             .footer-content {
                 flex-direction: column;
                 text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-stats {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .stat-item {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.4rem 1rem;
+                background: rgba(46, 204, 113, 0.05);
+                border-radius: 50px;
+            }
+
+            .btn-group {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .btn-outline {
+                margin-left: 0;
+            }
+
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ghost-icon {
+                font-size: 10rem;
             }
         }
     </style>
@@ -1133,29 +1420,32 @@
     <!-- ===== NAVIGATION ===== -->
     <nav id="navbar">
         <div class="logo">
-            <!-- METS TON LOGO ICI (JPEG) -->
             <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
             <span style="display:none;">👻</span>
             <span>GHOSTBUSTER</span>
         </div>
         <div class="nav-links">
-            <a href="#" onclick="showPage('accueil'); return false;" class="active" id="nav-accueil">
+            <a href="index.html" class="active" id="nav-accueil">
                 <span class="lang-fr">Accueil</span>
                 <span class="lang-en">Home</span>
             </a>
-            <a href="#" onclick="showPage('equipe'); return false;" id="nav-equipe">
+            <a href="equipe.html" id="nav-equipe">
                 <span class="lang-fr">Équipe</span>
                 <span class="lang-en">Team</span>
             </a>
-            <a href="#" onclick="showPage('domaines'); return false;" id="nav-domaines">
-                <span class="lang-fr">Domaines</span>
-                <span class="lang-en">Fields</span>
+            <a href="robot.html" id="nav-robot">
+                <span class="lang-fr">Robot</span>
+                <span class="lang-en">Robot</span>
             </a>
-            <a href="#" onclick="showPage('roadmap'); return false;" id="nav-roadmap">
+            <a href="documentation.html" id="nav-documentation">
+                <span class="lang-fr">Documentation</span>
+                <span class="lang-en">Docs</span>
+            </a>
+            <a href="roadmap.html" id="nav-roadmap">
                 <span class="lang-fr">Roadmap</span>
                 <span class="lang-en">Roadmap</span>
             </a>
-            <a href="#" onclick="showPage('contact'); return false;" id="nav-contact">
+            <a href="contact.html" id="nav-contact">
                 <span class="lang-fr">Contact</span>
                 <span class="lang-en">Contact</span>
             </a>
@@ -1163,7 +1453,7 @@
     </nav>
 
     <!-- ===== PAGE ACCUEIL ===== -->
-    <div id="accueil-page" class="active-page">
+    <div id="accueil-page">
         <!-- HERO SECTION -->
         <section id="accueil" class="hero">
             <div class="hero-content">
@@ -1181,11 +1471,11 @@
                     <span class="lang-en">Team of 7 enthusiasts taking on the line follower and obstacle avoider robot challenge. Innovation, Performance and Technology at the service of competition.</span>
                 </p>
                 <div>
-                    <a href="#" onclick="showPage('domaines'); return false;" class="btn">
-                        <span class="lang-fr">Découvrir notre projet</span>
-                        <span class="lang-en">Discover our project</span>
+                    <a href="robot.html" class="btn">
+                        <span class="lang-fr">Découvrir notre robot</span>
+                        <span class="lang-en">Discover our robot</span>
                     </a>
-                    <a href="#" onclick="showPage('contact'); return false;" class="btn btn-outline">
+                    <a href="#contact-section" class="btn btn-outline">
                         <span class="lang-fr">Nous contacter</span>
                         <span class="lang-en">Contact us</span>
                     </a>
@@ -1206,7 +1496,7 @@
                 </div>
             </div>
             <div class="hero-visual">
-                <div class="ghost-icon animate-float">👻</div>
+                <div class="ghost-icon animate-float animate-glow">👻</div>
             </div>
         </section>
 
@@ -1216,14 +1506,14 @@
                 <span class="lang-fr">Domaines Techniques</span>
                 <span class="lang-en">Technical Fields</span>
             </h2>
-            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 3rem;">
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 1.5rem; font-size: var(--font-size-xs);">
                 <span class="lang-fr">Cliquez sur chaque domaine pour suivre l'évolution de notre travail</span>
                 <span class="lang-en">Click on each field to follow our work progress</span>
             </p>
             <div class="tech-grid">
-                <a href="#" onclick="showPolePage('informatique'); return false;" class="tech-card">
+                <a href="informatique.html" class="tech-card">
                     <div class="tech-header">
-                        <div class="tech-icon">💻</div>
+                        <div class="tech-icon"><i class="fas fa-code"></i></div>
                         <h3>
                             <span class="lang-fr">Informatique</span>
                             <span class="lang-en">IT</span>
@@ -1234,9 +1524,9 @@
                         </p>
                     </div>
                 </a>
-                <a href="#" onclick="showPolePage('electronique'); return false;" class="tech-card">
+                <a href="electronique.html" class="tech-card">
                     <div class="tech-header">
-                        <div class="tech-icon">🔌</div>
+                        <div class="tech-icon"><i class="fas fa-microchip"></i></div>
                         <h3>
                             <span class="lang-fr">Électronique</span>
                             <span class="lang-en">Electronics</span>
@@ -1247,9 +1537,9 @@
                         </p>
                     </div>
                 </a>
-                <a href="#" onclick="showPolePage('mecanique'); return false;" class="tech-card">
+                <a href="mecanique.html" class="tech-card">
                     <div class="tech-header">
-                        <div class="tech-icon">⚙️</div>
+                        <div class="tech-icon"><i class="fas fa-cogs"></i></div>
                         <h3>
                             <span class="lang-fr">Mécanique</span>
                             <span class="lang-en">Mechanics</span>
@@ -1263,13 +1553,13 @@
             </div>
         </section>
 
-        <!-- ===== TEAM SECTION - VERSION FINALE ===== -->
+        <!-- ===== TEAM SECTION ===== -->
         <section id="equipe-section" class="reveal">
             <h2 class="section-title section-title-center">
                 <span class="lang-fr">Notre Équipe</span>
                 <span class="lang-en">Our Team</span>
             </h2>
-            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 1rem; font-size: var(--font-size-xs);">
                 <span class="lang-fr">7 membres - Défilement automatique</span>
                 <span class="lang-en">7 members - Auto-scrolling</span>
             </p>
@@ -1281,222 +1571,214 @@
                         <!-- Melkisedeck - Chef Mécanique -->
                         <div class="team-card">
                             <div class="team-photo">
-                                <img src="images/mel.jpeg" alt="Melkisedeck DJIMADJO">
+                                <img src="images/mel.jpeg" alt="Melkisedeck DJIMADJO" onerror="this.src='https://via.placeholder.com/110x110?text=Photo'">
                             </div>
-                             <div class="team-contact()"><h2>Chef d'équipe</h2></div>
                             <h3>Melkisedeck DJIMADJO</h3>
-                            <div class="team-role">Informatique Industrielle et Maintenace 2</div>
+                            <div class="team-role">Informatique Industrielle 2</div>
                             <div class="team-contacts">
-                                <a href="mailto:djimadjomelkisedeck@gmail.com">✉️</a>
-                                <a href="https://wa.me/22967836762">📱</a>
-                                <a href="#">💼</a>
-                                <a href="#">🐙</a>
+                                <a href="mailto:djimadjomelkisedeck@gmail.com"><i class="fas fa-envelope"></i></a>
+                                <a href="https://wa.me/22967836762"><i class="fab fa-whatsapp"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
 
                         <!-- Bérenger - Chef IT -->
                         <div class="team-card">
                             <div class="team-photo">
-                                <img src="images/berenger.jpeg" alt="Bérenger BOTON">
+                                <img src="images/berenger.jpeg" alt="Bérenger BOTON" onerror="this.src='https://via.placeholder.com/110x110?text=Photo'">
                             </div>
                             <h3>Bérenger BOTON</h3>
-                            <div class="team-role">Informatique Industrielle et Maintenace 2</div>
+                            <div class="team-role">Informatique Industrielle 2</div>
                             <div class="team-contacts">
-                                <a href="mailto:berenger.b@ghostbuster.bj">✉️</a>
-                                <a href="https://wa.me/22968744354">📱</a>
-                                <a href="#">💼</a>
-                                <a href="#">🐙</a>
+                                <a href="mailto:berenger.b@ghostbuster.bj"><i class="fas fa-envelope"></i></a>
+                                <a href="https://wa.me/22968744354"><i class="fab fa-whatsapp"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
 
                         <!-- Valérie - Chef Électronique -->
                         <div class="team-card">
                             <div class="team-photo">
-                                <img src="images/valerie.jpeg" alt="Valérie KLOKPE">
+                                <img src="images/valerie.jpeg" alt="Valérie KLOKPE" onerror="this.src='https://via.placeholder.com/110x110?text=Photo'">
                             </div>
                             <h3>Valérie KLOKPE</h3>
-                            <div class="team-role">Elètrotechnique 2</div>
+                            <div class="team-role">Électrotechnique 2</div>
                             <div class="team-contacts">
-                                <a href="mailto:klokpevalerie@gmail.com">✉️</a>
-                                <a href="https://wa.me/22944998978">📱</a>
-                                <a href="#">💼</a>
-                                <a href="#">🐙</a>
+                                <a href="mailto:klokpevalerie@gmail.com"><i class="fas fa-envelope"></i></a>
+                                <a href="https://wa.me/22944998978"><i class="fab fa-whatsapp"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
 
                         <!-- Steav - Membre IT -->
                         <div class="team-card">
                             <div class="team-photo">
-                                <img src="images/steav.jpeg" alt="Steav BINOUYO">
+                                <img src="images/steav.jpeg" alt="Steav BINOUYO" onerror="this.src='https://via.placeholder.com/110x110?text=Photo'">
                             </div>
                             <h3>Steav BINOUYO</h3>
-                            <div class="team-role">Elètrotechnique 2</div>
+                            <div class="team-role">Électrotechnique 2</div>
                             <div class="team-contacts">
-                                <a href="mailto:binouyotobi@gmail.com">✉️</a>
-                                <a href="https://wa.me/22998733638">📱</a>
-                                <a href="#">💼</a>
-                                <a href="#">🐙</a>
+                                <a href="mailto:binouyotobi@gmail.com"><i class="fas fa-envelope"></i></a>
+                                <a href="https://wa.me/22998733638"><i class="fab fa-whatsapp"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
 
                         <!-- Zaénab - Membre Électronique -->
                         <div class="team-card">
                             <div class="team-photo">
-                                <img src="images/zaenab.jpeg" alt="Zaénab OKE">
+                                <img src="images/zaenab.jpeg" alt="Zaénab OKE" onerror="this.src='https://via.placeholder.com/110x110?text=Photo'">
                             </div>
                             <h3>Zaénab OKE</h3>
-                            <div class="team-role">Elètrotechnique 2</div>
+                            <div class="team-role">Électrotechnique 2</div>
                             <div class="team-contacts">
-                                <a href="mailto:zaenaboke05@gmail.com">✉️</a>
-                                <a href="https://wa.me/22999393164">📱</a>
-                                <a href="#">💼</a>
-                                <a href="#">🐙</a>
+                                <a href="mailto:zaenaboke05@gmail.com"><i class="fas fa-envelope"></i></a>
+                                <a href="https://wa.me/22999393164"><i class="fab fa-whatsapp"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
 
                         <!-- Delphin - Membre Mécanique -->
                         <div class="team-card">
                             <div class="team-photo">
-                                <img src="images/delphin.jpeg" alt="Delphin ZINZINSOUHOU">
+                                <img src="images/delphin.jpeg" alt="Delphin ZINZINSOUHOU" onerror="this.src='https://via.placeholder.com/110x110?text=Photo'">
                             </div>
                             <h3>Delphin ZINZINSOUHOU</h3>
-                            <div class="team-role">Informatique Industrielle et Maintenace 2</div>
+                            <div class="team-role">Informatique Industrielle 2</div>
                             <div class="team-contacts">
-                                <a href="mailto:delphin.z@ghostbuster.bj">✉️</a>
-                                <a href="https://wa.me/22952696537">📱</a>
-                                <a href="#">💼</a>
-                                <a href="#">🐙</a>
+                                <a href="mailto:delphin.z@ghostbuster.bj"><i class="fas fa-envelope"></i></a>
+                                <a href="https://wa.me/22952696537"><i class="fab fa-whatsapp"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
 
                         <!-- Lucrèce - Membre Mécanique -->
                         <div class="team-card">
                             <div class="team-photo">
-                                <img src="images/lucrece.jpeg" alt="SACCA Lucrèce">
+                                <img src="images/lucrece.jpeg" alt="SACCA Lucrèce" onerror="this.src='https://via.placeholder.com/110x110?text=Photo'">
                             </div>
                             <h3>SACCA Lucrèce</h3>
-                            <div class="team-role">Informatique Industrielle et Maintenace 2</div>
+                            <div class="team-role">Informatique Industrielle 2</div>
                             <div class="team-contacts">
-                                <a href="mailto:lucrecesacca@gmail.com">✉️</a>
-                                <a href="https://wa.me/22944912961">📱</a>
-                                <a href="#">💼</a>
-                                <a href="#">🐙</a>
+                                <a href="mailto:lucrecesacca@gmail.com"><i class="fas fa-envelope"></i></a>
+                                <a href="https://wa.me/22944912961"><i class="fab fa-whatsapp"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
                     </div>
                     <!-- Deuxième copie pour l'effet infini -->
                     <div class="team-slider">
-                        <!-- Melkisedeck - Chef Mécanique -->
+                        <!-- Mêmes cartes pour l'effet infini -->
                         <div class="team-card">
                             <div class="team-photo">
-                                <img src="images/mel.jpeg" alt="Melkisedeck DJIMADJO">
+                                <img src="images/mel.jpeg" alt="Melkisedeck DJIMADJO" onerror="this.src='https://via.placeholder.com/110x110?text=Photo'">
                             </div>
-                             <div class="team-contact()"><h2>Chef d'équipe</h2></div>
                             <h3>Melkisedeck DJIMADJO</h3>
-                            <div class="team-role">Informatique Industrielle et Maintenace 2</div>
+                            <div class="team-role">Informatique Industrielle 2</div>
                             <div class="team-contacts">
-                                <a href="mailto:djimadjomelkisedeck@gmail.com">✉️</a>
-                                <a href="https://wa.me/22967836762">📱</a>
-                                <a href="#">💼</a>
-                                <a href="#">🐙</a>
+                                <a href="mailto:djimadjomelkisedeck@gmail.com"><i class="fas fa-envelope"></i></a>
+                                <a href="https://wa.me/22967836762"><i class="fab fa-whatsapp"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
-
-                        <!-- Bérenger - Chef IT -->
                         <div class="team-card">
                             <div class="team-photo">
-                                <img src="images/berenger.jpeg" alt="Bérenger BOTON">
+                                <img src="images/berenger.jpeg" alt="Bérenger BOTON" onerror="this.src='https://via.placeholder.com/110x110?text=Photo'">
                             </div>
                             <h3>Bérenger BOTON</h3>
-                            <div class="team-role">Informatique Industrielle et Maintenace 2</div>
+                            <div class="team-role">Informatique Industrielle 2</div>
                             <div class="team-contacts">
-                                <a href="mailto:berenger.b@ghostbuster.bj">✉️</a>
-                                <a href="https://wa.me/22968744354">📱</a>
-                                <a href="#">💼</a>
-                                <a href="#">🐙</a>
+                                <a href="mailto:berenger.b@ghostbuster.bj"><i class="fas fa-envelope"></i></a>
+                                <a href="https://wa.me/22968744354"><i class="fab fa-whatsapp"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
-
-                        <!-- Valérie - Chef Électronique -->
                         <div class="team-card">
                             <div class="team-photo">
-                                <img src="images/valerie.jpeg" alt="Valérie KLOKPE">
+                                <img src="images/valerie.jpeg" alt="Valérie KLOKPE" onerror="this.src='https://via.placeholder.com/110x110?text=Photo'">
                             </div>
                             <h3>Valérie KLOKPE</h3>
-                            <div class="team-role">Elètrotechnique 2</div>
+                            <div class="team-role">Électrotechnique 2</div>
                             <div class="team-contacts">
-                                <a href="mailto:klokpevalerie@gmail.com">✉️</a>
-                                <a href="https://wa.me/22944998978">📱</a>
-                                <a href="#">💼</a>
-                                <a href="#">🐙</a>
+                                <a href="mailto:klokpevalerie@gmail.com"><i class="fas fa-envelope"></i></a>
+                                <a href="https://wa.me/22944998978"><i class="fab fa-whatsapp"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
-
-                        <!-- Steav - Membre IT -->
                         <div class="team-card">
                             <div class="team-photo">
-                                <img src="images/steav.jpeg" alt="Steav BINOUYO">
+                                <img src="images/steav.jpeg" alt="Steav BINOUYO" onerror="this.src='https://via.placeholder.com/110x110?text=Photo'">
                             </div>
                             <h3>Steav BINOUYO</h3>
-                            <div class="team-role">Elètrotechnique 2</div>
+                            <div class="team-role">Électrotechnique 2</div>
                             <div class="team-contacts">
-                                <a href="mailto:binouyotobi@gmail.com">✉️</a>
-                                <a href="https://wa.me/22998733638">📱</a>
-                                <a href="#">💼</a>
-                                <a href="#">🐙</a>
+                                <a href="mailto:binouyotobi@gmail.com"><i class="fas fa-envelope"></i></a>
+                                <a href="https://wa.me/22998733638"><i class="fab fa-whatsapp"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
-
-                        <!-- Zaénab - Membre Électronique -->
                         <div class="team-card">
                             <div class="team-photo">
-                                <img src="images/zaenab.jpeg" alt="Zaénab OKE">
+                                <img src="images/zaenab.jpeg" alt="Zaénab OKE" onerror="this.src='https://via.placeholder.com/110x110?text=Photo'">
                             </div>
                             <h3>Zaénab OKE</h3>
-                            <div class="team-role">Elètrotechnique 2</div>
+                            <div class="team-role">Électrotechnique 2</div>
                             <div class="team-contacts">
-                                <a href="mailto:zaenaboke05@gmail.com">✉️</a>
-                                <a href="https://wa.me/22999393164">📱</a>
-                                <a href="#">💼</a>
-                                <a href="#">🐙</a>
+                                <a href="mailto:zaenaboke05@gmail.com"><i class="fas fa-envelope"></i></a>
+                                <a href="https://wa.me/22999393164"><i class="fab fa-whatsapp"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
-
-                        <!-- Delphin - Membre Mécanique -->
                         <div class="team-card">
                             <div class="team-photo">
-                                <img src="images/delphin.jpeg" alt="Delphin ZINZINSOUHOU">
+                                <img src="images/delphin.jpeg" alt="Delphin ZINZINSOUHOU" onerror="this.src='https://via.placeholder.com/110x110?text=Photo'">
                             </div>
                             <h3>Delphin ZINZINSOUHOU</h3>
-                            <div class="team-role">Informatique Industrielle et Maintenace 2</div>
+                            <div class="team-role">Informatique Industrielle 2</div>
                             <div class="team-contacts">
-                                <a href="mailto:delphin.z@ghostbuster.bj">✉️</a>
-                                <a href="https://wa.me/22952696537">📱</a>
-                                <a href="#">💼</a>
-                                <a href="#">🐙</a>
+                                <a href="mailto:delphin.z@ghostbuster.bj"><i class="fas fa-envelope"></i></a>
+                                <a href="https://wa.me/22952696537"><i class="fab fa-whatsapp"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
-
-                        <!-- Lucrèce - Membre Mécanique -->
                         <div class="team-card">
                             <div class="team-photo">
-                                <img src="images/lucrece.jpeg" alt="SACCA Lucrèce">
+                                <img src="images/lucrece.jpeg" alt="SACCA Lucrèce" onerror="this.src='https://via.placeholder.com/110x110?text=Photo'">
                             </div>
                             <h3>SACCA Lucrèce</h3>
-                            <div class="team-role">Informatique Industrielle et Maintenace 2</div>
+                            <div class="team-role">Informatique Industrielle 2</div>
                             <div class="team-contacts">
-                                <a href="mailto:lucrecesacca@gmail.com">✉️</a>
-                                <a href="https://wa.me/22944912961">📱</a>
-                                <a href="#">💼</a>
-                                <a href="#">🐙</a>
+                                <a href="mailto:lucrecesacca@gmail.com"><i class="fas fa-envelope"></i></a>
+                                <a href="https://wa.me/22944912961"><i class="fab fa-whatsapp"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <a href="equipe.html" class="btn" style="background: transparent; border: 2px solid var(--primary); color: var(--primary);">
+                    <span class="lang-fr">Voir toute l'équipe →</span>
+                    <span class="lang-en">See full team →</span>
+                </a>
+            </div>
         </section>
 
-        <!-- ===== POLES SECTION - DÉFILEMENT AUTOMATIQUE ===== -->
+        <!-- ===== POLES SECTION ===== -->
         <section class="reveal">
             <h2 class="section-title section-title-center">
                 <span class="lang-fr">Nos Pôles</span>
@@ -1509,21 +1791,21 @@
                         <!-- Pôle IT -->
                         <div class="pole-slide">
                             <div class="team-card">
-                                <div class="team-photo"><img src="images/berenger.jpeg" alt="Bérenger BOTON"></div>
+                                <div class="team-photo"><img src="images/berenger.jpeg" alt="Bérenger BOTON" onerror="this.src='https://via.placeholder.com/90x90?text=Photo'"></div>
                                 <h3>Bérenger BOTON</h3>
-                                <div class="team-role">👑 Chef IT</div>
+                                <div class="team-role"><i class="fas fa-crown" style="color: var(--icon-color);"></i> Chef IT</div>
                                 <div class="team-contacts">
-                                    <a href="mailto:berenger.b@ghostbuster.bj">✉️</a>
-                                    <a href="https://wa.me/22968744354">📱</a>
+                                    <a href="mailto:berenger.b@ghostbuster.bj"><i class="fas fa-envelope"></i></a>
+                                    <a href="https://wa.me/22968744354"><i class="fab fa-whatsapp"></i></a>
                                 </div>
                             </div>
                             <div class="team-card">
-                                <div class="team-photo"><img src="images/steav.jpeg" alt="Steav BINOUYO"></div>
+                                <div class="team-photo"><img src="images/steav.jpeg" alt="Steav BINOUYO" onerror="this.src='https://via.placeholder.com/90x90?text=Photo'"></div>
                                 <h3>Steav BINOUYO</h3>
                                 <div class="team-role">Membre IT</div>
                                 <div class="team-contacts">
-                                    <a href="mailto:binouyotobi@gmail.com">✉️</a>
-                                    <a href="https://wa.me/22998733638">📱</a>
+                                    <a href="mailto:binouyotobi@gmail.com"><i class="fas fa-envelope"></i></a>
+                                    <a href="https://wa.me/22998733638"><i class="fab fa-whatsapp"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -1531,21 +1813,21 @@
                         <!-- Pôle Électronique -->
                         <div class="pole-slide">
                             <div class="team-card">
-                                <div class="team-photo"><img src="images/valerie.jpeg" alt="Valérie KLOKPE"></div>
+                                <div class="team-photo"><img src="images/valerie.jpeg" alt="Valérie KLOKPE" onerror="this.src='https://via.placeholder.com/90x90?text=Photo'"></div>
                                 <h3>Valérie KLOKPE</h3>
-                                <div class="team-role">👑 Chef Électronique</div>
+                                <div class="team-role"><i class="fas fa-crown" style="color: var(--icon-color);"></i> Chef Électronique</div>
                                 <div class="team-contacts">
-                                    <a href="mailto:klokpevalerie@gmail.com">✉️</a>
-                                    <a href="https://wa.me/22944998978">📱</a>
+                                    <a href="mailto:klokpevalerie@gmail.com"><i class="fas fa-envelope"></i></a>
+                                    <a href="https://wa.me/22944998978"><i class="fab fa-whatsapp"></i></a>
                                 </div>
                             </div>
                             <div class="team-card">
-                                <div class="team-photo"><img src="images/zaenab.jpeg" alt="Zaénab OKE"></div>
+                                <div class="team-photo"><img src="images/zaenab.jpeg" alt="Zaénab OKE" onerror="this.src='https://via.placeholder.com/90x90?text=Photo'"></div>
                                 <h3>Zaénab OKE</h3>
                                 <div class="team-role">Membre Électronique</div>
                                 <div class="team-contacts">
-                                    <a href="mailto:zaenaboke05@gmail.com">✉️</a>
-                                    <a href="https://wa.me/22999393164">📱</a>
+                                    <a href="mailto:zaenaboke05@gmail.com"><i class="fas fa-envelope"></i></a>
+                                    <a href="https://wa.me/22999393164"><i class="fab fa-whatsapp"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -1553,30 +1835,30 @@
                         <!-- Pôle Mécanique -->
                         <div class="pole-slide">
                             <div class="team-card">
-                                <div class="team-photo"><img src="images/mel.jpeg" alt="Melkisedeck DJIMADJO"></div>
+                                <div class="team-photo"><img src="images/mel.jpeg" alt="Melkisedeck DJIMADJO" onerror="this.src='https://via.placeholder.com/90x90?text=Photo'"></div>
                                 <h3>Melkisedeck DJIMADJO</h3>
-                                <div class="team-role">👑 Chef Mécanique</div>
+                                <div class="team-role"><i class="fas fa-crown" style="color: var(--icon-color);"></i> Chef Mécanique</div>
                                 <div class="team-contacts">
-                                    <a href="mailto:djimadjomelkisedeck@gmail.com">✉️</a>
-                                    <a href="https://wa.me/22967836762">📱</a>
+                                    <a href="mailto:djimadjomelkisedeck@gmail.com"><i class="fas fa-envelope"></i></a>
+                                    <a href="https://wa.me/22967836762"><i class="fab fa-whatsapp"></i></a>
                                 </div>
                             </div>
                             <div class="team-card">
-                                <div class="team-photo"><img src="images/delphin.jpeg" alt="Delphin ZINZINSOUHOU"></div>
+                                <div class="team-photo"><img src="images/delphin.jpeg" alt="Delphin ZINZINSOUHOU" onerror="this.src='https://via.placeholder.com/90x90?text=Photo'"></div>
                                 <h3>Delphin ZINZINSOUHOU</h3>
                                 <div class="team-role">Membre Mécanique</div>
                                 <div class="team-contacts">
-                                    <a href="mailto:delphin.z@ghostbuster.bj">✉️</a>
-                                    <a href="https://wa.me/22952696537">📱</a>
+                                    <a href="mailto:delphin.z@ghostbuster.bj"><i class="fas fa-envelope"></i></a>
+                                    <a href="https://wa.me/22952696537"><i class="fab fa-whatsapp"></i></a>
                                 </div>
                             </div>
                             <div class="team-card">
-                                <div class="team-photo"><img src="images/lucrece.jpeg" alt="SACCA Lucrèce"></div>
+                                <div class="team-photo"><img src="images/lucrece.jpeg" alt="SACCA Lucrèce" onerror="this.src='https://via.placeholder.com/90x90?text=Photo'"></div>
                                 <h3>SACCA Lucrèce</h3>
                                 <div class="team-role">Membre Mécanique</div>
                                 <div class="team-contacts">
-                                    <a href="mailto:lucrecesacca@gmail.com">✉️</a>
-                                    <a href="https://wa.me/22967836762">📱</a>
+                                    <a href="mailto:lucrecesacca@gmail.com"><i class="fas fa-envelope"></i></a>
+                                    <a href="https://wa.me/22944912961"><i class="fab fa-whatsapp"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -1598,7 +1880,7 @@
                 <span class="lang-en">Roadmap</span>
             </h2>
             <div class="roadmap">
-                <div class="roadmap-item" onclick="alert('Phase 1: Conception & Design - Terminée')">
+                <div class="roadmap-item" onclick="window.location.href='roadmap.html'">
                     <div class="roadmap-content">
                         <span class="roadmap-date">
                             <span class="lang-fr">Phase 1 - Terminée</span>
@@ -1615,7 +1897,7 @@
                     </div>
                     <div class="roadmap-dot"></div>
                 </div>
-                <div class="roadmap-item" onclick="alert('Phase 2: Prototypage - En cours (75%)')">
+                <div class="roadmap-item" onclick="window.location.href='roadmap.html'">
                     <div class="roadmap-content">
                         <span class="roadmap-date">
                             <span class="lang-fr">Phase 2 - En cours</span>
@@ -1632,7 +1914,7 @@
                     </div>
                     <div class="roadmap-dot"></div>
                 </div>
-                <div class="roadmap-item" onclick="alert('Phase 3: Tests & Optimisation - À venir')">
+                <div class="roadmap-item" onclick="window.location.href='roadmap.html'">
                     <div class="roadmap-content">
                         <span class="roadmap-date">
                             <span class="lang-fr">Phase 3 - À venir</span>
@@ -1649,7 +1931,7 @@
                     </div>
                     <div class="roadmap-dot"></div>
                 </div>
-                <div class="roadmap-item" onclick="alert('Phase 4: Compétition - Finale')">
+                <div class="roadmap-item" onclick="window.location.href='roadmap.html'">
                     <div class="roadmap-content">
                         <span class="roadmap-date">
                             <span class="lang-fr">Phase 4 - Finale</span>
@@ -1667,6 +1949,12 @@
                     <div class="roadmap-dot"></div>
                 </div>
             </div>
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <a href="roadmap.html" class="btn" style="background: transparent; border: 2px solid var(--primary); color: var(--primary);">
+                    <span class="lang-fr">Voir la roadmap complète →</span>
+                    <span class="lang-en">View full roadmap →</span>
+                </a>
+            </div>
         </section>
 
         <!-- FAQ SECTION -->
@@ -1677,7 +1965,7 @@
             </h2>
             <div class="faq-grid">
                 <div class="faq-item">
-                    <div class="faq-question"><span>🤖</span><h3>
+                    <div class="faq-question"><i class="fas fa-robot"></i><h3>
                         <span class="lang-fr">Le défi suiveur de ligne ?</span>
                         <span class="lang-en">The line follower challenge?</span>
                     </h3></div>
@@ -1687,7 +1975,7 @@
                     </div>
                 </div>
                 <div class="faq-item">
-                    <div class="faq-question"><span>⚡</span><h3>
+                    <div class="faq-question"><i class="fas fa-bolt"></i><h3>
                         <span class="lang-fr">L'évitement d'obstacles ?</span>
                         <span class="lang-en">Obstacle avoidance?</span>
                     </h3></div>
@@ -1697,7 +1985,7 @@
                     </div>
                 </div>
                 <div class="faq-item">
-                    <div class="faq-question"><span>👥</span><h3>
+                    <div class="faq-question"><i class="fas fa-users"></i><h3>
                         <span class="lang-fr">Qui sommes-nous ?</span>
                         <span class="lang-en">Who are we?</span>
                     </h3></div>
@@ -1707,7 +1995,7 @@
                     </div>
                 </div>
                 <div class="faq-item">
-                    <div class="faq-question"><span>🏆</span><h3>
+                    <div class="faq-question"><i class="fas fa-trophy"></i><h3>
                         <span class="lang-fr">Notre objectif ?</span>
                         <span class="lang-en">Our goal?</span>
                     </h3></div>
@@ -1727,22 +2015,46 @@
             </h2>
             <div class="contact-grid">
                 <div class="contact-info">
-                    <div class="contact-item"><div class="contact-icon">📧</div><div><h4>Email</h4><p>djimadjomelkisedeck@gmail.com</p></div></div>
-                    <div class="contact-item"><div class="contact-icon">📱</div><div><h4>
-                        <span class="lang-fr">Téléphone</span>
-                        <span class="lang-en">Phone</span>
-                    </h4><p>+229 67 83 67 62</p></div></div>
-                    <div class="contact-item"><div class="contact-icon">📍</div><div><h4>
-                        <span class="lang-fr">Adresse</span>
-                        <span class="lang-en">Cotonou</span>
-                    </h4><p>UCAO-Bénin, Cotonou</p></div></div>
-                    <div class="contact-item"><div class="contact-icon">🐙</div><div><h4>GitHub</h4><p>github.com/Yoane2194/Olympiades</p></div></div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                        <div>
+                            <h4>Email</h4>
+                            <p>djimadjomelkisedeck@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+                        <div>
+                            <h4><span class="lang-fr">Téléphone</span><span class="lang-en">Phone</span></h4>
+                            <p>+229 67 83 67 62</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div>
+                            <h4><span class="lang-fr">Adresse</span><span class="lang-en">Address</span></h4>
+                            <p>UCAO-Bénin, Cotonou</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fab fa-github"></i></div>
+                        <div>
+                            <h4>GitHub</h4>
+                            <p>github.com/Yoane2194/Olympiades</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="contact-form">
                     <form>
-                        <div class="form-group"><input type="text" placeholder="Nom / Name"></div>
-                        <div class="form-group"><input type="email" placeholder="Email"></div>
-                        <div class="form-group"><textarea placeholder="Message"></textarea></div>
+                        <div class="form-group">
+                            <input type="text" placeholder="Nom / Name">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Email">
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Message"></textarea>
+                        </div>
                         <button type="submit" class="btn" style="width:100%">
                             <span class="lang-fr">Envoyer</span>
                             <span class="lang-en">Send</span>
@@ -1753,218 +2065,14 @@
         </section>
     </div>
 
-    <!-- ===== PAGE INFORMATIQUE ===== -->
-    <div id="informatique-page" class="pole-page">
-        <div class="pole-header">
-            <h1>💻 <span class="lang-fr">Informatique</span><span class="lang-en">IT</span></h1>
-            <p>
-                <span class="lang-fr">Suivi de l'évolution du travail - Semaine par semaine</span>
-                <span class="lang-en">Work progress tracking - Week by week</span>
-            </p>
-        </div>
-        
-        <div class="timeline">
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <span class="timeline-date">
-                        <span class="lang-fr">Semaine 1-2</span>
-                        <span class="lang-en">Week 1-2</span>
-                    </span>
-                    <h3>
-                        <span class="lang-fr">Mise en place de l'environnement</span>
-                        <span class="lang-en">Environment setup</span>
-                    </h3>
-                    <ul>
-                        <li>Installation des IDE (ESP32, VS Code)</li>
-                        <li>Configuration des dépôts GitHub</li>
-                        <li>Formation sur les algorithmes PID</li>
-                    </ul>
-                    <div class="progress-bar"><div class="progress-fill" style="width:73%"></div></div>
-                    <p style="color:var(--primary)">🔄 73%</p>
-                </div>
-                <div class="timeline-dot"></div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <span class="timeline-date">
-                        <span class="lang-fr">Semaine 3-4</span>
-                        <span class="lang-en">Week 3-4</span>
-                    </span>
-                    <h3>
-                        <span class="lang-fr">Développement du suivi de ligne</span>
-                        <span class="lang-en">Line follower development</span>
-                    </h3>
-                    <ul>
-                        <li>Test des capteurs infrarouges</li>
-                        <li>Implémentation du PID de base</li>
-                        <li>Calibration sur piste test</li>
-                    </ul>
-                    <div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div>
-                    <p style="color:var(--primary)">🔄 40%</p>
-                </div>
-                <div class="timeline-dot"></div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <span class="timeline-date">
-                        <span class="lang-fr">Semaine 5-6</span>
-                        <span class="lang-en">Week 5-6</span>
-                    </span>
-                    <h3>
-                        <span class="lang-fr">Détection d'obstacles</span>
-                        <span class="lang-en">Obstacle detection</span>
-                    </h3>
-                    <ul>
-                        <li>Programmation des capteurs ultrasons</li>
-                        <li>Algorithme d'évitement</li>
-                        <li>Fusion des données capteurs</li>
-                    </ul>
-                    <div class="progress-bar"><div class="progress-fill" style="width:14%"></div></div>
-                    <p style="color:var(--primary)">♻️ 14%</p>
-                </div>
-                <div class="timeline-dot"></div>
-            </div>
-        </div>
-        
-        <a href="#" onclick="showPage('accueil'); return false;" class="back-btn">← <span class="lang-fr">Retour à l'accueil</span><span class="lang-en">Back to home</span></a>
-    </div>
-
-    <!-- ===== PAGE ÉLECTRONIQUE ===== -->
-    <div id="electronique-page" class="pole-page">
-        <div class="pole-header">
-            <h1>🔌 <span class="lang-fr">Électronique</span><span class="lang-en">Electronics</span></h1>
-            <p>
-                <span class="lang-fr">Suivi de l'évolution du travail - Semaine par semaine</span>
-                <span class="lang-en">Work progress tracking - Week by week</span>
-            </p>
-        </div>
-        
-        <div class="timeline">
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <span class="timeline-date">
-                        <span class="lang-fr">Semaine 1-2</span>
-                        <span class="lang-en">Week 1-2</span>
-                    </span>
-                    <h3>
-                        <span class="lang-fr">Conception des circuits</span>
-                        <span class="lang-en">Circuit design</span>
-                    </h3>
-                    <ul>
-                        <li>Schémas électroniques sur Kicad</li>
-                        <li>Choix des composants</li>
-                        <li>Simulation des circuits</li>
-                    </ul>
-                    <div class="progress-bar"><div class="progress-fill" style="width:92%"></div></div>
-                    <p style="color:var(--primary)">✅ 92%</p>
-                </div>
-                <div class="timeline-dot"></div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <span class="timeline-date">
-                        <span class="lang-fr">Semaine 3-4</span>
-                        <span class="lang-en">Week 3-4</span>
-                    </span>
-                    <h3>
-                        <span class="lang-fr">Prototypage sur breadboard</span>
-                        <span class="lang-en">Breadboard prototyping</span>
-                    </h3>
-                    <ul>
-                        <li>Montage des capteurs IR</li>
-                        <li>Test des moteurs avec pont en H</li>
-                        <li>Premiers tests d'alimentation</li>
-                    </ul>
-                    <div class="progress-bar"><div class="progress-fill" style="width:53%"></div></div>
-                    <p style="color:var(--primary)">🔄 53%</p>
-                </div>
-                <div class="timeline-dot"></div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <span class="timeline-date">
-                        <span class="lang-fr">Semaine 5-6</span>
-                        <span class="lang-en">Week 5-6</span>
-                    </span>
-                    <h3>
-                        <span class="lang-fr">Conception PCB</span>
-                        <span class="lang-en">PCB design</span>
-                    </h3>
-                    <ul>
-                        <li>Design du circuit imprimé</li>
-                        <li>Routage des pistes</li>
-                        <li>Commande des PCB</li>
-                    </ul>
-                    <div class="progress-bar"><div class="progress-fill" style="width:10%"></div></div>
-                    <p style="color:var(--primary)">♻️ 10%</p>
-                </div>
-                <div class="timeline-dot"></div>
-            </div>
-        </div>
-        
-        <a href="#" onclick="showPage('accueil'); return false;" class="back-btn">← <span class="lang-fr">Retour à l'accueil</span><span class="lang-en">Back to home</span></a>
-    </div>
-
-    <!-- ===== PAGE MÉCANIQUE ===== -->
-    <div id="mecanique-page" class="pole-page">
-        <div class="pole-header">
-            <h1>⚙️ <span class="lang-fr">Mécanique</span><span class="lang-en">Mechanics</span></h1>
-            <p>
-                <span class="lang-fr">Suivi de l'évolution du travail - Semaine par semaine</span>
-                <span class="lang-en">Work progress tracking - Week by week</span>
-            </p>
-        </div>
-        
-        <div class="timeline">
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <span class="timeline-date">
-                        <span class="lang-fr">Semaine 1-2</span>
-                        <span class="lang-en">Week 1-2</span>
-                    </span>
-                    <h3>
-                        <span class="lang-fr">Conception CAO</span>
-                        <span class="lang-en">CAD design</span>
-                    </h3>
-                    <ul>
-                        <li>Modélisation du châssis sur SolidWorks</li>
-                        <li>Design des supports capteurs</li>
-                        <li>Intégration des moteurs</li>
-                    </ul>
-                    <div class="progress-bar"><div class="progress-fill" style="width:70%"></div></div>
-                    <p style="color:var(--primary)">🔄 70%</p>
-                </div>
-                <div class="timeline-dot"></div>
-            </div>
-            
-            <div class="timeline-item">
-                <div class="timeline-content">
-                    <span class="timeline-date">
-                        <span class="lang-fr">Semaine 3-4</span>
-                        <span class="lang-en">Week 3-4</span>
-                    </span>
-                    <h3>
-                        <span class="lang-fr">Impression 3D</span>
-                        <span class="lang-en">3D printing</span>
-                    </h3>
-                    <ul>
-                        <li>Impression des pièces PLA</li>
-                        <li>Test d'assemblage</li>
-                        <li>Ajustements des tolérances</li>
-                    </ul>
-                    <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
-                    <p style="color:var(--primary)">⏳ Planifié</p>
-                </div>
-                <div class="timeline-dot"></div>
-            </div>
-        </div>
-        
-        <a href="#" onclick="showPage('accueil'); return false;" class="back-btn">← <span class="lang-fr">Retour à l'accueil</span><span class="lang-en">Back to home</span></a>
-    </div>
+    <!-- ===== SUPPRESSION DES PAGES INTÉGRÉES ===== -->
+    <!-- Les pages suivantes ont été supprimées car elles seront dans des fichiers séparés :
+         - PAGE INFORMATIQUE
+         - PAGE ÉLECTRONIQUE
+         - PAGE MÉCANIQUE
+         - PAGE ROBOT
+         - PAGE DOCUMENTATION
+    -->
 
     <!-- ===== FOOTER ===== -->
     <footer>
@@ -1975,28 +2083,36 @@
                 <span>GHOSTBUSTER</span>
             </div>
             <div class="footer-links">
-                <a href="#" onclick="showPage('accueil'); return false;">
+                <a href="index.html">
                     <span class="lang-fr">Accueil</span>
                     <span class="lang-en">Home</span>
                 </a>
-                <a href="#" onclick="showPage('equipe'); return false;">
+                <a href="equipe.html">
                     <span class="lang-fr">Équipe</span>
                     <span class="lang-en">Team</span>
                 </a>
-                <a href="#" onclick="showPage('domaines'); return false;">
-                    <span class="lang-fr">Domaines</span>
-                    <span class="lang-en">Fields</span>
+                <a href="robot.html">
+                    <span class="lang-fr">Robot</span>
+                    <span class="lang-en">Robot</span>
                 </a>
-                <a href="#" onclick="showPage('contact'); return false;">
+                <a href="documentation.html">
+                    <span class="lang-fr">Documentation</span>
+                    <span class="lang-en">Docs</span>
+                </a>
+                <a href="roadmap.html">
+                    <span class="lang-fr">Roadmap</span>
+                    <span class="lang-en">Roadmap</span>
+                </a>
+                <a href="#contact-section">
                     <span class="lang-fr">Contact</span>
                     <span class="lang-en">Contact</span>
                 </a>
             </div>
             <div class="footer-social">
-                <a href="#">📧</a>
-                <a href="#">🐙</a>
-                <a href="#">💼</a>
-                <a href="#">📱</a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
             </div>
         </div>
         <div class="copyright">
@@ -2008,7 +2124,7 @@
             </p>
         </div>
     </footer>
-</body>
+
     <script>
         // ===== THEME TOGGLE =====
         function toggleTheme() {
@@ -2036,47 +2152,7 @@
             }
         }
 
-        // ===== PAGE NAVIGATION =====
-        function showPage(pageName) {
-            document.getElementById('accueil-page').classList.remove('active-page');
-            document.getElementById('informatique-page').classList.remove('active-page');
-            document.getElementById('electronique-page').classList.remove('active-page');
-            document.getElementById('mecanique-page').classList.remove('active-page');
-            
-            if (pageName === 'accueil') {
-                document.getElementById('accueil-page').classList.add('active-page');
-            } else if (pageName === 'informatique') {
-                document.getElementById('informatique-page').classList.add('active-page');
-            } else if (pageName === 'electronique') {
-                document.getElementById('electronique-page').classList.add('active-page');
-            } else if (pageName === 'mecanique') {
-                document.getElementById('mecanique-page').classList.add('active-page');
-            }
-            
-            document.querySelectorAll('.nav-links a').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            if (pageName === 'accueil') {
-                document.getElementById('nav-accueil').classList.add('active');
-            } else if (pageName === 'equipe') {
-                document.getElementById('nav-equipe').classList.add('active');
-            } else if (pageName === 'domaines') {
-                document.getElementById('nav-domaines').classList.add('active');
-            } else if (pageName === 'roadmap') {
-                document.getElementById('nav-roadmap').classList.add('active');
-            } else if (pageName === 'contact') {
-                document.getElementById('nav-contact').classList.add('active');
-            }
-            
-            window.scrollTo(0, 0);
-        }
-
-        function showPolePage(poleName) {
-            showPage(poleName);
-        }
-
-        // ===== POLES SLIDER AUTOMATIQUE (SANS BOUTONS) =====
+        // ===== POLES SLIDER AUTOMATIQUE =====
         let currentPoleIndex = 0;
         const polesSlider = document.getElementById('polesSlider');
         const totalPoles = 3;
@@ -2091,22 +2167,23 @@
         }
 
         function updatePoleSlider() {
-            polesSlider.style.transform = `translateX(-${currentPoleIndex * 33.333}%)`;
-            
-            document.querySelectorAll('.pole-indicator').forEach((indicator, index) => {
-                if (index === currentPoleIndex) {
-                    indicator.classList.add('active');
-                } else {
-                    indicator.classList.remove('active');
-                }
-            });
+            if (polesSlider) {
+                polesSlider.style.transform = `translateX(-${currentPoleIndex * 33.333}%)`;
+                
+                document.querySelectorAll('.pole-indicator').forEach((indicator, index) => {
+                    if (index === currentPoleIndex) {
+                        indicator.classList.add('active');
+                    } else {
+                        indicator.classList.remove('active');
+                    }
+                });
+            }
         }
 
         function goToPole(index) {
             if (index >= 0 && index < totalPoles) {
                 currentPoleIndex = index;
                 updatePoleSlider();
-                // Réinitialiser le timer
                 if (autoPlayInterval) {
                     clearInterval(autoPlayInterval);
                     startAutoPlay();
@@ -2118,9 +2195,15 @@
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');
             if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
+                navbar.style.background = document.body.getAttribute('data-theme') === 'dark' 
+                    ? 'rgba(10, 12, 16, 0.98)' 
+                    : 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
             } else {
-                navbar.classList.remove('scrolled');
+                navbar.style.background = document.body.getAttribute('data-theme') === 'dark' 
+                    ? 'rgba(10, 12, 16, 0.98)' 
+                    : 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = 'none';
             }
         });
 
@@ -2130,20 +2213,36 @@
             for (let i = 0; i < reveals.length; i++) {
                 const windowHeight = window.innerHeight;
                 const revealTop = reveals[i].getBoundingClientRect().top;
-                const revealPoint = 150;
+                const revealPoint = 100;
                 if (revealTop < windowHeight - revealPoint) {
-                    reveals[i].classList.add('active');
+                    reveals[i].style.opacity = '1';
+                    reveals[i].style.transform = 'translateY(0)';
                 }
             }
         }
+
+        // Ajout des styles pour reveal
+        document.querySelectorAll('.reveal').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'all 0.6s ease';
+        });
 
         window.addEventListener('scroll', reveal);
         window.addEventListener('load', reveal);
 
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
-            showPage('accueil');
             startAutoPlay();
+            reveal();
+            
+            // Gestion des images manquantes
+            document.querySelectorAll('img').forEach(img => {
+                img.onerror = function() {
+                    this.src = 'https://via.placeholder.com/110x110?text=Photo';
+                };
+            });
         });
     </script>
+</body>
 </html>
