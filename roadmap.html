@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>GhostBuster - Roadmap</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --secondary: #f1c40f;
+            --accent: #e74c3c;
+            --bg-primary: #0a0c10;
+            --bg-secondary: #14181c;
+            --bg-card: #1a1f24;
+            --text-primary: #ecf0f1;
+            --text-secondary: #95a5a6;
+            --border-color: rgba(46, 204, 113, 0.15);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --glow: 0 0 20px rgba(46, 204, 113, 0.2);
+            --icon-color: #4ac0e4;
+            --icon-hover: #27ae60;
+            
+            --font-size-xs: 0.75rem;
+            --font-size-sm: 0.875rem;
+            --font-size-base: 1rem;
+            --font-size-lg: 1.125rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+            --font-size-3xl: 1.875rem;
+            --font-size-4xl: 2.25rem;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f5f7fa;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #34495e;
+            --border-color: rgba(46, 204, 113, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            padding-top: 70px;
+            font-size: var(--font-size-base);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { filter: drop-shadow(0 0 15px var(--primary)); }
+            50% { filter: drop-shadow(0 0 30px var(--primary)); }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .animate-glow {
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        /* ===== THEME TOGGLE ===== */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: var(--glow);
+            transition: all 0.3s ease;
+            color: var(--bg-primary);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+        }
+
+        /* ===== LANGUAGE TOGGLE ===== */
+        .lang-toggle {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 600;
+            box-shadow: var(--glow);
+            transition: all 0.3s ease;
+            color: var(--bg-primary);
+        }
+
+        .lang-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* ===== NAVIGATION ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 0.8rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 12, 16, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] nav {
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo img {
+            height: 35px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            font-size: var(--font-size-xs);
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.3rem 0;
+            white-space: nowrap;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        /* Menu mobile */
+        @media (max-width: 768px) {
+            nav {
+                padding: 0.6rem 3%;
+            }
+            .nav-links {
+                gap: 0.5rem;
+                font-size: 0.65rem;
+            }
+            .logo {
+                font-size: 1rem;
+            }
+            .logo img {
+                height: 28px;
+            }
+        }
+
+        /* ===== CONTENU PRINCIPAL ===== */
+        .main-content {
+            flex: 1;
+            padding: 2rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* En-tête de page */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: var(--font-size-4xl);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .page-header h1 i {
+            color: var(--icon-color);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: var(--font-size-base);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Timeline principale (comme sur l'accueil) */
+        .roadmap-timeline {
+            position: relative;
+            margin: 4rem 0;
+        }
+
+        .roadmap-timeline::before {
+            content: '';
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: calc(100% - 200px);
+            background: var(--primary);
+            opacity: 0.3;
+        }
+
+        .roadmap-phase {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .roadmap-phase:hover .phase-content {
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+            transform: scale(1.02);
+        }
+
+        .roadmap-phase:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .phase-content {
+            width: 45%;
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .phase-badge {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            background: var(--primary);
+            color: var(--bg-primary);
+            border-radius: 50px;
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .phase-content h2 {
+            font-size: var(--font-size-xl);
+            margin-bottom: 0.8rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .phase-content h2 i {
+            color: var(--icon-color);
+            font-size: 1.3rem;
+        }
+
+        .phase-desc {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .phase-progress {
+            margin: 1rem 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.3rem;
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .phase-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: var(--font-size-xs);
+        }
+
+        .phase-stats i {
+            color: var(--icon-color);
+            margin-right: 0.3rem;
+        }
+
+        .phase-dot {
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: var(--glow);
+            transition: all 0.3s ease;
+        }
+
+        .roadmap-phase:hover .phase-dot {
+            transform: translate(-50%, -50%) scale(1.3);
+            background: var(--secondary);
+        }
+
+        /* Sections de détail pour chaque phase */
+        .phase-details {
+            margin-top: 4rem;
+            display: none;
+        }
+
+        .phase-details.active {
+            display: block;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .detail-header h3 {
+            font-size: var(--font-size-2xl);
+            color: var(--primary);
+        }
+
+        .detail-header i {
+            font-size: 2rem;
+            color: var(--icon-color);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .detail-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .detail-card h4 {
+            font-size: var(--font-size-lg);
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-card h4 i {
+            color: var(--icon-color);
+        }
+
+        .task-list {
+            list-style: none;
+        }
+
+        .task-list li {
+            padding: 0.6rem 0;
+            border-bottom: 1px dashed var(--border-color);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: var(--font-size-sm);
+        }
+
+        .task-list li:last-child {
+            border-bottom: none;
+        }
+
+        .task-list li i {
+            color: var(--icon-color);
+            width: 20px;
+        }
+
+        .task-list li.completed {
+            color: var(--text-secondary);
+        }
+
+        .task-list li.completed i {
+            color: var(--primary);
+        }
+
+        .task-list li.in-progress i {
+            color: var(--secondary);
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tech-tag {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--primary);
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+        }
+
+        .member-contrib {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .member-contrib:hover {
+            background: rgba(46, 204, 113, 0.05);
+        }
+
+        .member-contrib img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .member-contrib-info h5 {
+            font-size: var(--font-size-sm);
+            color: var(--primary);
+        }
+
+        .member-contrib-info p {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+        }
+
+        .timeline-list {
+            list-style: none;
+        }
+
+        .timeline-list li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: var(--font-size-sm);
+        }
+
+        .timeline-list li i {
+            color: var(--icon-color);
+            width: 20px;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 140px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            cursor: pointer;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--glow);
+            transition: all 0.3s ease;
+            color: var(--bg-primary);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--bg-card);
+            padding: 2rem 5%;
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-logo img {
+            height: 35px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: var(--font-size-xs);
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .footer-social a {
+            width: 35px;
+            height: 35px;
+            background: var(--bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--icon-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .footer-social a i {
+            font-size: 1rem;
+        }
+
+        .footer-social a:hover {
+            background: var(--icon-hover);
+            color: white;
+            transform: translateY(-3px);
+            border-color: var(--icon-hover);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .copyright a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .roadmap-timeline::before {
+                left: 30px;
+            }
+
+            .roadmap-phase,
+            .roadmap-phase:nth-child(even) {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-left: 60px;
+            }
+
+            .phase-content {
+                width: 100%;
+            }
+
+            .phase-dot {
+                left: 30px;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: var(--font-size-3xl);
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 1.5rem 4%;
+            }
+
+            .phase-content {
+                padding: 1.5rem;
+            }
+
+            .phase-content h2 {
+                font-size: var(--font-size-lg);
+            }
+
+            .phase-stats {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Langue */
+        .lang-fr, .lang-en {
+            transition: opacity 0.3s;
+        }
+
+        [data-lang="fr"] .lang-en {
+            display: none;
+        }
+
+        [data-lang="en"] .lang-fr {
+            display: none;
+        }
+    </style>
+</head>
+<body data-theme="dark" data-lang="fr">
+    <!-- ===== THEME TOGGLE ===== -->
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+        <span id="themeIcon">👻</span>
+    </button>
+
+    <!-- ===== LANGUAGE TOGGLE ===== -->
+    <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">
+        <span id="langIcon">FR</span>
+    </button>
+
+    <!-- ===== BACK TO TOP ===== -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- ===== NAVIGATION ===== -->
+    <nav id="navbar">
+        <div class="logo">
+            <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span style="display:none;">👻</span>
+            <span>GHOSTBUSTER</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" id="nav-accueil">
+                <span class="lang-fr">Accueil</span>
+                <span class="lang-en">Home</span>
+            </a>
+            <a href="equipe.html" id="nav-equipe">
+                <span class="lang-fr">Équipe</span>
+                <span class="lang-en">Team</span>
+            </a>
+            <a href="robot.html" id="nav-robot">
+                <span class="lang-fr">Robot</span>
+                <span class="lang-en">Robot</span>
+            </a>
+            <a href="documentation.html" id="nav-documentation">
+                <span class="lang-fr">Documentation</span>
+                <span class="lang-en">Docs</span>
+            </a>
+            <a href="roadmap.html" class="active" id="nav-roadmap">
+                <span class="lang-fr">Roadmap</span>
+                <span class="lang-en">Roadmap</span>
+            </a>
+            <a href="contact.html" id="nav-contact">
+                <span class="lang-fr">Contact</span>
+                <span class="lang-en">Contact</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- ===== CONTENU PRINCIPAL ===== -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-road"></i>
+                <span class="lang-fr">Feuille de Route</span>
+                <span class="lang-en">Roadmap</span>
+            </h1>
+            <p>
+                <span class="lang-fr">Notre plan de développement pour les Olympiades de Robotique 2025</span>
+                <span class="lang-en">Our development plan for the 2025 Robotics Olympics</span>
+            </p>
+        </div>
+
+        <!-- Timeline principale (comme sur l'accueil) -->
+        <div class="roadmap-timeline">
+            <!-- Phase 1 -->
+            <div class="roadmap-phase" onclick="showPhaseDetails(1)">
+                <div class="phase-content">
+                    <span class="phase-badge">
+                        <span class="lang-fr">Phase 1 - Terminée</span>
+                        <span class="lang-en">Phase 1 - Completed</span>
+                    </span>
+                    <h2>
+                        <i class="fas fa-pencil-ruler"></i>
+                        <span class="lang-fr">Conception & Design</span>
+                        <span class="lang-en">Design & Planning</span>
+                    </h2>
+                    <p class="phase-desc">
+                        <span class="lang-fr">Étude du cahier des charges, premiers schémas électroniques, conception CAO du châssis et choix des composants.</span>
+                        <span class="lang-en">Specifications study, first electronic schematics, CAD chassis design and components selection.</span>
+                    </p>
+                    <div class="phase-progress">
+                        <div class="progress-label">
+                            <span>Progression</span>
+                            <span>100%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:100%"></div>
+                        </div>
+                    </div>
+                    <div class="phase-stats">
+                        <span><i class="fas fa-check-circle" style="color: var(--primary);"></i> 12/12 tâches</span>
+                        <span><i class="fas fa-users"></i> 7 membres</span>
+                    </div>
+                </div>
+                <div class="phase-dot"></div>
+            </div>
+
+            <!-- Phase 2 -->
+            <div class="roadmap-phase" onclick="showPhaseDetails(2)">
+                <div class="phase-content">
+                    <span class="phase-badge">
+                        <span class="lang-fr">Phase 2 - En cours</span>
+                        <span class="lang-en">Phase 2 - In progress</span>
+                    </span>
+                    <h2>
+                        <i class="fas fa-microchip"></i>
+                        <span class="lang-fr">Prototypage</span>
+                        <span class="lang-en">Prototyping</span>
+                    </h2>
+                    <p class="phase-desc">
+                        <span class="lang-fr">Développement des algorithmes de base, tests des capteurs, premiers circuits et assemblage du prototype.</span>
+                        <span class="lang-en">Basic algorithms development, sensors tests, first circuits and prototype assembly.</span>
+                    </p>
+                    <div class="phase-progress">
+                        <div class="progress-label">
+                            <span>Progression</span>
+                            <span>75%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:75%"></div>
+                        </div>
+                    </div>
+                    <div class="phase-stats">
+                        <span><i class="fas fa-spinner" style="color: var(--secondary);"></i> 9/12 tâches</span>
+                        <span><i class="fas fa-users"></i> 7 membres</span>
+                    </div>
+                </div>
+                <div class="phase-dot"></div>
+            </div>
+
+            <!-- Phase 3 -->
+            <div class="roadmap-phase" onclick="showPhaseDetails(3)">
+                <div class="phase-content">
+                    <span class="phase-badge">
+                        <span class="lang-fr">Phase 3 - À venir</span>
+                        <span class="lang-en">Phase 3 - Upcoming</span>
+                    </span>
+                    <h2>
+                        <i class="fas fa-flask"></i>
+                        <span class="lang-fr">Tests & Optimisation</span>
+                        <span class="lang-en">Testing & Optimization</span>
+                    </h2>
+                    <p class="phase-desc">
+                        <span class="lang-fr">Tests sur piste, calibration des capteurs, optimisation du PID, amélioration de la réactivité.</span>
+                        <span class="lang-en">Track tests, sensors calibration, PID optimization, responsiveness improvement.</span>
+                    </p>
+                    <div class="phase-progress">
+                        <div class="progress-label">
+                            <span>Progression</span>
+                            <span>0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="phase-stats">
+                        <span><i class="fas fa-clock"></i> 0/15 tâches</span>
+                        <span><i class="fas fa-users"></i> 7 membres</span>
+                    </div>
+                </div>
+                <div class="phase-dot"></div>
+            </div>
+
+            <!-- Phase 4 -->
+            <div class="roadmap-phase" onclick="showPhaseDetails(4)">
+                <div class="phase-content">
+                    <span class="phase-badge">
+                        <span class="lang-fr">Phase 4 - Finale</span>
+                        <span class="lang-en">Phase 4 - Final</span>
+                    </span>
+                    <h2>
+                        <i class="fas fa-trophy"></i>
+                        <span class="lang-fr">Compétition</span>
+                        <span class="lang-en">Competition</span>
+                    </h2>
+                    <p class="phase-desc">
+                        <span class="lang-fr">Présentation finale, démonstration en conditions réelles et passage devant le jury.</span>
+                        <span class="lang-en">Final presentation, real conditions demonstration and jury evaluation.</span>
+                    </p>
+                    <div class="phase-progress">
+                        <div class="progress-label">
+                            <span>Progression</span>
+                            <span>0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="phase-stats">
+                        <span><i class="fas fa-clock"></i> 0/8 tâches</span>
+                        <span><i class="fas fa-users"></i> 7 membres</span>
+                    </div>
+                </div>
+                <div class="phase-dot"></div>
+            </div>
+        </div>
+
+        <!-- ===== PHASE 1 DÉTAILS ===== -->
+        <div id="phase1-details" class="phase-details">
+            <div class="detail-header">
+                <i class="fas fa-pencil-ruler"></i>
+                <h3>Phase 1: Conception & Design</h3>
+            </div>
+            <div class="detail-grid">
+                <!-- Tâches réalisées -->
+                <div class="detail-card">
+                    <h4><i class="fas fa-tasks"></i> Tâches réalisées</h4>
+                    <ul class="task-list">
+                        <li class="completed"><i class="fas fa-check-circle"></i> Analyse du cahier des charges</li>
+                        <li class="completed"><i class="fas fa-check-circle"></i> Schémas électroniques préliminaires</li>
+                        <li class="completed"><i class="fas fa-check-circle"></i> Conception CAO du châssis</li>
+                        <li class="completed"><i class="fas fa-check-circle"></i> Sélection des composants</li>
+                        <li class="completed"><i class="fas fa-check-circle"></i> Design des supports capteurs</li>
+                        <li class="completed"><i class="fas fa-check-circle"></i> Simulation des circuits</li>
+                        <li class="completed"><i class="fas fa-check-circle"></i> Intégration des moteurs</li>
+                        <li class="completed"><i class="fas fa-check-circle"></i> Plans détaillés</li>
+                    </ul>
+                </div>
+                <!-- Équipe impliquée -->
+                <div class="detail-card">
+                    <h4><i class="fas fa-users"></i> Équipe impliquée</h4>
+                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                        <div class="member-contrib">
+                            <img src="images/mel.jpeg" alt="Melkisedeck" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <div class="member-contrib-info">
+                                <h5>Melkisedeck DJIMADJO</h5>
+                                <p>Chef de projet - Conception CAO</p>
+                            </div>
+                        </div>
+                        <div class="member-contrib">
+                            <img src="images/berenger.jpeg" alt="Bérenger" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <div class="member-contrib-info">
+                                <h5>Bérenger BOTON</h5>
+                                <p>Spécifications techniques</p>
+                            </div>
+                        </div>
+                        <div class="member-contrib">
+                            <img src="images/valerie.jpeg" alt="Valérie" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <div class="member-contrib-info">
+                                <h5>Valérie KLOKPE</h5>
+                                <p>Schémas électroniques</p>
+                            </div>
+                        </div>
+                        <div class="member-contrib">
+                            <img src="images/delphin.jpeg" alt="Delphin" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <div class="member-contrib-info">
+                                <h5>Delphin ZINZINSOUHOU</h5>
+                                <p>Assistance CAO</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Technologies utilisées -->
+                <div class="detail-card">
+                    <h4><i class="fas fa-code"></i> Technologies utilisées</h4>
+                    <div class="tech-tags">
+                        <span class="tech-tag">SolidWorks</span>
+                        <span class="tech-tag">KiCad</span>
+                        <span class="tech-tag">Fusion 360</span>
+                        <span class="tech-tag">LTspice</span>
+                        <span class="tech-tag">Arduino IDE</span>
+                        <span class="tech-tag">AutoCAD</span>
+                    </div>
+                </div>
+                <!-- Chronologie -->
+                <div class="detail-card">
+                    <h4><i class="fas fa-calendar-alt"></i> Chronologie</h4>
+                    <ul class="timeline-list">
+                        <li><i class="fas fa-calendar-week"></i> Semaine 1-2: Analyse du cahier des charges</li>
+                        <li><i class="fas fa-calendar-week"></i> Semaine 3-4: Conception électronique</li>
+                        <li><i class="fas fa-calendar-week"></i> Semaine 5-6: Conception mécanique</li>
+                        <li><i class="fas fa-calendar-week"></i> Semaine 7-8: Validation et finalisation</li>
+                        <li><i class="fas fa-calendar-check"></i> Date de fin: 15 Mars 2025</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PHASE 2 DÉTAILS ===== -->
+        <div id="phase2-details" class="phase-details">
+            <div class="detail-header">
+                <i class="fas fa-microchip"></i>
+                <h3>Phase 2: Prototypage</h3>
+            </div>
+            <div class="detail-grid">
+                <!-- Tâches en cours -->
+                <div class="detail-card">
+                    <h4><i class="fas fa-tasks"></i> Tâches en cours</h4>
+                    <ul class="task-list">
+                        <li class="completed"><i class="fas fa-check-circle"></i> Installation IDE et configuration</li>
+                        <li class="completed"><i class="fas fa-check-circle"></i> Tests capteurs IR</li>
+                        <li class="in-progress"><i class="fas fa-spinner"></i> Développement PID de base</li>
+                        <li class="in-progress"><i class="fas fa-spinner"></i> Montage sur breadboard</li>
+                        <li><i class="fas fa-circle"></i> Tests moteurs avec pont en H</li>
+                        <li><i class="fas fa-circle"></i> Premier prototype assemblé</li>
+                        <li><i class="fas fa-circle"></i> Tests d'alimentation</li>
+                    </ul>
+                </div>
+                <!-- Équipe impliquée -->
+                <div class="detail-card">
+                    <h4><i class="fas fa-users"></i> Équipe impliquée</h4>
+                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                        <div class="member-contrib">
+                            <img src="images/berenger.jpeg" alt="Bérenger" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <div class="member-contrib-info">
+                                <h5>Bérenger BOTON</h5>
+                                <p>Développement algorithmes</p>
+                            </div>
+                        </div>
+                        <div class="member-contrib">
+                            <img src="images/steav.jpeg" alt="Steav" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <div class="member-contrib-info">
+                                <h5>Steav BINOUYO</h5>
+                                <p>Tests et calibration</p>
+                            </div>
+                        </div>
+                        <div class="member-contrib">
+                            <img src="images/valerie.jpeg" alt="Valérie" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <div class="member-contrib-info">
+                                <h5>Valérie KLOKPE</h5>
+                                <p>Prototypage électronique</p>
+                            </div>
+                        </div>
+                        <div class="member-contrib">
+                            <img src="images/zaenab.jpeg" alt="Zaénab" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <div class="member-contrib-info">
+                                <h5>Zaénab OKE</h5>
+                                <p>Câblage et tests</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Technologies utilisées -->
+                <div class="detail-card">
+                    <h4><i class="fas fa-code"></i> Technologies utilisées</h4>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Arduino</span>
+                        <span class="tech-tag">ESP32</span>
+                        <span class="tech-tag">C++</span>
+                        <span class="tech-tag">PlatformIO</span>
+                        <span class="tech-tag">VS Code</span>
+                        <span class="tech-tag">Git</span>
+                    </div>
+                </div>
+                <!-- Chronologie -->
+                <div class="detail-card">
+                    <h4><i class="fas fa-calendar-alt"></i> Chronologie</h4>
+                    <ul class="timeline-list">
+                        <li><i class="fas fa-calendar-week"></i> Semaine 9-10: Configuration et tests capteurs</li>
+                        <li><i class="fas fa-calendar-week"></i> Semaine 11-12: Développement PID</li>
+                        <li><i class="fas fa-calendar-week"></i> Semaine 13-14: Prototypage breadboard</li>
+                        <li><i class="fas fa-calendar-week"></i> Semaine 15-16: Tests moteurs et assemblage</li>
+                        <li><i class="fas fa-calendar-check"></i> Fin prévue: 30 Mai 2025</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PHASE 3 DÉTAILS ===== -->
+        <div id="phase3-details" class="phase-details">
+            <div class="detail-header">
+                <i class="fas fa-flask"></i>
+                <h3>Phase 3: Tests & Optimisation</h3>
+            </div>
+            <div class="detail-grid">
+                <!-- Tâches à venir -->
+                <div class="detail-card">
+                    <h4><i class="fas fa-tasks"></i> Tâches à venir</h4>
+                    <ul class="task-list">
+                        <li><i class="fas fa-circle"></i> Tests sur piste d'essai</li>
+                        <li><i class="fas fa-circle"></i> Calibration des capteurs</li>
+                        <li><i class="fas fa-circle"></i> Optimisation PID</li>
+                        <li><i class="fas fa-circle"></i> Tests d'obstacles</li>
+                        <li><i class="fas fa-circle"></i> Optimisation consommation</li>
+                        <li><i class="fas fa-circle"></i> Tests de vitesse</li>
+                        <li><i class="fas fa-circle"></i> Validation des performances</li>
+                    </ul>
+                </div>
+                <!-- Équipe prévue -->
+                <div class="detail-card">
+                    <h4><i class="fas fa-users"></i> Équipe prévue</h4>
+                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                        <div class="member-contrib">
+                            <img src="images/berenger.jpeg" alt="Bérenger" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <div class="member-contrib-info">
+                                <h5>Bérenger BOTON</h5>
+                                <p>Optimisation algorithmes</p>
+                            </div>
+                        </div>
+                        <div class="member-contrib">
+                            <img src="images/steav.jpeg" alt="Steav" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <div class="member-contrib-info">
+                                <h5>Steav BINOUYO</h5>
+                                <p>Tests sur piste</p>
+                            </div>
+                        </div>
+                        <div class="member-contrib">
+                            <img src="images/valerie.jpeg" alt="Valérie" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <div class="member-contrib-info">
+                                <h5>Valérie KLOKPE</h5>
+                                <p>Tests électroniques</p>
+                            </div>
+                        </div>
+                        <div class="member-contrib">
+                            <img src="images/mel.jpeg" alt="Melkisedeck" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <div class="member-contrib-info">
+                                <h5>Melkisedeck DJIMADJO</h5>
+                                <p>Coordination</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Technologies prévues -->
+                <div class="detail-card">
+                    <h4><i class="fas fa-code"></i> Technologies prévues</h4>
+                    <div class="tech-tags">
+                        <span class="tech-tag">MATLAB</span>
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Oscilloscope</span>
+                        <span class="tech-tag">Multimètre</span>
+                        <span class="tech-tag">Analyseur logique</span>
+                    </div>
+                </div>
+                <!-- Chronologie prévue -->
+                <div class="detail-card">
+                    <h4><i class="fas fa-calendar-alt"></i> Chronologie prévue</h4>
+                    <ul class="timeline-list">
+                        <li><i class="fas fa-calendar-week"></i> Semaine 17-18: Tests initiaux</li>
+                        <li><i class="fas fa-calendar-week"></i> Semaine 19-20: Calibration et optimisation</li>
+                        <li><i class="fas fa-calendar-week"></i> Semaine 21-22: Tests avancés</li>
+                        <li><i class="fas fa-calendar-week"></i> Semaine 23-24: Validation finale</li>
+                        <li><i class="fas fa-calendar-check"></i> Période: Juin - Juillet 2025</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PHASE 4 DÉTAILS ===== -->
+        <div id="phase4-details" class="phase-details">
+            <div class="detail-header">
+                <i class="fas fa-trophy"></i>
+                <h3>Phase 4: Compétition</h3>
+            </div>
+            <div class="detail-grid">
+                <!-- Préparation finale -->
+                <div class="detail-card">
+                    <h4><i class="fas fa-tasks"></i> Préparation finale</h4>
+                    <ul class="task-list">
+                        <li><i class="fas fa-circle"></i> Derniers ajustements du robot</li>
+                        <li><i class="fas fa-circle"></i> Préparation de la présentation orale</li>
+                        <li><i class="fas fa-circle"></i> Répétition de la démonstration</li>
+                        <li><i class="fas fa-circle"></i> Vérification du matériel</li>
+                        <li><i class="fas fa-circle"></i> Stratégie de compétition</li>
+                        <li><i class="fas fa-circle"></i> Passage devant le jury</li>
+                        <li><i class="fas fa-circle"></i> Remise des prix</li>
+                    </ul>
+                </div>
+                <!-- Équipe impliquée -->
+                <div class="detail-card">
+                    <h4><i class="fas fa-users"></i> Équipe impliquée</h4>
+                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                        <div class="member-contrib">
+                            <img src="images/mel.jpeg" alt="Melkisedeck" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <div class="member-contrib-info">
+                                <h5>Melkisedeck DJIMADJO</h5>
+                                <p>Chef d'équipe - Présentation</p>
+                            </div>
+                        </div>
+                        <div class="member-contrib">
+                            <img src="images/berenger.jpeg" alt="Bérenger" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <div class="member-contrib-info">
+                                <h5>Bérenger BOTON</h5>
+                                <p>Démonstration technique</p>
+                            </div>
+                        </div>
+                        <div class="member-contrib">
+                            <img src="images/valerie.jpeg" alt="Valérie" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <div class="member-contrib-info">
+                                <h5>Valérie KLOKPE</h5>
+                                <p>Support technique</p>
+                            </div>
+                        </div>
+                        <div class="member-contrib">
+                            <img src="images/lucrece.jpeg" alt="Lucrèce" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <div class="member-contrib-info">
+                                <h5>SACCA Lucrèce</h5>
+                                <p>Documentation</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Technologies -->
+                <div class="detail-card">
+                    <h4><i class="fas fa-code"></i> Éléments clés</h4>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Robot final</span>
+                        <span class="tech-tag">Présentation</span>
+                        <span class="tech-tag">Démonstration</span>
+                        <span class="tech-tag">Pitch</span>
+                        <span class="tech-tag">Affiche</span>
+                    </div>
+                </div>
+                <!-- Chronologie -->
+                <div class="detail-card">
+                    <h4><i class="fas fa-calendar-alt"></i> Chronologie</h4>
+                    <ul class="timeline-list">
+                        <li><i class="fas fa-calendar-week"></i> Semaine 25: Préparatifs finaux</li>
+                        <li><i class="fas fa-calendar-week"></i> Semaine 26: Compétition - Jour J</li>
+                        <li><i class="fas fa-calendar-check"></i> Date de la compétition: Août 2025</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span style="display:none;">👻</span>
+                <span>GHOSTBUSTER</span>
+            </div>
+            <div class="footer-links">
+                <a href="index.html">
+                    <span class="lang-fr">Accueil</span>
+                    <span class="lang-en">Home</span>
+                </a>
+                <a href="equipe.html">
+                    <span class="lang-fr">Équipe</span>
+                    <span class="lang-en">Team</span>
+                </a>
+                <a href="robot.html">
+                    <span class="lang-fr">Robot</span>
+                    <span class="lang-en">Robot</span>
+                </a>
+                <a href="documentation.html">
+                    <span class="lang-fr">Documentation</span>
+                    <span class="lang-en">Docs</span>
+                </a>
+                <a href="roadmap.html">
+                    <span class="lang-fr">Roadmap</span>
+                    <span class="lang-en">Roadmap</span>
+                </a>
+                <a href="contact.html">
+                    <span class="lang-fr">Contact</span>
+                    <span class="lang-en">Contact</span>
+                </a>
+            </div>
+            <div class="footer-social">
+                <a href="#"><i class="fas fa-envelope"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>© 2025 GHOSTBUSTER - Olympiades de Robotique UCAO-Bénin</p>
+            <p>
+                <span class="lang-fr">Template personnalisé par le chef de l'équipe GhostBuster</span>
+                <span class="lang-en">Custom template by the chief of GhostBuster team</span>
+                | <a href="https://github.com/Yoane2194/Olympiades-de-Robotique-UCAO-Benin">GitHub</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // ===== THEME TOGGLE =====
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('themeIcon');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                icon.textContent = '👻';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                icon.textContent = '👻';
+            }
+        }
+
+        // ===== LANGUAGE TOGGLE =====
+        function toggleLanguage() {
+            const body = document.body;
+            const icon = document.getElementById('langIcon');
+            if (body.getAttribute('data-lang') === 'fr') {
+                body.setAttribute('data-lang', 'en');
+                icon.textContent = 'EN';
+            } else {
+                body.setAttribute('data-lang', 'fr');
+                icon.textContent = 'FR';
+            }
+        }
+
+        // ===== AFFICHAGE DES DÉTAILS DE PHASE =====
+        function showPhaseDetails(phaseNumber) {
+            // Cacher tous les détails
+            for (let i = 1; i <= 4; i++) {
+                const details = document.getElementById(`phase${i}-details`);
+                if (details) {
+                    details.classList.remove('active');
+                }
+            }
+            
+            // Afficher les détails de la phase sélectionnée
+            const selectedDetails = document.getElementById(`phase${phaseNumber}-details`);
+            if (selectedDetails) {
+                selectedDetails.classList.add('active');
+                selectedDetails.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // ===== BACK TO TOP =====
+        const backToTop = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===== NAVBAR SCROLL =====
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = document.body.getAttribute('data-theme') === 'dark' 
+                    ? 'rgba(10, 12, 16, 0.98)' 
+                    : 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            } else {
+                navbar.style.background = document.body.getAttribute('data-theme') === 'dark' 
+                    ? 'rgba(10, 12, 16, 0.98)' 
+                    : 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+
+        // Vérifier s'il y a une phase dans l'URL (pour lien direct)
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const phase = urlParams.get('phase');
+            if (phase) {
+                showPhaseDetails(parseInt(phase));
+            }
+
+            // Gestion des images manquantes
+            document.querySelectorAll('img').forEach(img => {
+                img.onerror = function() {
+                    this.src = 'https://via.placeholder.com/35x35?text=Logo';
+                };
+            });
+        });
+    </script>
+</body>
+</html>

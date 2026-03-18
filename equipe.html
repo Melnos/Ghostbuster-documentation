@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>GhostBuster - Notre Équipe</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --secondary: #f1c40f;
+            --bg-primary: #0a0c10;
+            --bg-secondary: #14181c;
+            --bg-card: #1a1f24;
+            --text-primary: #ecf0f1;
+            --text-secondary: #95a5a6;
+            --border-color: rgba(46, 204, 113, 0.15);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --glow: 0 0 20px rgba(46, 204, 113, 0.2);
+            --icon-color: #4ac0e4;
+            --icon-hover: #27ae60;
+            
+            /* Tailles de police */
+            --font-size-xs: 0.75rem;
+            --font-size-sm: 0.875rem;
+            --font-size-base: 1rem;
+            --font-size-lg: 1.125rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+            --font-size-3xl: 1.875rem;
+            --font-size-4xl: 2.25rem;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f5f7fa;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #34495e;
+            --border-color: rgba(46, 204, 113, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            padding-top: 70px;
+            font-size: var(--font-size-base);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-25px); }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { filter: drop-shadow(0 0 25px var(--primary)); }
+            50% { filter: drop-shadow(0 0 50px var(--primary)); }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .animate-glow {
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        /* ===== THEME TOGGLE ===== */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: var(--glow);
+            transition: all 0.3s ease;
+            color: var(--bg-primary);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+        }
+
+        /* ===== LANGUAGE TOGGLE ===== */
+        .lang-toggle {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 600;
+            box-shadow: var(--glow);
+            transition: all 0.3s ease;
+            color: var(--bg-primary);
+        }
+
+        .lang-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* ===== NAVIGATION COMPLÈTE ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 0.8rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 12, 16, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] nav {
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo img {
+            height: 35px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            font-size: var(--font-size-xs);
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.3rem 0;
+            white-space: nowrap;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        /* Menu mobile */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 60px;
+            }
+            nav {
+                padding: 0.6rem 3%;
+            }
+            .nav-links {
+                gap: 0.5rem;
+                font-size: 0.65rem;
+            }
+            .logo {
+                font-size: 1rem;
+            }
+            .logo img {
+                height: 28px;
+            }
+        }
+
+        /* ===== CONTENU PRINCIPAL ===== */
+        .main-content {
+            flex: 1;
+            padding: 2rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* En-tête de la page */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            font-size: var(--font-size-sm);
+        }
+
+        /* Liste des membres */
+        .membres-liste {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Carte membre */
+        .membre-item {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            background: var(--bg-card);
+            padding: 1rem 1.2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .membre-item:hover {
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+            transform: translateX(5px);
+        }
+
+        /* Petit cercle pour la photo */
+        .membre-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            box-shadow: var(--glow);
+            flex-shrink: 0;
+        }
+
+        /* Conteneur des infos */
+        .membre-infos {
+            flex: 1;
+        }
+
+        .membre-infos h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .chef-badge {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--bg-primary);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 50px;
+        }
+
+        .membre-role {
+            font-size: 0.85rem;
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .membre-niveau {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .membre-niveau i {
+            color: var(--icon-color);
+            font-size: 0.85rem;
+        }
+
+        .membre-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .membre-contacts {
+            display: flex;
+            gap: 0.6rem;
+        }
+
+        .membre-contacts a {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--icon-color);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .membre-contacts a:hover {
+            background: var(--icon-hover);
+            color: white;
+            transform: scale(1.1);
+            border-color: var(--icon-hover);
+        }
+
+        /* ===== FOOTER COMPLET ===== */
+        footer {
+            background: var(--bg-card);
+            padding: 2rem 5%;
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-logo img {
+            height: 35px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: var(--font-size-xs);
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .footer-social a {
+            width: 35px;
+            height: 35px;
+            background: var(--bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--icon-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .footer-social a i {
+            font-size: 1rem;
+        }
+
+        .footer-social a:hover {
+            background: var(--icon-hover);
+            color: white;
+            transform: translateY(-3px);
+            border-color: var(--icon-hover);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .copyright a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1.5rem 4%;
+            }
+
+            .membre-item {
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .membre-photo {
+                width: 70px;
+                height: 70px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .membre-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .membre-infos h3 {
+                justify-content: center;
+            }
+
+            .membre-niveau {
+                justify-content: center;
+            }
+
+            .membre-contacts {
+                justify-content: center;
+            }
+
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Langue */
+        .lang-fr, .lang-en {
+            transition: opacity 0.3s;
+        }
+
+        [data-lang="fr"] .lang-en {
+            display: none;
+        }
+
+        [data-lang="en"] .lang-fr {
+            display: none;
+        }
+    </style>
+</head>
+<body data-theme="dark" data-lang="fr">
+    <!-- ===== THEME TOGGLE ===== -->
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+        <span id="themeIcon">👻</span>
+    </button>
+
+    <!-- ===== LANGUAGE TOGGLE ===== -->
+    <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">
+        <span id="langIcon">FR</span>
+    </button>
+
+    <!-- ===== NAVIGATION COMPLÈTE ===== -->
+    <nav id="navbar">
+        <div class="logo">
+            <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span style="display:none;">👻</span>
+            <span>GHOSTBUSTER</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" id="nav-accueil">
+                <span class="lang-fr">Accueil</span>
+                <span class="lang-en">Home</span>
+            </a>
+            <a href="equipe.html" class="active" id="nav-equipe">
+                <span class="lang-fr">Équipe</span>
+                <span class="lang-en">Team</span>
+            </a>
+            <a href="robot.html" id="nav-robot">
+                <span class="lang-fr">Robot</span>
+                <span class="lang-en">Robot</span>
+            </a>
+            <a href="documentation.html" id="nav-documentation">
+                <span class="lang-fr">Documentation</span>
+                <span class="lang-en">Docs</span>
+            </a>
+            <a href="roadmap.html" id="nav-roadmap">
+                <span class="lang-fr">Roadmap</span>
+                <span class="lang-en">Roadmap</span>
+            </a>
+            <a href="index.html#contact" id="nav-contact">
+                <span class="lang-fr">Contact</span>
+                <span class="lang-en">Contact</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- ===== CONTENU PRINCIPAL ===== -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-users"></i> 
+                <span class="lang-fr">Notre Équipe</span>
+                <span class="lang-en">Our Team</span>
+            </h1>
+            <p>
+                <span class="lang-fr">7 membres passionnés - 3 pôles techniques</span>
+                <span class="lang-en">7 passionate members - 3 technical poles</span>
+            </p>
+        </div>
+
+        <div class="membres-liste">
+            <!-- Melkisedeck - Chef d'équipe -->
+            <div class="membre-item">
+                <img src="images/mel.jpeg" alt="Melkisedeck DJIMADJO" class="membre-photo" onerror="this.src='https://via.placeholder.com/80x80?text=Photo'">
+                <div class="membre-infos">
+                    <h3>Melkisedeck DJIMADJO <span class="chef-badge">Chef</span></h3>
+                    <div class="membre-role">Pôle Mécanique</div>
+                    <div class="membre-niveau">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Informatique Industrielle - Niveau 2</span>
+                    </div>
+                    <p class="membre-desc">
+                        <span class="lang-fr">Responsable de la conception mécanique et chef d'équipe.</span>
+                        <span class="lang-en">Head of mechanical design and team leader.</span>
+                    </p>
+                    <div class="membre-contacts">
+                        <a href="mailto:djimadjomelkisedeck@gmail.com"><i class="fas fa-envelope"></i></a>
+                        <a href="https://wa.me/22967836762"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bérenger - Chef IT -->
+            <div class="membre-item">
+                <img src="images/berenger.jpeg" alt="Bérenger BOTON" class="membre-photo" onerror="this.src='https://via.placeholder.com/80x80?text=Photo'">
+                <div class="membre-infos">
+                    <h3>Bérenger BOTON</h3>
+                    <div class="membre-role">Pôle Informatique</div>
+                    <div class="membre-niveau">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Informatique Industrielle - Niveau 2</span>
+                    </div>
+                    <p class="membre-desc">
+                        <span class="lang-fr">Développement des algorithmes de suivi de ligne et PID.</span>
+                        <span class="lang-en">Development of line following and PID algorithms.</span>
+                    </p>
+                    <div class="membre-contacts">
+                        <a href="mailto:berenger.b@ghostbuster.bj"><i class="fas fa-envelope"></i></a>
+                        <a href="https://wa.me/22968744354"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Valérie - Chef Électronique -->
+            <div class="membre-item">
+                <img src="images/valerie.jpeg" alt="Valérie KLOKPE" class="membre-photo" onerror="this.src='https://via.placeholder.com/80x80?text=Photo'">
+                <div class="membre-infos">
+                    <h3>Valérie KLOKPE</h3>
+                    <div class="membre-role">Pôle Électronique</div>
+                    <div class="membre-niveau">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Électrotechnique - Niveau 2</span>
+                    </div>
+                    <p class="membre-desc">
+                        <span class="lang-fr">Conception des circuits et du PCB.</span>
+                        <span class="lang-en">Circuit and PCB design.</span>
+                    </p>
+                    <div class="membre-contacts">
+                        <a href="mailto:klokpevalerie@gmail.com"><i class="fas fa-envelope"></i></a>
+                        <a href="https://wa.me/22944998978"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Steav - Membre IT -->
+            <div class="membre-item">
+                <img src="images/steav.jpeg" alt="Steav BINOUYO" class="membre-photo" onerror="this.src='https://via.placeholder.com/80x80?text=Photo'">
+                <div class="membre-infos">
+                    <h3>Steav BINOUYO</h3>
+                    <div class="membre-role">Pôle Informatique</div>
+                    <div class="membre-niveau">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Électrotechnique - Niveau 2</span>
+                    </div>
+                    <p class="membre-desc">
+                        <span class="lang-fr">Tests et calibration des algorithmes.</span>
+                        <span class="lang-en">Algorithm testing and calibration.</span>
+                    </p>
+                    <div class="membre-contacts">
+                        <a href="mailto:binouyotobi@gmail.com"><i class="fas fa-envelope"></i></a>
+                        <a href="https://wa.me/22998733638"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zaénab - Membre Électronique -->
+            <div class="membre-item">
+                <img src="images/zaenab.jpeg" alt="Zaénab OKE" class="membre-photo" onerror="this.src='https://via.placeholder.com/80x80?text=Photo'">
+                <div class="membre-infos">
+                    <h3>Zaénab OKE</h3>
+                    <div class="membre-role">Pôle Électronique</div>
+                    <div class="membre-niveau">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Électrotechnique - Niveau 2</span>
+                    </div>
+                    <p class="membre-desc">
+                        <span class="lang-fr">Câblage et tests électroniques.</span>
+                        <span class="lang-en">Wiring and electronic testing.</span>
+                    </p>
+                    <div class="membre-contacts">
+                        <a href="mailto:zaenaboke05@gmail.com"><i class="fas fa-envelope"></i></a>
+                        <a href="https://wa.me/22999393164"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delphin - Membre Mécanique -->
+            <div class="membre-item">
+                <img src="images/delphin.jpeg" alt="Delphin ZINZINSOUHOU" class="membre-photo" onerror="this.src='https://via.placeholder.com/80x80?text=Photo'">
+                <div class="membre-infos">
+                    <h3>Delphin ZINZINSOUHOU</h3>
+                    <div class="membre-role">Pôle Mécanique</div>
+                    <div class="membre-niveau">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Informatique Industrielle - Niveau 2</span>
+                    </div>
+                    <p class="membre-desc">
+                        <span class="lang-fr">Assemblage et impression 3D.</span>
+                        <span class="lang-en">Assembly and 3D printing.</span>
+                    </p>
+                    <div class="membre-contacts">
+                        <a href="mailto:delphin.z@ghostbuster.bj"><i class="fas fa-envelope"></i></a>
+                        <a href="https://wa.me/22952696537"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lucrèce - Membre Mécanique -->
+            <div class="membre-item">
+                <img src="images/lucrece.jpeg" alt="SACCA Lucrèce" class="membre-photo" onerror="this.src='https://via.placeholder.com/80x80?text=Photo'">
+                <div class="membre-infos">
+                    <h3>SACCA Lucrèce</h3>
+                    <div class="membre-role">Pôle Mécanique</div>
+                    <div class="membre-niveau">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Informatique Industrielle - Niveau 2</span>
+                    </div>
+                    <p class="membre-desc">
+                        <span class="lang-fr">Conception des supports et documentation.</span>
+                        <span class="lang-en">Support design and documentation.</span>
+                    </p>
+                    <div class="membre-contacts">
+                        <a href="mailto:lucrecesacca@gmail.com"><i class="fas fa-envelope"></i></a>
+                        <a href="https://wa.me/22944912961"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER COMPLET ===== -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span style="display:none;">👻</span>
+                <span>GHOSTBUSTER</span>
+            </div>
+            <div class="footer-links">
+                <a href="index.html">
+                    <span class="lang-fr">Accueil</span>
+                    <span class="lang-en">Home</span>
+                </a>
+                <a href="equipe.html">
+                    <span class="lang-fr">Équipe</span>
+                    <span class="lang-en">Team</span>
+                </a>
+                <a href="robot.html">
+                    <span class="lang-fr">Robot</span>
+                    <span class="lang-en">Robot</span>
+                </a>
+                <a href="documentation.html">
+                    <span class="lang-fr">Documentation</span>
+                    <span class="lang-en">Docs</span>
+                </a>
+                <a href="roadmap.html">
+                    <span class="lang-fr">Roadmap</span>
+                    <span class="lang-en">Roadmap</span>
+                </a>
+                <a href="index.html#contact">
+                    <span class="lang-fr">Contact</span>
+                    <span class="lang-en">Contact</span>
+                </a>
+            </div>
+            <div class="footer-social">
+                <a href="#"><i class="fas fa-envelope"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>© 2025 GHOSTBUSTER - Olympiades de Robotique UCAO-Bénin</p>
+            <p>
+                <span class="lang-fr">Template personnalisé par le chef de l'équipe GhostBuster</span>
+                <span class="lang-en">Custom template by the chief of GhostBuster team</span>
+                | <a href="https://github.com/Yoane2194/Olympiades-de-Robotique-UCAO-Benin">GitHub</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('themeIcon');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                icon.textContent = '👻';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                icon.textContent = '👻';
+            }
+        }
+
+        function toggleLanguage() {
+            const body = document.body;
+            const icon = document.getElementById('langIcon');
+            if (body.getAttribute('data-lang') === 'fr') {
+                body.setAttribute('data-lang', 'en');
+                icon.textContent = 'EN';
+            } else {
+                body.setAttribute('data-lang', 'fr');
+                icon.textContent = 'FR';
+            }
+        }
+
+        // ===== NAVBAR SCROLL =====
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = document.body.getAttribute('data-theme') === 'dark' 
+                    ? 'rgba(10, 12, 16, 0.98)' 
+                    : 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            } else {
+                navbar.style.background = document.body.getAttribute('data-theme') === 'dark' 
+                    ? 'rgba(10, 12, 16, 0.98)' 
+                    : 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+
+        // Gestion des images manquantes
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('img').forEach(img => {
+                img.onerror = function() {
+                    this.src = 'https://via.placeholder.com/80x80?text=Photo';
+                };
+            });
+        });
+    </script>
+</body>
+</html>

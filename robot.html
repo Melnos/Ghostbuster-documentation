@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>GhostBuster - Notre Robot</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Three.js pour le modèle 3D -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+            }
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --secondary: #f1c40f;
+            --accent: #e74c3c;
+            --bg-primary: #0a0c10;
+            --bg-secondary: #14181c;
+            --bg-card: #1a1f24;
+            --text-primary: #ecf0f1;
+            --text-secondary: #95a5a6;
+            --border-color: rgba(46, 204, 113, 0.15);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --glow: 0 0 20px rgba(46, 204, 113, 0.2);
+            --icon-color: #4ac0e4;
+            --icon-hover: #27ae60;
+            --mercedes-silver: #c0c0c0;
+            --mercedes-black: #1a1a1a;
+            
+            --font-size-xs: 0.75rem;
+            --font-size-sm: 0.875rem;
+            --font-size-base: 1rem;
+            --font-size-lg: 1.125rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+            --font-size-3xl: 1.875rem;
+            --font-size-4xl: 2.25rem;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f5f7fa;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #34495e;
+            --border-color: rgba(46, 204, 113, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            padding-top: 70px;
+            font-size: var(--font-size-base);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== THEME TOGGLE ===== */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: var(--glow);
+            transition: all 0.3s ease;
+            color: var(--bg-primary);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+        }
+
+        /* ===== LANGUAGE TOGGLE ===== */
+        .lang-toggle {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 600;
+            box-shadow: var(--glow);
+            transition: all 0.3s ease;
+            color: var(--bg-primary);
+        }
+
+        .lang-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* ===== NAVIGATION ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 0.8rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 12, 16, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] nav {
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo img {
+            height: 35px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            font-size: var(--font-size-xs);
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.3rem 0;
+            white-space: nowrap;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        /* Menu mobile */
+        @media (max-width: 768px) {
+            nav {
+                padding: 0.6rem 3%;
+            }
+            .nav-links {
+                gap: 0.5rem;
+                font-size: 0.65rem;
+            }
+            .logo {
+                font-size: 1rem;
+            }
+            .logo img {
+                height: 28px;
+            }
+        }
+
+        /* ===== CONTENU PRINCIPAL ===== */
+        .main-content {
+            flex: 1;
+            padding: 2rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* En-tête */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: var(--font-size-4xl);
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
+        }
+
+        /* ===== SECTION MODÈLE 3D ===== */
+        .model-section {
+            margin-bottom: 4rem;
+        }
+
+        .model-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary));
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .model-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-card);
+            padding: 0.8rem 1.2rem;
+            border-radius: 50px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            gap: 1rem;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:hover {
+            background: var(--primary);
+            color: var(--bg-primary);
+        }
+
+        .model-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--bg-card);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        .model-badge i {
+            margin-right: 0.5rem;
+            color: var(--icon-color);
+        }
+
+        /* ===== INFORMATIONS PRINCIPALES ===== */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .info-icon {
+            font-size: 2.5rem;
+            color: var(--icon-color);
+            margin-bottom: 1rem;
+        }
+
+        .info-card h3 {
+            font-size: var(--font-size-base);
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-value {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-size: var(--font-size-xs);
+        }
+
+        /* ===== GRILLE TECHNOLOGIES ===== */
+        .tech-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: var(--font-size-2xl);
+            color: var(--primary);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .tech-item {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .tech-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .tech-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+        }
+
+        .tech-item h4 {
+            font-size: var(--font-size-base);
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-item p {
+            color: var(--text-secondary);
+            font-size: var(--font-size-xs);
+        }
+
+        /* ===== SPÉCIFICATIONS DÉTAILLÉES ===== */
+        .specs-section {
+            margin-bottom: 3rem;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .specs-category {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .specs-category h3 {
+            font-size: var(--font-size-xl);
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .specs-list {
+            list-style: none;
+        }
+
+        .specs-list li {
+            padding: 1rem 0;
+            border-bottom: 1px dashed var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .specs-list li:last-child {
+            border-bottom: none;
+        }
+
+        .spec-label {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .spec-value {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+        }
+
+        .spec-value i {
+            color: var(--primary);
+            margin-left: 0.5rem;
+        }
+
+        /* ===== GALERIE D'IMAGES ===== */
+        .gallery-section {
+            margin-bottom: 3rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-caption {
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .gallery-caption h4 {
+            font-size: var(--font-size-sm);
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .gallery-caption p {
+            color: var(--text-secondary);
+            font-size: var(--font-size-xs);
+        }
+
+        /* ===== PERFORMANCES ===== */
+        .performance-section {
+            margin-bottom: 3rem;
+        }
+
+        .performance-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .performance-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .performance-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .performance-header i {
+            font-size: 2rem;
+            color: var(--icon-color);
+        }
+
+        .performance-header h3 {
+            font-size: var(--font-size-lg);
+            color: var(--primary);
+        }
+
+        .performance-bar {
+            margin-bottom: 1rem;
+        }
+
+        .perf-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.3rem;
+            color: var(--text-secondary);
+            font-size: var(--font-size-xs);
+        }
+
+        .perf-bar {
+            width: 100%;
+            height: 10px;
+            background: var(--bg-secondary);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .perf-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 5px;
+        }
+
+        /* ===== COMPOSANTS ===== */
+        .components-section {
+            margin-bottom: 3rem;
+        }
+
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .component-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s;
+        }
+
+        .component-card:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .component-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--icon-color);
+        }
+
+        .component-info h4 {
+            font-size: var(--font-size-sm);
+            color: var(--primary);
+            margin-bottom: 0.2rem;
+        }
+
+        .component-info p {
+            color: var(--text-secondary);
+            font-size: var(--font-size-xs);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--bg-card);
+            padding: 2rem 5%;
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-logo img {
+            height: 35px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: var(--font-size-xs);
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .footer-social a {
+            width: 35px;
+            height: 35px;
+            background: var(--bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--icon-color);
+            text-decoration: none;
+            transition: all 0.3s;
+            border: 1px solid var(--border-color);
+        }
+
+        .footer-social a:hover {
+            background: var(--icon-hover);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .tech-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .components-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .model-container {
+                height: 400px;
+            }
+            .specs-grid {
+                grid-template-columns: 1fr;
+            }
+            .performance-grid {
+                grid-template-columns: 1fr;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            .components-grid {
+                grid-template-columns: 1fr;
+            }
+            .page-header h1 {
+                font-size: var(--font-size-3xl);
+            }
+        }
+
+        /* Langue */
+        .lang-fr, .lang-en {
+            transition: opacity 0.3s;
+        }
+
+        [data-lang="fr"] .lang-en {
+            display: none;
+        }
+
+        [data-lang="en"] .lang-fr {
+            display: none;
+        }
+    </style>
+</head>
+<body data-theme="dark" data-lang="fr">
+    <!-- ===== THEME TOGGLE ===== -->
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+        <span id="themeIcon">👻</span>
+    </button>
+
+    <!-- ===== LANGUAGE TOGGLE ===== -->
+    <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">
+        <span id="langIcon">FR</span>
+    </button>
+
+    <!-- ===== NAVIGATION ===== -->
+    <nav id="navbar">
+        <div class="logo">
+            <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span style="display:none;">👻</span>
+            <span>GHOSTBUSTER</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" id="nav-accueil">
+                <span class="lang-fr">Accueil</span>
+                <span class="lang-en">Home</span>
+            </a>
+            <a href="equipe.html" id="nav-equipe">
+                <span class="lang-fr">Équipe</span>
+                <span class="lang-en">Team</span>
+            </a>
+            <a href="robot.html" class="active" id="nav-robot">
+                <span class="lang-fr">Robot</span>
+                <span class="lang-en">Robot</span>
+            </a>
+            <a href="documentation.html" id="nav-documentation">
+                <span class="lang-fr">Documentation</span>
+                <span class="lang-en">Docs</span>
+            </a>
+            <a href="roadmap.html" id="nav-roadmap">
+                <span class="lang-fr">Roadmap</span>
+                <span class="lang-en">Roadmap</span>
+            </a>
+            <a href="contact.html" id="nav-contact">
+                <span class="lang-fr">Contact</span>
+                <span class="lang-en">Contact</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- ===== CONTENU PRINCIPAL ===== -->
+    <div class="main-content">
+        <!-- En-tête -->
+        <div class="page-header">
+            <h1>
+                <span class="lang-fr">Mercedes-AMG GT Robot</span>
+                <span class="lang-en">Mercedes-AMG GT Robot</span>
+            </h1>
+            <p>
+                <span class="lang-fr">Notre robot suiveur de ligne inspiré de la légende allemande</span>
+                <span class="lang-en">Our line follower robot inspired by the German legend</span>
+            </p>
+        </div>
+
+        <!-- ===== SECTION MODÈLE 3D ===== -->
+        <section class="model-section">
+            <div class="model-container">
+                <div class="model-badge">
+                    <i class="fas fa-cube"></i> Mercedes-AMG GT • 360°
+                </div>
+                <div id="canvas-container"></div>
+                <div class="model-controls">
+                    <button class="control-btn" onclick="toggleRotation()" title="Démarrer/Arrêter rotation">
+                        <i class="fas fa-play" id="playPauseIcon"></i>
+                    </button>
+                    <button class="control-btn" onclick="resetView()" title="Réinitialiser vue">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                    <button class="control-btn" onclick="toggleWireframe()" title="Mode fil de fer">
+                        <i class="fas fa-border-all"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== INFORMATIONS PRINCIPALES ===== -->
+        <section class="info-grid">
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-tachometer-alt"></i>
+                </div>
+                <h3>Vitesse max</h3>
+                <div class="info-value">1.5 m/s</div>
+                <div class="info-label">5.4 km/h</div>
+            </div>
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-weight-hanging"></i>
+                </div>
+                <h3>Poids</h3>
+                <div class="info-value">450 g</div>
+                <div class="info-label">avec batterie</div>
+            </div>
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>Autonomie</h3>
+                <div class="info-value">45 min</div>
+                <div class="info-label">batterie 2200mAh</div>
+            </div>
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-microchip"></i>
+                </div>
+                <h3>Processeur</h3>
+                <div class="info-value">ESP32</div>
+                <div class="info-label">240MHz</div>
+            </div>
+        </section>
+
+        <!-- ===== TECHNOLOGIES EMBARQUÉES ===== -->
+        <section class="tech-section">
+            <h2 class="section-title">
+                <i class="fas fa-microchip"></i>
+                <span class="lang-fr">Technologies embarquées</span>
+                <span class="lang-en">Embedded technologies</span>
+            </h2>
+            <div class="tech-grid">
+                <!-- ICI : METTEZ VOS IMAGES DE TECHNOLOGIES -->
+                <div class="tech-item">
+                    <img src="https://via.placeholder.com/80x80?text=ESP32" alt="ESP32">
+                    <h4>ESP32</h4>
+                    <p>Microcontrôleur principal</p>
+                </div>
+                <div class="tech-item">
+                    <img src="https://via.placeholder.com/80x80?text=PID" alt="PID">
+                    <h4>Algorithmes PID</h4>
+                    <p>Contrôle précis</p>
+                </div>
+                <div class="tech-item">
+                    <img src="https://via.placeholder.com/80x80?text=IR" alt="Capteurs IR">
+                    <h4>Capteurs IR</h4>
+                    <p>4x TCRT5000</p>
+                </div>
+                <div class="tech-item">
+                    <img src="https://via.placeholder.com/80x80?text=Ultrasons" alt="Ultrasons">
+                    <h4>Ultrasons</h4>
+                    <p>2x HC-SR04</p>
+                </div>
+                <div class="tech-item">
+                    <img src="https://via.placeholder.com/80x80?text=Moteur+DC" alt="Moteurs">
+                    <h4>Moteurs DC</h4>
+                    <p>2x 12V avec encodeurs</p>
+                </div>
+                <div class="tech-item">
+                    <img src="https://via.placeholder.com/80x80?text=LiPo" alt="Batterie">
+                    <h4>Batterie LiPo</h4>
+                    <p>2200mAh 2S</p>
+                </div>
+                <div class="tech-item">
+                    <img src="https://via.placeholder.com/80x80?text=PCB" alt="PCB">
+                    <h4>PCB personnalisé</h4>
+                    <p>Conception KiCad</p>
+                </div>
+                <div class="tech-item">
+                    <img src="https://via.placeholder.com/80x80?text=PLA" alt="PLA">
+                    <h4>Impression 3D</h4>
+                    <p>Châssis PLA</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SPÉCIFICATIONS DÉTAILLÉES ===== -->
+        <section class="specs-section">
+            <h2 class="section-title">
+                <i class="fas fa-clipboard-list"></i>
+                <span class="lang-fr">Spécifications techniques</span>
+                <span class="lang-en">Technical specifications</span>
+            </h2>
+            <div class="specs-grid">
+                <div class="specs-category">
+                    <h3><i class="fas fa-cogs"></i> Mécanique</h3>
+                    <ul class="specs-list">
+                        <li>
+                            <span class="spec-label">Dimensions (L x l x h)</span>
+                            <span class="spec-value">150 x 120 x 80 mm</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Empattement</span>
+                            <span class="spec-value">95 mm</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Garde au sol</span>
+                            <span class="spec-value">15 mm</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Matériau châssis</span>
+                            <span class="spec-value">PLA + Aluminium</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Roues</span>
+                            <span class="spec-value">42 mm diamètre</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="specs-category">
+                    <h3><i class="fas fa-bolt"></i> Électronique</h3>
+                    <ul class="specs-list">
+                        <li>
+                            <span class="spec-label">Microcontrôleur</span>
+                            <span class="spec-value">ESP32-WROOM</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Capteurs ligne</span>
+                            <span class="spec-value">4x TCRT5000</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Capteurs obstacles</span>
+                            <span class="spec-value">2x HC-SR04</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Driver moteurs</span>
+                            <span class="spec-value">L298N</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">IMU</span>
+                            <span class="spec-value">MPU6050 <i class="fas fa-check-circle"></i></span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="specs-category">
+                    <h3><i class="fas fa-battery-full"></i> Alimentation</h3>
+                    <ul class="specs-list">
+                        <li>
+                            <span class="spec-label">Batterie</span>
+                            <span class="spec-value">LiPo 2S 2200mAh</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Tension</span>
+                            <span class="spec-value">7.4V - 8.4V</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Consommation</span>
+                            <span class="spec-value">2.5A (max)</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Autonomie</span>
+                            <span class="spec-value">45 minutes</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Temps de charge</span>
+                            <span class="spec-value">1h30</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="specs-category">
+                    <h3><i class="fas fa-chart-line"></i> Performances</h3>
+                    <ul class="specs-list">
+                        <li>
+                            <span class="spec-label">Vitesse maximale</span>
+                            <span class="spec-value">1.5 m/s</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Accélération</span>
+                            <span class="spec-value">0.5 m/s²</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Temps de réaction</span>
+                            <span class="spec-value">< 10 ms</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Précision suivi</span>
+                            <span class="spec-value">±2 mm</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Fréquence PID</span>
+                            <span class="spec-value">100 Hz</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== GALERIE D'IMAGES ===== -->
+        <section class="gallery-section">
+            <h2 class="section-title">
+                <i class="fas fa-images"></i>
+                <span class="lang-fr">Galerie</span>
+                <span class="lang-en">Gallery</span>
+            </h2>
+            <div class="gallery-grid">
+                <!-- ICI : METTEZ VOS IMAGES DU ROBOT -->
+                <div class="gallery-item">
+                    <img src="https://via.placeholder.com/400x300?text=Vue+avant" alt="Vue avant">
+                    <div class="gallery-caption">
+                        <h4>Vue avant</h4>
+                        <p>Aileron et capteurs</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://via.placeholder.com/400x300?text=Vue+arrière" alt="Vue arrière">
+                    <div class="gallery-caption">
+                        <h4>Vue arrière</h4>
+                        <p>Diffuseur et sorties</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://via.placeholder.com/400x300?text=Profil" alt="Profil">
+                    <div class="gallery-caption">
+                        <h4>Profil</h4>
+                        <p>Lignes aérodynamiques</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://via.placeholder.com/400x300?text=Intérieur" alt="Intérieur">
+                    <div class="gallery-caption">
+                        <h4>Intérieur</h4>
+                        <p>Électronique embarquée</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://via.placeholder.com/400x300?text=PCB" alt="PCB">
+                    <div class="gallery-caption">
+                        <h4>Carte électronique</h4>
+                        <p>PCB personnalisé</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://via.placeholder.com/400x300?text=Châssis" alt="Châssis">
+                    <div class="gallery-caption">
+                        <h4>Châssis</h4>
+                        <p>Structure en PLA</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://via.placeholder.com/400x300?text=Moteurs" alt="Moteurs">
+                    <div class="gallery-caption">
+                        <h4>Motorisation</h4>
+                        <p>Moteurs DC avec encodeurs</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://via.placeholder.com/400x300?text=Capteurs" alt="Capteurs">
+                    <div class="gallery-caption">
+                        <h4>Capteurs</h4>
+                        <p>IR et ultrasons</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== PERFORMANCES ===== -->
+        <section class="performance-section">
+            <h2 class="section-title">
+                <i class="fas fa-chart-bar"></i>
+                <span class="lang-fr">Performances</span>
+                <span class="lang-en">Performance</span>
+            </h2>
+            <div class="performance-grid">
+                <div class="performance-card">
+                    <div class="performance-header">
+                        <i class="fas fa-route"></i>
+                        <h3>Suivi de ligne</h3>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="perf-label">
+                            <span>Précision</span>
+                            <span>95%</span>
+                        </div>
+                        <div class="perf-bar">
+                            <div class="perf-fill" style="width:95%"></div>
+                        </div>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="perf-label">
+                            <span>Vitesse max en virage</span>
+                            <span>1.2 m/s</span>
+                        </div>
+                        <div class="perf-bar">
+                            <div class="perf-fill" style="width:80%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="performance-card">
+                    <div class="performance-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Évitement d'obstacles</h3>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="perf-label">
+                            <span>Taux de réussite</span>
+                            <span>90%</span>
+                        </div>
+                        <div class="perf-bar">
+                            <div class="perf-fill" style="width:90%"></div>
+                        </div>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="perf-label">
+                            <span>Temps de réaction</span>
+                            <span>8 ms</span>
+                        </div>
+                        <div class="perf-bar">
+                            <div class="perf-fill" style="width:92%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== COMPOSANTS PRINCIPAUX ===== -->
+        <section class="components-section">
+            <h2 class="section-title">
+                <i class="fas fa-microchip"></i>
+                <span class="lang-fr">Composants principaux</span>
+                <span class="lang-en">Main components</span>
+            </h2>
+            <div class="components-grid">
+                <div class="component-card">
+                    <div class="component-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <div class="component-info">
+                        <h4>ESP32</h4>
+                        <p>Microcontrôleur principal</p>
+                    </div>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="component-info">
+                        <h4>TCRT5000</h4>
+                        <p>Capteurs de ligne (x4)</p>
+                    </div>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon">
+                        <i class="fas fa-ruler"></i>
+                    </div>
+                    <div class="component-info">
+                        <h4>HC-SR04</h4>
+                        <p>Ultrasons (x2)</p>
+                    </div>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon">
+                        <i class="fas fa-motorcycle"></i>
+                    </div>
+                    <div class="component-info">
+                        <h4>Moteurs DC</h4>
+                        <p>12V avec encodeurs</p>
+                    </div>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="component-info">
+                        <h4>L298N</h4>
+                        <p>Driver moteurs</p>
+                    </div>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon">
+                        <i class="fas fa-battery-full"></i>
+                    </div>
+                    <div class="component-info">
+                        <h4>LiPo 2200mAh</h4>
+                        <p>Batterie 2S</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span style="display:none;">👻</span>
+                <span>GHOSTBUSTER</span>
+            </div>
+            <div class="footer-links">
+                <a href="index.html">Accueil</a>
+                <a href="equipe.html">Équipe</a>
+                <a href="robot.html">Robot</a>
+                <a href="documentation.html">Documentation</a>
+                <a href="roadmap.html">Roadmap</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="footer-social">
+                <a href="#"><i class="fas fa-envelope"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>© 2025 GHOSTBUSTER - Olympiades de Robotique UCAO-Bénin</p>
+        </div>
+    </footer>
+
+    <!-- Script Three.js pour le modèle 3D -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'https://unpkg.com/three@0.128.0/examples/jsm/controls/OrbitControls.js';
+        import { GLTFLoader } from 'https://unpkg.com/three@0.128.0/examples/jsm/loaders/GLTFLoader.js';
+
+        // Initialisation de la scène
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0a0c10);
+
+        // Caméra
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.set(5, 2, 5);
+        camera.lookAt(0, 0, 0);
+
+        // Rendu
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        // Contrôles
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 2.0;
+        controls.enableZoom = true;
+        controls.maxPolarAngle = Math.PI / 2;
+        controls.minDistance = 3;
+        controls.maxDistance = 10;
+
+        // Lumières
+        // Lumière ambiante
+        const ambientLight = new THREE.AmbientLight(0x404060);
+        scene.add(ambientLight);
+
+        // Lumière principale
+        const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+        mainLight.position.set(5, 10, 7);
+        mainLight.castShadow = true;
+        mainLight.shadow.mapSize.width = 1024;
+        mainLight.shadow.mapSize.height = 1024;
+        scene.add(mainLight);
+
+        // Lumières d'appoint
+        const fillLight1 = new THREE.PointLight(0x4466ff, 0.5);
+        fillLight1.position.set(-5, 3, 5);
+        scene.add(fillLight1);
+
+        const fillLight2 = new THREE.PointLight(0xffaa44, 0.3);
+        fillLight2.position.set(5, 2, -5);
+        scene.add(fillLight2);
+
+        // Sol réfléchissant
+        const planeGeometry = new THREE.CircleGeometry(10, 32);
+        const planeMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x1a1f24,
+            roughness: 0.3,
+            metalness: 0.7,
+            emissive: new THREE.Color(0x0a0c10)
+        });
+        const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        plane.rotation.x = -Math.PI / 2;
+        plane.position.y = -0.5;
+        plane.receiveShadow = true;
+        scene.add(plane);
+
+        // Grille au sol
+        const gridHelper = new THREE.GridHelper(10, 20, 0x2ecc71, 0x2ecc71);
+        gridHelper.position.y = -0.49;
+        scene.add(gridHelper);
+
+        // Étoiles en arrière-plan
+        const starsGeometry = new THREE.BufferGeometry();
+        const starsCount = 1000;
+        const starsPositions = new Float32Array(starsCount * 3);
+        for (let i = 0; i < starsCount * 3; i += 3) {
+            starsPositions[i] = (Math.random() - 0.5) * 200;
+            starsPositions[i+1] = (Math.random() - 0.5) * 200;
+            starsPositions[i+2] = (Math.random() - 0.5) * 200;
+        }
+        starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
+        const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 });
+        const stars = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(stars);
+
+        // Création d'un modèle de voiture simple (en attendant le vrai modèle)
+        function createCarModel() {
+            const carGroup = new THREE.Group();
+
+            // Corps principal
+            const bodyGeo = new THREE.BoxGeometry(2, 0.5, 4);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0xc0c0c0, metalness: 0.8, roughness: 0.2 });
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            body.position.y = 0.5;
+            body.castShadow = true;
+            body.receiveShadow = true;
+            carGroup.add(body);
+
+            // Toit
+            const roofGeo = new THREE.BoxGeometry(1.2, 0.4, 1.8);
+            const roofMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a });
+            const roof = new THREE.Mesh(roofGeo, roofMat);
+            roof.position.set(0, 1, -0.2);
+            roof.castShadow = true;
+            roof.receiveShadow = true;
+            carGroup.add(roof);
+
+            // Capot
+            const hoodGeo = new THREE.BoxGeometry(1.6, 0.3, 1);
+            const hoodMat = new THREE.MeshStandardMaterial({ color: 0xc0c0c0, metalness: 0.8, roughness: 0.2 });
+            const hood = new THREE.Mesh(hoodGeo, hoodMat);
+            hood.position.set(0, 0.8, 1.2);
+            hood.castShadow = true;
+            hood.receiveShadow = true;
+            carGroup.add(hood);
+
+            // Roues
+            const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 32);
+            const wheelMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
+            
+            const positions = [
+                [-0.8, 0.2, 1.2],
+                [0.8, 0.2, 1.2],
+                [-0.8, 0.2, -1.2],
+                [0.8, 0.2, -1.2]
+            ];
+
+            positions.forEach(pos => {
+                const wheel = new THREE.Mesh(wheelGeo, wheelMat);
+                wheel.rotation.z = Math.PI / 2;
+                wheel.position.set(pos[0], pos[1], pos[2]);
+                wheel.castShadow = true;
+                wheel.receiveShadow = true;
+                carGroup.add(wheel);
+
+                // Jantes
+                const rimGeo = new THREE.CylinderGeometry(0.25, 0.25, 0.31, 8);
+                const rimMat = new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.9 });
+                const rim = new THREE.Mesh(rimGeo, rimMat);
+                rim.rotation.z = Math.PI / 2;
+                rim.position.set(pos[0], pos[1], pos[2]);
+                rim.castShadow = true;
+                rim.receiveShadow = true;
+                carGroup.add(rim);
+            });
+
+            // Spoiler arrière
+            const spoilerGeo = new THREE.BoxGeometry(1.4, 0.1, 0.2);
+            const spoilerMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a });
+            const spoiler = new THREE.Mesh(spoilerGeo, spoilerMat);
+            spoiler.position.set(0, 1, -1.8);
+            spoiler.castShadow = true;
+            spoiler.receiveShadow = true;
+            carGroup.add(spoiler);
+
+            return carGroup;
+        }
+
+        const carModel = createCarModel();
+        scene.add(carModel);
+
+        // Animation
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Gestion du redimensionnement
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        // Exposer les contrôles globalement
+        window.controls = controls;
+    </script>
+
+    <script>
+        // ===== THEME TOGGLE =====
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('themeIcon');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                icon.textContent = '👻';
+                // Mettre à jour la couleur de fond de la scène 3D si nécessaire
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                icon.textContent = '👻';
+            }
+        }
+
+        // ===== LANGUAGE TOGGLE =====
+        function toggleLanguage() {
+            const body = document.body;
+            const icon = document.getElementById('langIcon');
+            if (body.getAttribute('data-lang') === 'fr') {
+                body.setAttribute('data-lang', 'en');
+                icon.textContent = 'EN';
+            } else {
+                body.setAttribute('data-lang', 'fr');
+                icon.textContent = 'FR';
+            }
+        }
+
+        // ===== CONTROLES 3D =====
+        let isRotating = true;
+        
+        function toggleRotation() {
+            if (window.controls) {
+                window.controls.autoRotate = !window.controls.autoRotate;
+                const icon = document.getElementById('playPauseIcon');
+                if (window.controls.autoRotate) {
+                    icon.className = 'fas fa-pause';
+                } else {
+                    icon.className = 'fas fa-play';
+                }
+            }
+        }
+
+        function resetView() {
+            if (window.controls) {
+                window.controls.target.set(0, 0, 0);
+                window.controls.object.position.set(5, 2, 5);
+                window.controls.update();
+            }
+        }
+
+        function toggleWireframe() {
+            // À implémenter si nécessaire
+        }
+
+        // ===== NAVBAR SCROLL =====
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = document.body.getAttribute('data-theme') === 'dark' 
+                    ? 'rgba(10, 12, 16, 0.98)' 
+                    : 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            } else {
+                navbar.style.background = document.body.getAttribute('data-theme') === 'dark' 
+                    ? 'rgba(10, 12, 16, 0.98)' 
+                    : 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+
+        // Gestion des images manquantes
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('img').forEach(img => {
+                img.onerror = function() {
+                    this.src = 'https://via.placeholder.com/80x80?text=Image';
+                };
+            });
+        });
+    </script>
+</body>
+</html>
