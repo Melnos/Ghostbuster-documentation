@@ -2,20 +2,16 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GhostBuster - Projet de robot suiveur de ligne et eviteur d'obstacles, documentation technique et suivi d'avancement.">
+    <link rel="icon" type="image/jpeg" href="images/ghost-b.jpeg">
+    <script src="scripts/boot-preferences.js"></script>
     <title>GhostBuster - Notre Robot</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Three.js pour le modèle 3D -->
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -26,7 +22,7 @@
         :root {
             --primary: #2ecc71;
             --primary-dark: #27ae60;
-            --secondary: #f1c40f;
+            --secondary: #8fa8c0;
             --accent: #e74c3c;
             --bg-primary: #0a0c10;
             --bg-secondary: #14181c;
@@ -73,7 +69,27 @@
             display: flex;
             flex-direction: column;
         }
-
+        /* Lint utility helpers */
+        .ghost-hidden { display: none; }
+        .text-center { text-align: center; }
+        .text-muted-center { text-align: center; color: var(--text-secondary); font-size: var(--font-size-xs); }
+        .mb-15 { margin-bottom: 1.5rem; }
+        .mb-10 { margin-bottom: 1rem; }
+        .mt-15 { margin-top: 1.5rem; }
+        .mt-10 { margin-top: 1rem; }
+        .w-100 { width: 100%; }
+        .btn-outline-primary-flat { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .icon-color-accent { color: var(--icon-color); }
+        .icon-primary { color: var(--primary); }
+        .icon-secondary { color: var(--secondary); }
+        .flex-col-gap-08 { display: flex; flex-direction: column; gap: 0.8rem; }
+        .progress-100 { width: 100%; }
+        .progress-95 { width: 95%; }
+        .progress-92 { width: 92%; }
+        .progress-90 { width: 90%; }
+        .progress-80 { width: 80%; }
+        .progress-75 { width: 75%; }
+        .progress-0 { width: 0%; }
         /* ===== THEME TOGGLE ===== */
         .theme-toggle {
             position: fixed;
@@ -125,6 +141,39 @@
             transform: scale(1.1);
         }
 
+        /* ===== BACK TO TOP ===== */
+        .back-to-top {
+            position: fixed;
+            bottom: 140px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            cursor: pointer;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--bg-primary);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: var(--glow);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: scale(1.1);
+            background: var(--primary-dark);
+        }
+
         /* ===== NAVIGATION ===== */
         nav {
             position: fixed;
@@ -136,7 +185,6 @@
             align-items: center;
             z-index: 1000;
             background: rgba(10, 12, 16, 0.98);
-            backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
             transition: all 0.3s ease;
         }
@@ -239,7 +287,7 @@
             font-size: var(--font-size-lg);
         }
 
-        /* ===== SECTION MODÈLE 3D ===== */
+        /* ===== SECTION VISUEL VÉHICULE ===== */
         .model-section {
             margin-bottom: 4rem;
         }
@@ -255,43 +303,43 @@
             box-shadow: var(--shadow);
         }
 
-        #canvas-container {
+        #vehicle-image-container {
             width: 100%;
             height: 100%;
-        }
-
-        .model-controls {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: var(--bg-card);
-            padding: 0.8rem 1.2rem;
-            border-radius: 50px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            gap: 1rem;
-            z-index: 10;
-            backdrop-filter: blur(10px);
-        }
-
-        .control-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.3s;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 1.2rem;
         }
 
-        .control-btn:hover {
-            background: var(--primary);
-            color: var(--bg-primary);
+        .vehicle-image {
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 18px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.26);
+        }
+
+        .vehicle-caption {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.45rem 0.8rem;
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+            display: flex;
+            gap: 0.45rem;
+            z-index: 10;
+        }
+
+        .vehicle-caption i {
+            color: var(--icon-color);
         }
 
         .model-badge {
@@ -306,7 +354,6 @@
             font-weight: 600;
             font-size: var(--font-size-sm);
             z-index: 10;
-            backdrop-filter: blur(10px);
         }
 
         .model-badge i {
@@ -772,10 +819,11 @@
             display: none;
         }
     </style>
+    <link rel="stylesheet" href="styles/pro-competition.css?v=20260409c">
 </head>
-<body data-theme="dark" data-lang="fr">
+<body data-theme="light" data-lang="en">
     <!-- ===== THEME TOGGLE ===== -->
-    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Basculer le thème">
         <span id="themeIcon">👻</span>
     </button>
 
@@ -784,35 +832,40 @@
         <span id="langIcon">FR</span>
     </button>
 
+    <!-- ===== BACK TO TOP ===== -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <!-- ===== NAVIGATION ===== -->
     <nav id="navbar">
         <div class="logo">
             <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <span style="display:none;">👻</span>
+            <span class="ghost-hidden">&#128123;</span>
             <span>GHOSTBUSTER</span>
         </div>
         <div class="nav-links">
-            <a href="index.html" id="nav-accueil">
+            <a href="index.html" id="nav-accueil" title="Accueil / Home">
                 <span class="lang-fr">Accueil</span>
                 <span class="lang-en">Home</span>
             </a>
-            <a href="equipe.html" id="nav-equipe">
+            <a href="equipe.html" id="nav-equipe" title="Équipe / Team">
                 <span class="lang-fr">Équipe</span>
                 <span class="lang-en">Team</span>
             </a>
-            <a href="robot.html" class="active" id="nav-robot">
+            <a href="robot.html" class="active" id="nav-robot" title="Robot">
                 <span class="lang-fr">Robot</span>
                 <span class="lang-en">Robot</span>
             </a>
-            <a href="documentation.html" id="nav-documentation">
+            <a href="documentation.html" id="nav-documentation" title="Documentation / Docs">
                 <span class="lang-fr">Documentation</span>
                 <span class="lang-en">Docs</span>
             </a>
-            <a href="roadmap.html" id="nav-roadmap">
+            <a href="roadmap.html" id="nav-roadmap" title="Roadmap">
                 <span class="lang-fr">Roadmap</span>
                 <span class="lang-en">Roadmap</span>
             </a>
-            <a href="contact.html" id="nav-contact">
+            <a href="contact.html" id="nav-contact" title="Contact">
                 <span class="lang-fr">Contact</span>
                 <span class="lang-en">Contact</span>
             </a>
@@ -824,33 +877,25 @@
         <!-- En-tête -->
         <div class="page-header">
             <h1>
-                <span class="lang-fr">Mercedes-AMG GT Robot</span>
-                <span class="lang-en">Mercedes-AMG GT Robot</span>
+                <span class="lang-fr">Robot GhostBuster</span>
+                <span class="lang-en">GhostBuster Robot</span>
             </h1>
             <p>
-                <span class="lang-fr">Notre robot suiveur de ligne inspiré de la légende allemande</span>
-                <span class="lang-en">Our line follower robot inspired by the German legend</span>
+                <span class="lang-fr">Notre robot suiveur de ligne autonome pour la compétition</span>
+                <span class="lang-en">Our autonomous line follower robot for the competition</span>
             </p>
         </div>
 
-        <!-- ===== SECTION MODÈLE 3D ===== -->
+        <!-- ===== SECTION VISUEL VÉHICULE ===== -->
         <section class="model-section">
             <div class="model-container">
                 <div class="model-badge">
-                    <i class="fas fa-cube"></i> Mercedes-AMG GT • 360°
+                    <i class="fas fa-robot"></i> Prototype autonome • GhostBuster
                 </div>
-                <div id="canvas-container"></div>
-                <div class="model-controls">
-                    <button class="control-btn" onclick="toggleRotation()" title="Démarrer/Arrêter rotation">
-                        <i class="fas fa-play" id="playPauseIcon"></i>
-                    </button>
-                    <button class="control-btn" onclick="resetView()" title="Réinitialiser vue">
-                        <i class="fas fa-redo-alt"></i>
-                    </button>
-                    <button class="control-btn" onclick="toggleWireframe()" title="Mode fil de fer">
-                        <i class="fas fa-border-all"></i>
-                    </button>
+                <div id="vehicle-image-container">
+                    <img class="vehicle-image" src="images/placeholder.svg" alt="Robot GhostBuster">
                 </div>
+                <div class="vehicle-caption"><i class="fas fa-image"></i> Illustration du robot GhostBuster (En cours de traitement)</div>
             </div>
         </section>
 
@@ -900,42 +945,42 @@
             <div class="tech-grid">
                 <!-- ICI : METTEZ VOS IMAGES DE TECHNOLOGIES -->
                 <div class="tech-item">
-                    <img src="https://via.placeholder.com/80x80?text=ESP32" alt="ESP32">
+                    <img src="images/esp 32.jpg" alt="ESP32">
                     <h4>ESP32</h4>
                     <p>Microcontrôleur principal</p>
                 </div>
                 <div class="tech-item">
-                    <img src="https://via.placeholder.com/80x80?text=PID" alt="PID">
+                    <img src="images/tech-chip.svg" alt="PID">
                     <h4>Algorithmes PID</h4>
                     <p>Contrôle précis</p>
                 </div>
                 <div class="tech-item">
-                    <img src="https://via.placeholder.com/80x80?text=IR" alt="Capteurs IR">
+                    <img src="images/ir.jpg" alt="Capteur IR">
                     <h4>Capteurs IR</h4>
                     <p>4x TCRT5000</p>
                 </div>
                 <div class="tech-item">
-                    <img src="https://via.placeholder.com/80x80?text=Ultrasons" alt="Ultrasons">
+                    <img src="images/ultrason.jpg" alt="Ultrasons">
                     <h4>Ultrasons</h4>
                     <p>2x HC-SR04</p>
                 </div>
                 <div class="tech-item">
-                    <img src="https://via.placeholder.com/80x80?text=Moteur+DC" alt="Moteurs">
+                    <img src="images/moteurs dc.jpg" alt="Moteurs">
                     <h4>Moteurs DC</h4>
                     <p>2x 12V avec encodeurs</p>
                 </div>
                 <div class="tech-item">
-                    <img src="https://via.placeholder.com/80x80?text=LiPo" alt="Batterie">
+                    <img src="images/tech-chip.svg" alt="Batterie">
                     <h4>Batterie LiPo</h4>
                     <p>2200mAh 2S</p>
                 </div>
                 <div class="tech-item">
-                    <img src="https://via.placeholder.com/80x80?text=PCB" alt="PCB">
+                    <img src="images/pcb.jpg" alt="PCB">
                     <h4>PCB personnalisé</h4>
                     <p>Conception KiCad</p>
                 </div>
                 <div class="tech-item">
-                    <img src="https://via.placeholder.com/80x80?text=PLA" alt="PLA">
+                    <img src="images/vehicle-ghostbuster.svg" alt="PLA">
                     <h4>Impression 3D</h4>
                     <p>Châssis PLA</p>
                 </div>
@@ -955,23 +1000,23 @@
                     <ul class="specs-list">
                         <li>
                             <span class="spec-label">Dimensions (L x l x h)</span>
-                            <span class="spec-value">150 x 120 x 80 mm</span>
+                            <span class="spec-value">Pas encore définies <!--150 x 120 x 80 mm--></span>
                         </li>
                         <li>
                             <span class="spec-label">Empattement</span>
-                            <span class="spec-value">95 mm</span>
+                            <span class="spec-value">Pas encore définies <!--95 mm--></span>
                         </li>
                         <li>
                             <span class="spec-label">Garde au sol</span>
-                            <span class="spec-value">15 mm</span>
+                            <span class="spec-value">Pas encore définies <!--15 mm--></span>
                         </li>
                         <li>
                             <span class="spec-label">Matériau châssis</span>
-                            <span class="spec-value">PLA + Aluminium</span>
+                            <span class="spec-value">Pas encore définies <!--PLA + Aluminium--></span>
                         </li>
                         <li>
                             <span class="spec-label">Roues</span>
-                            <span class="spec-value">42 mm diamètre</span>
+                            <span class="spec-value">Pas encore définies <!--42 mm diamètre--></span>
                         </li>
                     </ul>
                 </div>
@@ -984,11 +1029,11 @@
                         </li>
                         <li>
                             <span class="spec-label">Capteurs ligne</span>
-                            <span class="spec-value">4x TCRT5000</span>
+                            <span class="spec-value">3x TCRT5000</span>
                         </li>
                         <li>
                             <span class="spec-label">Capteurs obstacles</span>
-                            <span class="spec-value">2x HC-SR04</span>
+                            <span class="spec-value">HC-SR04</span>
                         </li>
                         <li>
                             <span class="spec-label">Driver moteurs</span>
@@ -1038,7 +1083,7 @@
                         </li>
                         <li>
                             <span class="spec-label">Temps de réaction</span>
-                            <span class="spec-value">< 10 ms</span>
+                            <span class="spec-value">< 1 ms</span>
                         </li>
                         <li>
                             <span class="spec-label">Précision suivi</span>
@@ -1063,59 +1108,59 @@
             <div class="gallery-grid">
                 <!-- ICI : METTEZ VOS IMAGES DU ROBOT -->
                 <div class="gallery-item">
-                    <img src="https://via.placeholder.com/400x300?text=Vue+avant" alt="Vue avant">
+                    <img src="images/placeholder.svg" alt="Vue avant">
                     <div class="gallery-caption">
                         <h4>Vue avant</h4>
-                        <p>Aileron et capteurs</p>
+                        <p>En cours de traitement</p>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="https://via.placeholder.com/400x300?text=Vue+arrière" alt="Vue arrière">
+                    <img src="images/placeholder.svg" alt="Vue arrière">
                     <div class="gallery-caption">
                         <h4>Vue arrière</h4>
-                        <p>Diffuseur et sorties</p>
+                        <p>En cours de traitement</p>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="https://via.placeholder.com/400x300?text=Profil" alt="Profil">
+                    <img src="images/placeholder.svg" alt="Profil">
                     <div class="gallery-caption">
                         <h4>Profil</h4>
-                        <p>Lignes aérodynamiques</p>
+                        <p>En cours de traitement</p>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="https://via.placeholder.com/400x300?text=Intérieur" alt="Intérieur">
+                    <img src="images/placeholder.svg" alt="Intérieur">
                     <div class="gallery-caption">
                         <h4>Intérieur</h4>
-                        <p>Électronique embarquée</p>
+                        <p>En cours de traitement</p>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="https://via.placeholder.com/400x300?text=PCB" alt="PCB">
+                    <img src="images/placeholder.svg" alt="PCB">
                     <div class="gallery-caption">
                         <h4>Carte électronique</h4>
-                        <p>PCB personnalisé</p>
+                        <p>En cours de traitement</p>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="https://via.placeholder.com/400x300?text=Châssis" alt="Châssis">
+                    <img src="images/placeholder.svg" alt="Châssis">
                     <div class="gallery-caption">
                         <h4>Châssis</h4>
-                        <p>Structure en PLA</p>
+                        <p>En cours de traitement</p>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="https://via.placeholder.com/400x300?text=Moteurs" alt="Moteurs">
+                    <img src="images/placeholder.svg" alt="Moteurs">
                     <div class="gallery-caption">
                         <h4>Motorisation</h4>
-                        <p>Moteurs DC avec encodeurs</p>
+                        <p>En cours de traitement</p>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="https://via.placeholder.com/400x300?text=Capteurs" alt="Capteurs">
+                    <img src="images/placeholder.svg" alt="Capteurs">
                     <div class="gallery-caption">
                         <h4>Capteurs</h4>
-                        <p>IR et ultrasons</p>
+                        <p>En cours de traitement</p>
                     </div>
                 </div>
             </div>
@@ -1140,16 +1185,16 @@
                             <span>95%</span>
                         </div>
                         <div class="perf-bar">
-                            <div class="perf-fill" style="width:95%"></div>
+                            <div class="perf-fill progress-95"></div>
                         </div>
                     </div>
                     <div class="performance-bar">
                         <div class="perf-label">
                             <span>Vitesse max en virage</span>
-                            <span>1.2 m/s</span>
+                            <span>0.2 m/s</span>
                         </div>
                         <div class="perf-bar">
-                            <div class="perf-fill" style="width:80%"></div>
+                            <div class="perf-fill progress-80"></div>
                         </div>
                     </div>
                 </div>
@@ -1164,7 +1209,7 @@
                             <span>90%</span>
                         </div>
                         <div class="perf-bar">
-                            <div class="perf-fill" style="width:90%"></div>
+                            <div class="perf-fill progress-90"></div>
                         </div>
                     </div>
                     <div class="performance-bar">
@@ -1173,7 +1218,7 @@
                             <span>8 ms</span>
                         </div>
                         <div class="perf-bar">
-                            <div class="perf-fill" style="width:92%"></div>
+                            <div class="perf-fill progress-92"></div>
                         </div>
                     </div>
                 </div>
@@ -1203,7 +1248,7 @@
                     </div>
                     <div class="component-info">
                         <h4>TCRT5000</h4>
-                        <p>Capteurs de ligne (x4)</p>
+                        <p>Capteurs de ligne (x3)</p>
                     </div>
                 </div>
                 <div class="component-card">
@@ -1212,7 +1257,7 @@
                     </div>
                     <div class="component-info">
                         <h4>HC-SR04</h4>
-                        <p>Ultrasons (x2)</p>
+                        <p>Ultrasons (x1)</p>
                     </div>
                 </div>
                 <div class="component-card">
@@ -1251,7 +1296,7 @@
         <div class="footer-content">
             <div class="footer-logo">
                 <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
-                <span style="display:none;">👻</span>
+                <span class="ghost-hidden">&#128123;</span>
                 <span>GHOSTBUSTER</span>
             </div>
             <div class="footer-links">
@@ -1263,217 +1308,60 @@
                 <a href="contact.html">Contact</a>
             </div>
             <div class="footer-social">
-                <a href="#"><i class="fas fa-envelope"></i></a>
-                <a href="#"><i class="fab fa-github"></i></a>
-                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="mailto:djimadjomelkisedeck@gmail.com" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                <a href="https://github.com/melnos" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="#" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://wa.me/+2290167836762" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
             </div>
         </div>
-        <div class="copyright">
+                <div class="copyright">
             <p>© 2025 GHOSTBUSTER - Olympiades de Robotique UCAO-Bénin</p>
+            <p>
+                <span class="lang-fr">Template personnalisé par le chef de l'équipe GhostBuster</span>
+                <span class="lang-en">Custom template by the chief of GhostBuster team</span>
+                | <a href="https://github.com/Yoane2194/Olympiades-de-Robotique-UCAO-Benin">GitHub</a>
+            </p>
         </div>
     </footer>
 
-    <!-- Script Three.js pour le modèle 3D -->
-    <script type="module">
-        import * as THREE from 'three';
-        import { OrbitControls } from 'https://unpkg.com/three@0.128.0/examples/jsm/controls/OrbitControls.js';
-        import { GLTFLoader } from 'https://unpkg.com/three@0.128.0/examples/jsm/loaders/GLTFLoader.js';
-
-        // Initialisation de la scène
-        const container = document.getElementById('canvas-container');
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x0a0c10);
-
-        // Caméra
-        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-        camera.position.set(5, 2, 5);
-        camera.lookAt(0, 0, 0);
-
-        // Rendu
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.setPixelRatio(window.devicePixelRatio);
-        container.appendChild(renderer.domElement);
-
-        // Contrôles
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        controls.autoRotate = true;
-        controls.autoRotateSpeed = 2.0;
-        controls.enableZoom = true;
-        controls.maxPolarAngle = Math.PI / 2;
-        controls.minDistance = 3;
-        controls.maxDistance = 10;
-
-        // Lumières
-        // Lumière ambiante
-        const ambientLight = new THREE.AmbientLight(0x404060);
-        scene.add(ambientLight);
-
-        // Lumière principale
-        const mainLight = new THREE.DirectionalLight(0xffffff, 1);
-        mainLight.position.set(5, 10, 7);
-        mainLight.castShadow = true;
-        mainLight.shadow.mapSize.width = 1024;
-        mainLight.shadow.mapSize.height = 1024;
-        scene.add(mainLight);
-
-        // Lumières d'appoint
-        const fillLight1 = new THREE.PointLight(0x4466ff, 0.5);
-        fillLight1.position.set(-5, 3, 5);
-        scene.add(fillLight1);
-
-        const fillLight2 = new THREE.PointLight(0xffaa44, 0.3);
-        fillLight2.position.set(5, 2, -5);
-        scene.add(fillLight2);
-
-        // Sol réfléchissant
-        const planeGeometry = new THREE.CircleGeometry(10, 32);
-        const planeMaterial = new THREE.MeshStandardMaterial({ 
-            color: 0x1a1f24,
-            roughness: 0.3,
-            metalness: 0.7,
-            emissive: new THREE.Color(0x0a0c10)
-        });
-        const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-        plane.rotation.x = -Math.PI / 2;
-        plane.position.y = -0.5;
-        plane.receiveShadow = true;
-        scene.add(plane);
-
-        // Grille au sol
-        const gridHelper = new THREE.GridHelper(10, 20, 0x2ecc71, 0x2ecc71);
-        gridHelper.position.y = -0.49;
-        scene.add(gridHelper);
-
-        // Étoiles en arrière-plan
-        const starsGeometry = new THREE.BufferGeometry();
-        const starsCount = 1000;
-        const starsPositions = new Float32Array(starsCount * 3);
-        for (let i = 0; i < starsCount * 3; i += 3) {
-            starsPositions[i] = (Math.random() - 0.5) * 200;
-            starsPositions[i+1] = (Math.random() - 0.5) * 200;
-            starsPositions[i+2] = (Math.random() - 0.5) * 200;
-        }
-        starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
-        const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 });
-        const stars = new THREE.Points(starsGeometry, starsMaterial);
-        scene.add(stars);
-
-        // Création d'un modèle de voiture simple (en attendant le vrai modèle)
-        function createCarModel() {
-            const carGroup = new THREE.Group();
-
-            // Corps principal
-            const bodyGeo = new THREE.BoxGeometry(2, 0.5, 4);
-            const bodyMat = new THREE.MeshStandardMaterial({ color: 0xc0c0c0, metalness: 0.8, roughness: 0.2 });
-            const body = new THREE.Mesh(bodyGeo, bodyMat);
-            body.position.y = 0.5;
-            body.castShadow = true;
-            body.receiveShadow = true;
-            carGroup.add(body);
-
-            // Toit
-            const roofGeo = new THREE.BoxGeometry(1.2, 0.4, 1.8);
-            const roofMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a });
-            const roof = new THREE.Mesh(roofGeo, roofMat);
-            roof.position.set(0, 1, -0.2);
-            roof.castShadow = true;
-            roof.receiveShadow = true;
-            carGroup.add(roof);
-
-            // Capot
-            const hoodGeo = new THREE.BoxGeometry(1.6, 0.3, 1);
-            const hoodMat = new THREE.MeshStandardMaterial({ color: 0xc0c0c0, metalness: 0.8, roughness: 0.2 });
-            const hood = new THREE.Mesh(hoodGeo, hoodMat);
-            hood.position.set(0, 0.8, 1.2);
-            hood.castShadow = true;
-            hood.receiveShadow = true;
-            carGroup.add(hood);
-
-            // Roues
-            const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 32);
-            const wheelMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
-            
-            const positions = [
-                [-0.8, 0.2, 1.2],
-                [0.8, 0.2, 1.2],
-                [-0.8, 0.2, -1.2],
-                [0.8, 0.2, -1.2]
-            ];
-
-            positions.forEach(pos => {
-                const wheel = new THREE.Mesh(wheelGeo, wheelMat);
-                wheel.rotation.z = Math.PI / 2;
-                wheel.position.set(pos[0], pos[1], pos[2]);
-                wheel.castShadow = true;
-                wheel.receiveShadow = true;
-                carGroup.add(wheel);
-
-                // Jantes
-                const rimGeo = new THREE.CylinderGeometry(0.25, 0.25, 0.31, 8);
-                const rimMat = new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.9 });
-                const rim = new THREE.Mesh(rimGeo, rimMat);
-                rim.rotation.z = Math.PI / 2;
-                rim.position.set(pos[0], pos[1], pos[2]);
-                rim.castShadow = true;
-                rim.receiveShadow = true;
-                carGroup.add(rim);
-            });
-
-            // Spoiler arrière
-            const spoilerGeo = new THREE.BoxGeometry(1.4, 0.1, 0.2);
-            const spoilerMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a });
-            const spoiler = new THREE.Mesh(spoilerGeo, spoilerMat);
-            spoiler.position.set(0, 1, -1.8);
-            spoiler.castShadow = true;
-            spoiler.receiveShadow = true;
-            carGroup.add(spoiler);
-
-            return carGroup;
-        }
-
-        const carModel = createCarModel();
-        scene.add(carModel);
-
-        // Animation
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update();
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        // Gestion du redimensionnement
-        window.addEventListener('resize', onWindowResize, false);
-        function onWindowResize() {
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
-        }
-
-        // Exposer les contrôles globalement
-        window.controls = controls;
-    </script>
-
     <script>
         // ===== THEME TOGGLE =====
+        const THEME_STORAGE_KEY = 'ghostbuster-theme';
+
+        function applySavedTheme() {
+            const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            const body = document.body;
+            const icon = document.getElementById('themeIcon');
+
+            if (savedTheme === 'light' || savedTheme === 'dark') {
+                body.setAttribute('data-theme', savedTheme);
+            } else {
+                localStorage.setItem(THEME_STORAGE_KEY, body.getAttribute('data-theme') || 'light');
+            }
+
+            if (icon) {
+                icon.innerHTML = body.getAttribute('data-theme') === 'dark'
+                    ? '<i class="fas fa-moon" aria-hidden="true"></i>'
+                    : '<i class="fas fa-sun" aria-hidden="true"></i>';
+            }
+        }
+
         function toggleTheme() {
             const body = document.body;
             const icon = document.getElementById('themeIcon');
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.setAttribute('data-theme', 'light');
-                icon.textContent = '👻';
-                // Mettre à jour la couleur de fond de la scène 3D si nécessaire
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                icon.textContent = '👻';
+            const nextTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+
+            body.setAttribute('data-theme', nextTheme);
+            localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+
+            if (icon) {
+                icon.innerHTML = nextTheme === 'dark'
+                    ? '<i class="fas fa-moon" aria-hidden="true"></i>'
+                    : '<i class="fas fa-sun" aria-hidden="true"></i>';
             }
         }
+
+        applySavedTheme();
 
         // ===== LANGUAGE TOGGLE =====
         function toggleLanguage() {
@@ -1488,31 +1376,19 @@
             }
         }
 
-        // ===== CONTROLES 3D =====
-        let isRotating = true;
-        
-        function toggleRotation() {
-            if (window.controls) {
-                window.controls.autoRotate = !window.controls.autoRotate;
-                const icon = document.getElementById('playPauseIcon');
-                if (window.controls.autoRotate) {
-                    icon.className = 'fas fa-pause';
-                } else {
-                    icon.className = 'fas fa-play';
-                }
-            }
-        }
+        // ===== BACK TO TOP =====
+        const backToTop = document.getElementById('backToTop');
 
-        function resetView() {
-            if (window.controls) {
-                window.controls.target.set(0, 0, 0);
-                window.controls.object.position.set(5, 2, 5);
-                window.controls.update();
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
             }
-        }
+        });
 
-        function toggleWireframe() {
-            // À implémenter si nécessaire
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // ===== NAVBAR SCROLL =====
@@ -1535,10 +1411,32 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('img').forEach(img => {
                 img.onerror = function() {
-                    this.src = 'https://via.placeholder.com/80x80?text=Image';
+                    this.src = 'images/ghost-b.jpeg';
                 };
             });
         });
     </script>
+    <script src="scripts/pro-competition.js?v=20260409c"></script>
+    <script src="scripts/preferences-sync.js?v=20260409c"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

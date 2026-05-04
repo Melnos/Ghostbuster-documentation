@@ -1,13 +1,17 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GhostBuster - Projet de robot suiveur de ligne et eviteur d'obstacles, documentation technique et suivi d'avancement.">
+    <link rel="icon" type="image/jpeg" href="images/ghost-b.jpeg">
+    <script src="scripts/boot-preferences.js"></script>
     <title>GhostBuster - Roadmap</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -18,7 +22,7 @@
         :root {
             --primary: #2ecc71;
             --primary-dark: #27ae60;
-            --secondary: #f1c40f;
+            --secondary: #8fa8c0;
             --accent: #e74c3c;
             --bg-primary: #0a0c10;
             --bg-secondary: #14181c;
@@ -82,7 +86,27 @@
         .animate-glow {
             animation: glowPulse 3s ease-in-out infinite;
         }
-
+        /* Lint utility helpers */
+        .ghost-hidden { display: none; }
+        .text-center { text-align: center; }
+        .text-muted-center { text-align: center; color: var(--text-secondary); font-size: var(--font-size-xs); }
+        .mb-15 { margin-bottom: 1.5rem; }
+        .mb-10 { margin-bottom: 1rem; }
+        .mt-15 { margin-top: 1.5rem; }
+        .mt-10 { margin-top: 1rem; }
+        .w-100 { width: 100%; }
+        .btn-outline-primary-flat { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .icon-color-accent { color: var(--icon-color); }
+        .icon-primary { color: var(--primary); }
+        .icon-secondary { color: var(--secondary); }
+        .flex-col-gap-08 { display: flex; flex-direction: column; gap: 0.8rem; }
+        .progress-100 { width: 100%; }
+        .progress-95 { width: 95%; }
+        .progress-92 { width: 92%; }
+        .progress-90 { width: 90%; }
+        .progress-80 { width: 80%; }
+        .progress-75 { width: 75%; }
+        .progress-0 { width: 0%; }
         /* ===== THEME TOGGLE ===== */
         .theme-toggle {
             position: fixed;
@@ -145,7 +169,6 @@
             align-items: center;
             z-index: 1000;
             background: rgba(10, 12, 16, 0.98);
-            backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
             transition: all 0.3s ease;
         }
@@ -764,10 +787,11 @@
             display: none;
         }
     </style>
+    <link rel="stylesheet" href="styles/pro-competition.css?v=20260409c">
 </head>
-<body data-theme="dark" data-lang="fr">
+<body data-theme="light" data-lang="en">
     <!-- ===== THEME TOGGLE ===== -->
-    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Basculer le thème">
         <span id="themeIcon">👻</span>
     </button>
 
@@ -785,31 +809,31 @@
     <nav id="navbar">
         <div class="logo">
             <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <span style="display:none;">👻</span>
+            <span class="ghost-hidden">&#128123;</span>
             <span>GHOSTBUSTER</span>
         </div>
         <div class="nav-links">
-            <a href="index.html" id="nav-accueil">
+            <a href="index.html" id="nav-accueil" title="Accueil">
                 <span class="lang-fr">Accueil</span>
                 <span class="lang-en">Home</span>
             </a>
-            <a href="equipe.html" id="nav-equipe">
+            <a href="equipe.html" id="nav-equipe" title="Équipe">
                 <span class="lang-fr">Équipe</span>
                 <span class="lang-en">Team</span>
             </a>
-            <a href="robot.html" id="nav-robot">
+            <a href="robot.html" id="nav-robot" title="Robot">
                 <span class="lang-fr">Robot</span>
                 <span class="lang-en">Robot</span>
             </a>
-            <a href="documentation.html" id="nav-documentation">
+            <a href="documentation.html" id="nav-documentation" title="Documentation">
                 <span class="lang-fr">Documentation</span>
                 <span class="lang-en">Docs</span>
             </a>
-            <a href="roadmap.html" class="active" id="nav-roadmap">
+            <a href="roadmap.html" class="active" id="nav-roadmap" title="Roadmap">
                 <span class="lang-fr">Roadmap</span>
                 <span class="lang-en">Roadmap</span>
             </a>
-            <a href="contact.html" id="nav-contact">
+            <a href="contact.html" id="nav-contact" title="Contact">
                 <span class="lang-fr">Contact</span>
                 <span class="lang-en">Contact</span>
             </a>
@@ -854,11 +878,11 @@
                             <span>100%</span>
                         </div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width:100%"></div>
+                            <div class="progress-fill progress-100"></div>
                         </div>
                     </div>
                     <div class="phase-stats">
-                        <span><i class="fas fa-check-circle" style="color: var(--primary);"></i> 12/12 tâches</span>
+                        <span><i class="fas fa-check-circle icon-primary"></i> 12/12 tâches</span>
                         <span><i class="fas fa-users"></i> 7 membres</span>
                     </div>
                 </div>
@@ -887,11 +911,11 @@
                             <span>75%</span>
                         </div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width:75%"></div>
+                            <div class="progress-fill progress-75"></div>
                         </div>
                     </div>
                     <div class="phase-stats">
-                        <span><i class="fas fa-spinner" style="color: var(--secondary);"></i> 9/12 tâches</span>
+                        <span><i class="fas fa-spinner icon-secondary"></i> 9/12 tâches</span>
                         <span><i class="fas fa-users"></i> 7 membres</span>
                     </div>
                 </div>
@@ -920,7 +944,7 @@
                             <span>0%</span>
                         </div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width:0%"></div>
+                            <div class="progress-fill progress-0"></div>
                         </div>
                     </div>
                     <div class="phase-stats">
@@ -953,7 +977,7 @@
                             <span>0%</span>
                         </div>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width:0%"></div>
+                            <div class="progress-fill progress-0"></div>
                         </div>
                     </div>
                     <div class="phase-stats">
@@ -989,30 +1013,30 @@
                 <!-- Équipe impliquée -->
                 <div class="detail-card">
                     <h4><i class="fas fa-users"></i> Équipe impliquée</h4>
-                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                    <div class="flex-col-gap-08">
                         <div class="member-contrib">
-                            <img src="images/mel.jpeg" alt="Melkisedeck" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <img src="images/mel.jpeg" alt="Melkisedeck" onerror="this.src='images/placeholder.svg'">
                             <div class="member-contrib-info">
                                 <h5>Melkisedeck DJIMADJO</h5>
                                 <p>Chef de projet - Conception CAO</p>
                             </div>
                         </div>
                         <div class="member-contrib">
-                            <img src="images/berenger.jpeg" alt="Bérenger" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <img src="images/berenger.jpeg" alt="Bérenger" onerror="this.src='images/placeholder.svg'">
                             <div class="member-contrib-info">
                                 <h5>Bérenger BOTON</h5>
                                 <p>Spécifications techniques</p>
                             </div>
                         </div>
                         <div class="member-contrib">
-                            <img src="images/valerie.jpeg" alt="Valérie" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <img src="images/valerie.jpeg" alt="Valérie" onerror="this.src='images/placeholder.svg'">
                             <div class="member-contrib-info">
                                 <h5>Valérie KLOKPE</h5>
                                 <p>Schémas électroniques</p>
                             </div>
                         </div>
                         <div class="member-contrib">
-                            <img src="images/delphin.jpeg" alt="Delphin" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <img src="images/delphin.jpeg" alt="Delphin" onerror="this.src='images/placeholder.svg'">
                             <div class="member-contrib-info">
                                 <h5>Delphin ZINZINSOUHOU</h5>
                                 <p>Assistance CAO</p>
@@ -1069,30 +1093,30 @@
                 <!-- Équipe impliquée -->
                 <div class="detail-card">
                     <h4><i class="fas fa-users"></i> Équipe impliquée</h4>
-                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                    <div class="flex-col-gap-08">
                         <div class="member-contrib">
-                            <img src="images/berenger.jpeg" alt="Bérenger" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <img src="images/berenger.jpeg" alt="Bérenger" onerror="this.src='images/placeholder.svg'">
                             <div class="member-contrib-info">
                                 <h5>Bérenger BOTON</h5>
                                 <p>Développement algorithmes</p>
                             </div>
                         </div>
                         <div class="member-contrib">
-                            <img src="images/steav.jpeg" alt="Steav" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <img src="images/steav.jpeg" alt="Steav" onerror="this.src='images/placeholder.svg'">
                             <div class="member-contrib-info">
                                 <h5>Steav BINOUYO</h5>
                                 <p>Tests et calibration</p>
                             </div>
                         </div>
                         <div class="member-contrib">
-                            <img src="images/valerie.jpeg" alt="Valérie" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <img src="images/valerie.jpeg" alt="Valérie" onerror="this.src='images/placeholder.svg'">
                             <div class="member-contrib-info">
                                 <h5>Valérie KLOKPE</h5>
                                 <p>Prototypage électronique</p>
                             </div>
                         </div>
                         <div class="member-contrib">
-                            <img src="images/zaenab.jpeg" alt="Zaénab" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <img src="images/zaenab.jpeg" alt="Zaénab" onerror="this.src='images/placeholder.svg'">
                             <div class="member-contrib-info">
                                 <h5>Zaénab OKE</h5>
                                 <p>Câblage et tests</p>
@@ -1149,30 +1173,30 @@
                 <!-- Équipe prévue -->
                 <div class="detail-card">
                     <h4><i class="fas fa-users"></i> Équipe prévue</h4>
-                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                    <div class="flex-col-gap-08">
                         <div class="member-contrib">
-                            <img src="images/berenger.jpeg" alt="Bérenger" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <img src="images/berenger.jpeg" alt="Bérenger" onerror="this.src='images/placeholder.svg'">
                             <div class="member-contrib-info">
                                 <h5>Bérenger BOTON</h5>
                                 <p>Optimisation algorithmes</p>
                             </div>
                         </div>
                         <div class="member-contrib">
-                            <img src="images/steav.jpeg" alt="Steav" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <img src="images/steav.jpeg" alt="Steav" onerror="this.src='images/placeholder.svg'">
                             <div class="member-contrib-info">
                                 <h5>Steav BINOUYO</h5>
                                 <p>Tests sur piste</p>
                             </div>
                         </div>
                         <div class="member-contrib">
-                            <img src="images/valerie.jpeg" alt="Valérie" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <img src="images/valerie.jpeg" alt="Valérie" onerror="this.src='images/placeholder.svg'">
                             <div class="member-contrib-info">
                                 <h5>Valérie KLOKPE</h5>
                                 <p>Tests électroniques</p>
                             </div>
                         </div>
                         <div class="member-contrib">
-                            <img src="images/mel.jpeg" alt="Melkisedeck" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <img src="images/mel.jpeg" alt="Melkisedeck" onerror="this.src='images/placeholder.svg'">
                             <div class="member-contrib-info">
                                 <h5>Melkisedeck DJIMADJO</h5>
                                 <p>Coordination</p>
@@ -1228,30 +1252,30 @@
                 <!-- Équipe impliquée -->
                 <div class="detail-card">
                     <h4><i class="fas fa-users"></i> Équipe impliquée</h4>
-                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                    <div class="flex-col-gap-08">
                         <div class="member-contrib">
-                            <img src="images/mel.jpeg" alt="Melkisedeck" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <img src="images/mel.jpeg" alt="Melkisedeck" onerror="this.src='images/placeholder.svg'">
                             <div class="member-contrib-info">
                                 <h5>Melkisedeck DJIMADJO</h5>
                                 <p>Chef d'équipe - Présentation</p>
                             </div>
                         </div>
                         <div class="member-contrib">
-                            <img src="images/berenger.jpeg" alt="Bérenger" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <img src="images/berenger.jpeg" alt="Bérenger" onerror="this.src='images/placeholder.svg'">
                             <div class="member-contrib-info">
                                 <h5>Bérenger BOTON</h5>
                                 <p>Démonstration technique</p>
                             </div>
                         </div>
                         <div class="member-contrib">
-                            <img src="images/valerie.jpeg" alt="Valérie" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <img src="images/valerie.jpeg" alt="Valérie" onerror="this.src='images/placeholder.svg'">
                             <div class="member-contrib-info">
                                 <h5>Valérie KLOKPE</h5>
                                 <p>Support technique</p>
                             </div>
                         </div>
                         <div class="member-contrib">
-                            <img src="images/lucrece.jpeg" alt="Lucrèce" onerror="this.src='https://via.placeholder.com/40x40?text=Photo'">
+                            <img src="images/lucrece.jpeg" alt="Lucrèce" onerror="this.src='images/placeholder.svg'">
                             <div class="member-contrib-info">
                                 <h5>SACCA Lucrèce</h5>
                                 <p>Documentation</p>
@@ -1288,40 +1312,40 @@
         <div class="footer-content">
             <div class="footer-logo">
                 <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
-                <span style="display:none;">👻</span>
+                <span class="ghost-hidden">&#128123;</span>
                 <span>GHOSTBUSTER</span>
             </div>
             <div class="footer-links">
-                <a href="index.html">
+                <a href="index.html" title="Accueil">
                     <span class="lang-fr">Accueil</span>
                     <span class="lang-en">Home</span>
                 </a>
-                <a href="equipe.html">
+                <a href="equipe.html" title="Équipe">
                     <span class="lang-fr">Équipe</span>
                     <span class="lang-en">Team</span>
                 </a>
-                <a href="robot.html">
+                <a href="robot.html" title="Robot">
                     <span class="lang-fr">Robot</span>
                     <span class="lang-en">Robot</span>
                 </a>
-                <a href="documentation.html">
+                <a href="documentation.html" title="Documentation">
                     <span class="lang-fr">Documentation</span>
                     <span class="lang-en">Docs</span>
                 </a>
-                <a href="roadmap.html">
+                <a href="roadmap.html" title="Roadmap">
                     <span class="lang-fr">Roadmap</span>
                     <span class="lang-en">Roadmap</span>
                 </a>
-                <a href="contact.html">
+                <a href="contact.html" title="Contact">
                     <span class="lang-fr">Contact</span>
                     <span class="lang-en">Contact</span>
                 </a>
             </div>
             <div class="footer-social">
-                <a href="#"><i class="fas fa-envelope"></i></a>
-                <a href="#"><i class="fab fa-github"></i></a>
-                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                <a href="#" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="#" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
             </div>
         </div>
         <div class="copyright">
@@ -1336,17 +1360,38 @@
 
     <script>
         // ===== THEME TOGGLE =====
+        const THEME_STORAGE_KEY = 'ghostbuster-theme';
+
+        function applySavedTheme() {
+            const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            const body = document.body;
+            const icon = document.getElementById('themeIcon');
+
+            if (savedTheme === 'light' || savedTheme === 'dark') {
+                body.setAttribute('data-theme', savedTheme);
+            } else {
+                localStorage.setItem(THEME_STORAGE_KEY, body.getAttribute('data-theme') || 'light');
+            }
+
+            if (icon) {
+                icon.innerHTML = '<i class="fas fa-sun" aria-hidden="true"></i>';
+            }
+        }
+
         function toggleTheme() {
             const body = document.body;
             const icon = document.getElementById('themeIcon');
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.setAttribute('data-theme', 'light');
-                icon.textContent = '👻';
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                icon.textContent = '👻';
+            const nextTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+
+            body.setAttribute('data-theme', nextTheme);
+            localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+
+            if (icon) {
+                icon.innerHTML = '<i class="fas fa-moon" aria-hidden="true"></i>';
             }
         }
+
+        applySavedTheme();
 
         // ===== LANGUAGE TOGGLE =====
         function toggleLanguage() {
@@ -1421,10 +1466,30 @@
             // Gestion des images manquantes
             document.querySelectorAll('img').forEach(img => {
                 img.onerror = function() {
-                    this.src = 'https://via.placeholder.com/35x35?text=Logo';
+                    this.src = 'images/placeholder.svg';
                 };
             });
         });
     </script>
+    <script src="scripts/pro-competition.js?v=20260409c"></script>
+    <script src="scripts/preferences-sync.js?v=20260409c"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

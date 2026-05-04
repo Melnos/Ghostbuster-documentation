@@ -1,0 +1,2393 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GhostBuster - Projet de robot suiveur de ligne et eviteur d'obstacles, documentation technique et suivi d'avancement.">
+    <link rel="icon" type="image/jpeg" href="images/ghost-b.jpeg">
+    <script src="scripts/boot-preferences.js"></script>
+    <title>GhostBuster - Interface de Contrôle Robot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles/pro-competition.css?v=20260409c">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --secondary: #8fa8c0;
+            --accent: #e74c3c;
+            --bg-primary: #0a0c10;
+            --bg-secondary: #14181c;
+            --bg-card: #1a1f24;
+            --text-primary: #ecf0f1;
+            --text-secondary: #95a5a6;
+            --border-color: rgba(46, 204, 113, 0.15);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --glow: 0 0 20px rgba(46, 204, 113, 0.2);
+            --icon-color: #4ac0e4;
+            --icon-hover: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --success: #2ecc71;
+            
+            --font-size-xs: 0.75rem;
+            --font-size-sm: 0.875rem;
+            --font-size-base: 1rem;
+            --font-size-lg: 1.125rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+            --font-size-3xl: 1.875rem;
+            --font-size-4xl: 2.25rem;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f5f7fa;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #34495e;
+            --border-color: rgba(46, 204, 113, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            padding-top: 70px;
+            font-size: var(--font-size-base);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.control-open {
+            overflow: hidden;
+        }
+
+        /* ===== THEME TOGGLE ===== */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: var(--glow);
+            transition: all 0.3s ease;
+            color: var(--bg-primary);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+        }
+
+        /* ===== LANGUAGE TOGGLE ===== */
+        .lang-toggle {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 600;
+            box-shadow: var(--glow);
+            transition: all 0.3s ease;
+            color: var(--bg-primary);
+        }
+
+        .lang-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* ===== BACK TO TOP ===== */
+        .back-to-top {
+            position: fixed;
+            bottom: 140px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            cursor: pointer;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--glow);
+            transition: all 0.3s ease;
+            color: var(--bg-primary);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+        }
+
+        /* ===== NAVIGATION ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 0.8rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 12, 16, 0.98);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] nav {
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo img {
+            height: 35px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            font-size: var(--font-size-xs);
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.3rem 0;
+            white-space: nowrap;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 0.6rem 3%;
+            }
+            .nav-links {
+                gap: 0.5rem;
+                font-size: 0.65rem;
+            }
+            .logo {
+                font-size: 1rem;
+            }
+            .logo img {
+                height: 28px;
+            }
+        }
+
+        /* ===== CONTENU PRINCIPAL ===== */
+        .main-content {
+            flex: 1;
+            padding: 2rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .doc-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            font-size: var(--font-size-sm);
+            transition: color 0.3s;
+        }
+
+        .doc-back:hover {
+            color: var(--primary);
+        }
+
+        /* Interface spécifique */
+        .page-header,
+        .interface-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .interface-header {
+            background: transparent;
+            border-radius: 0;
+            padding-top: 0;
+        }
+
+        .page-header h1,
+        .interface-header h1 {
+            font-size: var(--font-size-4xl);
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .interface-header h1 {
+            margin-bottom: 0.75rem;
+        }
+
+        .page-header p,
+        .interface-header p {
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .interface-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .interface-badge {
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            background: var(--bg-card);
+        }
+
+        .layout-mode-switch {
+            display: none !important;
+        }
+
+        /* KPI Cards */
+        .dashboard-kpis {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .kpi-card {
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.2rem;
+            background: var(--bg-card);
+            transition: all 0.3s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .kpi-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .kpi-value {
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .connection-status-offline {
+            color: #e74c3c;
+        }
+        
+        .connection-status-demo {
+            color: #8fa8c0;
+        }
+
+        /* Grid Layouts */
+        .control-console-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+            align-items: stretch;
+        }
+        .control-console-grid > .panel:last-child {
+            grid-column: 1 / -1;
+        }
+
+        .manual-control-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .monitoring-overview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .missions-logs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        /* Panels */
+        .panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.35rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+
+        .panel:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .subsection-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .subsection-header-sm {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .subsection-title-sm {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            margin-top: 0.75rem;
+        }
+
+        .field label {
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .field input {
+            width: 100%;
+            min-width: 0;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 0.75rem 0.85rem;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background: var(--primary);
+            color: var(--bg-primary);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: var(--font-size-xs);
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--bg-primary);
+        }
+
+        .big-stop {
+            width: 100%;
+            margin-bottom: 1rem;
+            margin-top: 0.75rem;
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ff6b6b, #c0392b);
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.92rem;
+            cursor: pointer;
+        }
+
+        #startRobotBtn {
+            width: fit-content;
+            margin-bottom: 0.55rem;
+            padding: 0.52rem 0.75rem;
+            font-size: 0.8rem;
+            align-self: flex-start;
+        }
+
+        #emergencyStop {
+            width: fit-content;
+            max-width: 100%;
+            padding: 0.52rem 0.75rem;
+            font-size: 0.78rem;
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+            align-self: flex-start;
+        }
+
+        .control-console-section .panel:last-child .button-row {
+            margin-top: 0.9rem;
+        }
+
+        /* Status */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            border-radius: 999px;
+            padding: 0.35rem 0.65rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 0.7rem;
+            max-width: 100%;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #e74c3c;
+        }
+
+        .status-dot.online {
+            background: #2ecc71;
+        }
+
+        .status-dot.demo {
+            background: #8fa8c0;
+        }
+
+        /* Mode Switch */
+        .mode-switch {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.45rem;
+            margin-bottom: 0.65rem;
+        }
+
+        .mode-btn {
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            color: var(--text-primary);
+            padding: 0.55rem;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .mode-btn.active {
+            border-color: var(--primary);
+            background: rgba(46, 204, 113, 0.2);
+            color: var(--primary);
+        }
+
+        /* Telemetry */
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.7rem;
+        }
+
+        .telemetry-item {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.85rem;
+            background: var(--bg-secondary);
+            min-width: 0;
+        }
+
+        .telemetry-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .telemetry-value {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Control Pad */
+        .control-pad {
+            margin: 1rem auto;
+            width: 260px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
+        }
+
+        .pad-btn {
+            height: 62px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 1.15rem;
+        }
+
+        .pad-btn:active {
+            transform: scale(0.96);
+        }
+
+        .pad-empty {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Sliders */
+        .slider-group {
+            margin-top: 0.5rem;
+        }
+
+        .slider-group label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .slider-group input {
+            width: 100%;
+        }
+
+        /* Camera Feed */
+        .camera-feed {
+            height: 220px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 0.4rem;
+            color: var(--text-primary);
+        }
+
+        .camera-feed i {
+            font-size: 2rem;
+        }
+
+        .track-canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: var(--bg-secondary);
+        }
+
+        /* Log Box */
+        .log-box {
+            height: 280px;
+            overflow: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.7rem;
+            background: var(--bg-secondary);
+            font-family: 'Courier New', monospace;
+            font-size: 0.84rem;
+            line-height: 1.45;
+            color: #a7f3d0;
+        }
+
+        .log-box div {
+            padding: 0.2rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Mission List */
+        .mission-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            margin-top: 0.4rem;
+        }
+
+        .mission-item {
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 0.55rem 0.65rem;
+            font-size: 0.86rem;
+            display: flex;
+            justify-content: space-between;
+            gap: 0.8rem;
+        }
+
+        .mission-tag {
+            font-size: 0.72rem;
+            border-radius: 999px;
+            padding: 0.12rem 0.45rem;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        /* Track Canvas */
+        .map-wrap {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--bg-secondary);
+        }
+
+        .map-head {
+            padding: 0.55rem 0.7rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+        }
+
+        .track-canvas {
+            display: block;
+            width: 100%;
+            height: 420px;
+            background: var(--bg-secondary);
+        }
+
+        .track-controls-mini {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.8rem;
+        }
+
+        /* Control Mode Overlay */
+        .control-mode-btn {
+            margin-top: 1rem;
+        }
+
+        .control-view {
+            position: fixed;
+            inset: 0;
+            z-index: 2500;
+            background: rgba(10, 12, 16, 0.78);
+            display: none;
+        }
+
+        .control-view.active {
+            display: block;
+        }
+
+        .control-view-shell {
+            position: relative;
+            width: min(1320px, 100%);
+            height: calc(100vh - 24px);
+            margin: 12px auto;
+            padding: 3.1rem 0.9rem 0.9rem;
+            display: grid;
+            grid-template-columns: 290px 1fr 320px;
+            grid-template-rows: auto auto minmax(0, 1fr);
+            grid-template-areas:
+                "state map mission"
+                "pad map actions"
+                "log map actions";
+            gap: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            background: var(--bg-primary);
+            box-shadow: var(--shadow);
+            overflow: auto;
+        }
+
+        .control-close {
+            position: absolute;
+            top: 0.75rem;
+            left: 1rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border-radius: 10px;
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .control-view-shell .panel {
+            background: var(--bg-card);
+            border-color: var(--border-color);
+            border-radius: 12px;
+            box-shadow: none;
+            transform: none;
+            margin: 0;
+        }
+
+        .control-view-shell .panel:hover {
+            transform: none;
+            border-color: var(--primary);
+            box-shadow: none;
+        }
+
+        .control-view-shell .subsection-header-sm {
+            font-size: 0.92rem;
+            font-weight: 600;
+            margin-bottom: 0.7rem;
+        }
+
+        .control-map-zone {
+            grid-area: map;
+            padding: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .control-state-zone {
+            grid-area: state;
+            padding: 0.85rem;
+        }
+
+        .control-state-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.5rem;
+        }
+
+        .control-state-item {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.5rem 0.6rem;
+            background: var(--bg-secondary);
+        }
+
+        .control-state-label {
+            color: var(--text-secondary);
+            font-size: 0.72rem;
+        }
+
+        .control-state-value {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-weight: 700;
+            line-height: 1.15;
+        }
+
+        .control-map-zone .map-head {
+            margin-bottom: 0.45rem;
+        }
+
+        .control-track-canvas {
+            width: 100%;
+            height: 100%;
+            min-height: 280px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            display: block;
+        }
+
+        .control-pad-zone {
+            grid-area: pad;
+            padding: 0.9rem;
+        }
+
+        .control-pad-zone .control-pad {
+            width: 100%;
+            max-width: 260px;
+            margin: 0.4rem auto 0;
+        }
+
+        .control-pad-zone .pad-btn {
+            border-radius: 12px;
+            border-color: var(--border-color);
+            background: var(--bg-secondary);
+            transition: transform 0.15s ease, border-color 0.2s ease;
+        }
+
+        .control-pad-zone .pad-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .control-pad-zone .pad-btn:active {
+            transform: scale(0.94);
+        }
+
+        .control-actions-zone {
+            grid-area: actions;
+            padding: 0.9rem;
+        }
+
+        .control-actions-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.55rem;
+        }
+
+        .control-actions-row .btn,
+        .control-actions-row .btn-outline {
+            width: 100%;
+            border-radius: 10px;
+            padding: 0.62rem 0.75rem;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .control-mission-zone {
+            grid-area: mission;
+            padding: 0.85rem;
+        }
+
+        .control-mission-list {
+            height: 100%;
+            max-height: none;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            margin-top: 0.4rem;
+        }
+
+        .control-log-zone {
+            grid-area: log;
+            padding: 0.85rem;
+            min-height: 0;
+        }
+
+        .control-log-box {
+            height: 100%;
+            min-height: 160px;
+            overflow: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.65rem;
+            background: var(--bg-secondary);
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: #a7f3d0;
+        }
+
+        .control-log-box div {
+            padding: 0.2rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .control-log-box::-webkit-scrollbar,
+        .control-mission-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .control-log-box::-webkit-scrollbar-thumb,
+        .control-mission-list::-webkit-scrollbar-thumb {
+            background: rgba(46, 204, 113, 0.45);
+            border-radius: 10px;
+        }
+
+        @media (max-width: 1200px) {
+            .control-view-shell {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto auto minmax(0, 1fr);
+                grid-template-areas:
+                    "state mission"
+                    "map map"
+                    "pad actions"
+                    "log actions";
+                height: calc(100vh - 24px);
+            }
+
+            .control-track-canvas {
+                min-height: 250px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .control-view-shell {
+                overflow: auto;
+                display: grid;
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+                grid-template-areas:
+                    "state"
+                    "map"
+                    "pad"
+                    "actions"
+                    "mission"
+                    "log";
+                gap: 0.75rem;
+                align-content: start;
+                padding: 3rem 0.7rem 0.7rem;
+                height: calc(100vh - 24px);
+            }
+
+            .control-map-zone,
+            .control-state-zone,
+            .control-pad-zone,
+            .control-actions-zone,
+            .control-mission-zone,
+            .control-log-zone {
+                width: 100%;
+            }
+
+            .control-track-canvas {
+                min-height: 220px;
+            }
+
+            .control-actions-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 950px) and (max-height: 560px) and (orientation: landscape) {
+            .control-view {
+                overflow: hidden;
+            }
+
+            .control-view-shell {
+                display: grid;
+                width: min(100vw - 8px, 100%);
+                height: calc(100vh - 8px);
+                margin: 4px auto;
+                padding: 2.2rem 0.45rem 0.45rem;
+                grid-template-columns: 0.95fr 1.35fr 0.95fr;
+                grid-template-rows: 1fr 1fr 1fr;
+                grid-template-areas:
+                    "state map actions"
+                    "pad map actions"
+                    "log map mission";
+                gap: 0.38rem;
+                overflow: hidden;
+            }
+
+            .control-view-shell .panel {
+                margin: 0;
+                padding: 0.42rem;
+                border-radius: 10px;
+                min-height: 0;
+                overflow: hidden;
+            }
+
+            .control-close {
+                top: 0.35rem;
+                left: 0.4rem;
+                width: 30px;
+                height: 30px;
+                font-size: 0.78rem;
+            }
+
+            .control-map-zone,
+            .control-state-zone,
+            .control-pad-zone,
+            .control-actions-zone,
+            .control-mission-zone,
+            .control-log-zone {
+                width: 100%;
+                min-height: 0;
+            }
+
+            .control-map-zone {
+                padding: 0.45rem;
+            }
+
+            .control-map-zone .map-wrap,
+            .control-map-zone .map-head {
+                margin-bottom: 0.3rem;
+            }
+
+            .control-track-canvas {
+                min-height: 0;
+                height: 100%;
+            }
+
+            .control-state-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.25rem;
+            }
+
+            .control-state-item {
+                padding: 0.3rem 0.35rem;
+            }
+
+            .control-state-label {
+                font-size: 0.6rem;
+            }
+
+            .control-state-value {
+                font-size: 0.72rem;
+            }
+
+            .control-pad-zone {
+                padding: 0.45rem;
+            }
+
+            .control-pad-zone .control-pad {
+                max-width: 185px;
+                gap: 0.3rem;
+                margin-top: 0.2rem;
+            }
+
+            .control-pad-zone .pad-btn {
+                height: 38px;
+                font-size: 0.85rem;
+            }
+
+            .control-actions-zone,
+            .control-mission-zone,
+            .control-log-zone,
+            .control-state-zone {
+                padding: 0.45rem;
+            }
+
+            .control-actions-row {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.3rem;
+            }
+
+            .control-actions-row .btn,
+            .control-actions-row .btn-outline {
+                padding: 0.35rem 0.42rem;
+                font-size: 0.68rem;
+                border-radius: 8px;
+            }
+
+            .control-mission-list,
+            .control-log-box {
+                height: 100%;
+                min-height: 0;
+            }
+
+            .control-mission-list {
+                margin-top: 0.2rem;
+                gap: 0.25rem;
+                overflow: hidden;
+            }
+
+            .control-mission-list .mission-item {
+                padding: 0.26rem 0.34rem;
+                font-size: 0.64rem;
+            }
+
+            .control-mission-list .mission-tag {
+                font-size: 0.58rem;
+                padding: 0.1rem 0.28rem;
+            }
+
+            .control-log-box {
+                padding: 0.35rem;
+                font-size: 0.62rem;
+                overflow: hidden;
+            }
+
+            .control-log-box div {
+                padding: 0.08rem 0;
+            }
+
+            .control-map-zone .subsection-header-sm,
+            .control-state-zone .subsection-header-sm,
+            .control-pad-zone .subsection-header-sm,
+            .control-actions-zone .subsection-header-sm,
+            .control-mission-zone .subsection-header-sm,
+            .control-log-zone .subsection-header-sm {
+                font-size: 0.75rem;
+                margin-bottom: 0.2rem;
+            }
+        }
+
+        .mini-btn {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.45rem 0.7rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 0.82rem;
+        }
+
+        .mini-btn.active,
+        .mini-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* MPU Stats */
+        .track-stats-extended {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.7rem;
+            margin-top: 0.8rem;
+        }
+
+        .mpu-stat {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.5rem;
+            background: var(--bg-secondary);
+        }
+
+        .mpu-stat span {
+            display: block;
+            font-size: 0.74rem;
+            color: var(--text-secondary);
+        }
+
+        .mpu-stat strong {
+            color: var(--text-primary);
+            font-size: 0.96rem;
+        }
+
+        /* Sensor Bars */
+        .sensor-value-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.4rem;
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+        }
+
+        .sensor-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-primary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.8rem;
+        }
+
+        .sensor-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            padding: 1rem 1.1rem;
+            transition: width 0.25s ease;
+        }
+
+        /* Joystick */
+        .joystick-stage {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            background: var(--bg-secondary);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .joystick-knob-advanced {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: var(--glow);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+
+        .direction-buttons-advanced {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            max-width: 220px;
+            margin: 1rem auto 0;
+        }
+
+        .dir-btn-advanced {
+            padding: 0.75rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .dir-btn-advanced:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-card);
+            padding: 2rem 5%;
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-logo img {
+            height: 32px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: var(--font-size-xs);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 0.6rem;
+        }
+
+        .footer-social a {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--icon-color);
+            text-decoration: none;
+            transition: all 0.3s;
+            border: 1px solid var(--border-color);
+        }
+
+        .footer-social a:hover {
+            background: var(--icon-hover);
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 1.2rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.65rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dashboard-kpis { grid-template-columns: repeat(2, 1fr); }
+            .control-console-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .manual-control-grid { grid-template-columns: 1fr; }
+            .monitoring-overview-grid { grid-template-columns: 1fr; }
+            .missions-logs-grid { grid-template-columns: 1fr; }
+            .track-stats-extended { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-kpis { grid-template-columns: 1fr; }
+            .control-console-grid { grid-template-columns: 1fr; }
+            .track-stats-extended { grid-template-columns: 1fr; }
+            .control-pad { width: 100%; max-width: 280px; }
+            .track-canvas { height: 320px; }
+            .button-row { flex-direction: column; }
+            .mode-switch { grid-template-columns: 1fr; }
+            .telemetry-grid { grid-template-columns: 1fr; }
+            .status-pill { width: 100%; justify-content: center; }
+            .big-stop { margin-bottom: 0.85rem; }
+        }
+
+        /* Langue */
+        .lang-fr, .lang-en {
+            transition: opacity 0.3s;
+        }
+
+        [data-lang="fr"] .lang-en {
+            display: none;
+        }
+
+        [data-lang="en"] .lang-fr {
+            display: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .interface-header {
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            background: var(--bg-card);
+            margin-bottom: 2rem;
+        }
+
+        .interface-header h1 {
+            margin-bottom: 0.5rem;
+        }
+
+        .interface-header p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .interface-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .control-mode-btn {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body data-theme="light" data-lang="en">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Basculer le thème"><span id="themeIcon">👻</span></button>
+    <button class="lang-toggle" onclick="toggleLanguage()"><span id="langIcon">FR</span></button>
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+
+    <nav id="navbar">
+        <div class="logo">
+            <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'">
+            <span>GHOSTBUSTER</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" title="Accueil"><span class="lang-fr">Accueil</span><span class="lang-en">Home</span></a>
+            <a href="equipe.html" title="Équipe"><span class="lang-fr">Équipe</span><span class="lang-en">Team</span></a>
+            <a href="robot.html" title="Robot"><span class="lang-fr">Robot</span><span class="lang-en">Robot</span></a>
+            <a href="documentation.html" title="Documentation"><span class="lang-fr">Documentation</span><span class="lang-en">Docs</span></a>
+            <a href="roadmap.html" title="Roadmap"><span class="lang-fr">Roadmap</span><span class="lang-en">Roadmap</span></a>
+            <a href="interface.html" class="active" title="Interface"><span class="lang-fr">Interface</span><span class="lang-en">Interface</span></a>
+            <a href="contact.html" title="Contact"><span class="lang-fr">Contact</span><span class="lang-en">Contact</span></a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <a href="documentation.html" class="doc-back" title="Retour à la documentation">
+            <i class="fas fa-arrow-left"></i>
+            <span class="lang-fr">Retour à la documentation</span>
+            <span class="lang-en">Back to documentation</span>
+        </a>
+
+        <!-- HEADER -->
+        <section class="interface-header">
+            <h1><i class="fas fa-gamepad"></i> Interface de Pilotage Robot</h1>
+            <p>Contrôle en temps réel - Télémétrie - Cartographie MPU6050</p>
+            <div class="interface-badges">
+                <span class="interface-badge"><i class="fas fa-bolt"></i> Temps réel</span>
+                <span class="interface-badge"><i class="fas fa-chart-line"></i> Télémétrie avancée</span>
+                <span class="interface-badge"><i class="fas fa-map"></i> MPU6050</span>
+                <span class="interface-badge"><i class="fas fa-robot"></i> Mode autonome</span>
+            </div>
+            <button class="btn btn-outline control-mode-btn" id="openControlPageBtn" title="Ouvrir le mode contrôle" aria-label="Ouvrir le mode contrôle">
+                <i class="fas fa-gamepad"></i> Mode Contrôle
+            </button>
+        </section>
+
+        <!-- KPI DASHBOARD -->
+        <div class="dashboard-kpis">
+            <div class="kpi-card">
+                <div class="kpi-label">État connexion</div>
+                <div class="kpi-value connection-status-offline" id="connectionStatus">HORS LIGNE</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Batterie</div>
+                <div class="kpi-value" id="batteryKpi">94%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Mode actif</div>
+                <div class="kpi-value" id="modeKpi">AUTO</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Latence</div>
+                <div class="kpi-value" id="latencyKpi">-- ms</div>
+            </div>
+        </div>
+
+        <!-- CONTROL CONSOLE -->
+        <section class="control-console-section">
+            <h2 class="section-heading"><i class="fas fa-sliders-h"></i> Console de Contrôle</h2>
+            <div class="control-console-grid">
+                <div class="panel">
+                    <h3 class="subsection-header"><i class="fas fa-plug"></i> Connexion</h3>
+                    <div class="status-pill"><span class="status-dot" id="statusDot"></span> <span id="statusText">Hors ligne</span></div>
+                    <div class="field">
+                        <label>Adresse IP</label>
+                        <input id="robotHost" value="192.168.0.42" class="interface-search" placeholder="192.168.0.42" title="Adresse IP du robot" aria-label="Adresse IP du robot">
+                    </div>
+                    <div class="field">
+                        <label>Port WS</label>
+                        <input id="robotPort" value="81" class="interface-search" placeholder="81" title="Port WebSocket du robot" aria-label="Port WebSocket du robot">
+                    </div>
+                    <div class="field">
+                        <label>Chemin WS</label>
+                        <input id="robotWsPath" value="/ws" class="interface-search" placeholder="/ws" title="Chemin WebSocket du robot" aria-label="Chemin WebSocket du robot">
+                    </div>
+                    <div class="button-row">
+                        <button class="btn" id="connectBtn"><i class="fas fa-link"></i> Connecter</button>
+                        <button class="btn btn-outline" id="disconnectBtn"><i class="fas fa-unlink"></i> Déconnecter</button>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3 class="subsection-header"><i class="fas fa-brain"></i> Mode de Pilotage</h3>
+                    <div class="mode-switch" id="modeSwitch">
+                        <button class="mode-btn active" data-mode="auto">AUTO</button>
+                        <button class="mode-btn" data-mode="assist">ASSIST</button>
+                        <button class="mode-btn" data-mode="manual">MANUAL</button>
+                    </div>
+                    <div class="telemetry-grid">
+                        <div class="telemetry-item"><div class="telemetry-label">État IA</div><div class="telemetry-value" id="aiStatus">PRÊT</div></div>
+                        <div class="telemetry-item"><div class="telemetry-label">Vitesse</div><div class="telemetry-value" id="speedValue">0.00 m/s</div></div>
+                        <div class="telemetry-item"><div class="telemetry-label">Obstacle</div><div class="telemetry-value" id="obstacleValue">Libre</div></div>
+                        <div class="telemetry-item"><div class="telemetry-label">Batterie</div><div class="telemetry-value" id="batteryLevel">94%</div></div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3 class="subsection-header"><i class="fas fa-exclamation"></i> Actions Rapides</h3>
+                    <button class="btn" id="startRobotBtn" title="Démarrer le robot" aria-label="Démarrer le robot"><i class="fas fa-play"></i> START ROBOT</button>
+                    <button class="big-stop" id="emergencyStop" title="Arrêt d'urgence" aria-label="Arrêt d'urgence"><i class="fas fa-exclamation-triangle"></i> ARRÊT D'URGENCE</button>
+                    <div class="button-row">
+                        <button class="btn btn-outline" id="mpuStartBtn" title="Démarrer la cartographie MPU" aria-label="Démarrer la cartographie MPU"><i class="fas fa-play"></i> Démarrer MPU</button>
+                        <button class="btn btn-outline" id="mpuCalibrateBtn" title="Calibrer la cartographie MPU" aria-label="Calibrer la cartographie MPU"><i class="fas fa-sliders-h"></i> Calibrer</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MANUAL CONTROL -->
+        <section class="manual-control-section">
+            <h2 class="section-heading"><i class="fas fa-gamepad"></i> Commande Manuelle</h2>
+            <div class="manual-control-grid">
+                <div class="panel">
+                    <h3 class="subsection-header-sm"><i class="fas fa-arrows-alt"></i> Pavé de Commande</h3>
+                    <div class="control-pad">
+                        <button class="pad-btn pad-empty" aria-hidden="true" tabindex="-1"></button>
+                        <button class="pad-btn" data-cmd="forward" title="Avancer" aria-label="Avancer"><i class="fas fa-arrow-up"></i></button>
+                        <button class="pad-btn pad-empty" aria-hidden="true" tabindex="-1"></button>
+                        <button class="pad-btn" data-cmd="left" title="Tourner à gauche" aria-label="Tourner à gauche"><i class="fas fa-arrow-left"></i></button>
+                        <button class="pad-btn" data-cmd="stop" title="Arrêt" aria-label="Arrêt"><i class="fas fa-stop"></i></button>
+                        <button class="pad-btn" data-cmd="right" title="Tourner à droite" aria-label="Tourner à droite"><i class="fas fa-arrow-right"></i></button>
+                        <button class="pad-btn pad-empty" aria-hidden="true" tabindex="-1"></button>
+                        <button class="pad-btn" data-cmd="backward" title="Reculer" aria-label="Reculer"><i class="fas fa-arrow-down"></i></button>
+                        <button class="pad-btn pad-empty" aria-hidden="true" tabindex="-1"></button>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3 class="subsection-header-sm"><i class="fas fa-sliders-h"></i> Paramètres</h3>
+                    <div class="slider-group">
+                        <label>Limite vitesse : <strong id="speedLimitValue">55%</strong></label>
+                        <input id="speedLimit" type="range" min="0" max="100" value="55" title="Limite de vitesse" aria-label="Limite de vitesse">
+                    </div>
+                    <div class="slider-group">
+                        <label>Sensibilité capteurs : <strong id="sensorValue">70%</strong></label>
+                        <input id="sensorSensitivity" type="range" min="0" max="100" value="70" title="Sensibilité des capteurs" aria-label="Sensibilité des capteurs">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MONITORING -->
+        <section class="monitoring-overview-section">
+            <h2 class="section-heading"><i class="fas fa-chart-line"></i> Monitoring</h2>
+            <div class="monitoring-overview-grid">
+                <div class="panel">
+                    <h3 class="subsection-header-sm"><i class="fas fa-eye"></i> Flux Vidéo</h3>
+                    <div class="camera-feed">
+                        <i class="fas fa-camera"></i>
+                        <strong>Flux caméra</strong>
+                        <small>WebRTC / MJPEG</small>
+                    </div>
+                    <div class="field">
+                        <label>URL Stream</label>
+                        <input id="streamUrl" placeholder="http://robot.local:8081/stream" class="interface-search" title="URL du flux vidéo" aria-label="URL du flux vidéo">
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3 class="subsection-header-sm"><i class="fas fa-microchip"></i> État Robot</h3>
+                    <div class="track-stats-extended">
+                        <div class="mpu-stat"><span>Batterie</span><strong id="batteryAdv">--%</strong></div>
+                        <div class="mpu-stat"><span>Vitesse</span><strong id="speedAdv">0.00</strong></div>
+                        <div class="mpu-stat"><span>Distance</span><strong id="distanceAdv">0.00</strong></div>
+                        <div class="mpu-stat"><span>Temps</span><strong id="runTimeAdv">00:00</strong></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TRAJECTORY MAPPING -->
+        <section class="trajectory-section">
+            <h2 class="section-heading"><i class="fas fa-map"></i> Cartographie MPU6050</h2>
+            <div class="panel">
+                <div class="map-wrap">
+                    <div class="map-head">
+                        <span>Trace XY (MPU6050)</span>
+                        <span id="mapStatusText">SIM-MPU6050</span>
+                    </div>
+                    <canvas id="trackCanvas" width="800" height="420" class="track-canvas"></canvas>
+                </div>
+                <div class="track-controls-mini">
+                    <button class="mini-btn" id="clearTrackBtn"><i class="fas fa-trash"></i> Effacer</button>
+                    <button class="mini-btn" id="exportTrackBtn"><i class="fas fa-download"></i> Exporter</button>
+                    <button class="mini-btn active" id="toggleGridBtn"><i class="fas fa-th"></i> Grille</button>
+                    <button class="mini-btn" id="mpuClearBtn"><i class="fas fa-sync-alt"></i> Réinitialiser</button>
+                </div>
+                <div class="track-stats-extended">
+                    <div class="mpu-stat"><span>ax (m/s²)</span><strong id="axValue">0.00</strong></div>
+                    <div class="mpu-stat"><span>ay (m/s²)</span><strong id="ayValue">0.00</strong></div>
+                    <div class="mpu-stat"><span>gz (rad/s)</span><strong id="gzValue">0.00</strong></div>
+                    <div class="mpu-stat"><span>yaw (deg)</span><strong id="yawValue">0.00</strong></div>
+                </div>
+                <div class="track-stats-extended">
+                    <div class="mpu-stat"><span>Distance</span><strong id="totalDistanceAdv">0.00 m</strong></div>
+                    <div class="mpu-stat"><span>Position X</span><strong id="posXAdv">0.00</strong></div>
+                    <div class="mpu-stat"><span>Position Y</span><strong id="posYAdv">0.00</strong></div>
+                    <div class="mpu-stat"><span>Points</span><strong id="trackPointsAdv">0</strong></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MISSIONS & LOGS -->
+        <section class="missions-logs-section">
+            <h2 class="section-heading"><i class="fas fa-list-check"></i> Missions & Logs</h2>
+            <div class="missions-logs-grid">
+                <div class="panel">
+                    <h3 class="subsection-header-sm"><i class="fas fa-list-check"></i> Missions</h3>
+                    <div class="button-row">
+                        <button class="btn btn-outline" data-mission="Line Follow"><i class="fas fa-route"></i> Ligne</button>
+                        <button class="btn btn-outline" data-mission="Obstacle Avoid"><i class="fas fa-shield"></i> Obstacle</button>
+                        <button class="btn btn-outline" data-mission="Dock Return"><i class="fas fa-house"></i> Retour</button>
+                    </div>
+                    <div class="mission-list" id="missionList">
+                        <div class="mission-item"><span>Line Follow - Zone A</span><span class="mission-tag">EN QUEUE</span></div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3 class="subsection-header-sm"><i class="fas fa-terminal"></i> Journal</h3>
+                    <div class="log-box" id="logBox"></div>
+                    <div class="button-row">
+                        <button class="btn btn-outline" id="clearLogs"><i class="fas fa-trash"></i> Vider</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="controlView" class="control-view" aria-hidden="true">
+        <div class="control-view-shell">
+            <button id="closeControlPageBtn" class="control-close" title="Fermer le mode contrôle" aria-label="Fermer le mode contrôle">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <section class="panel control-state-zone">
+                <h3 class="subsection-header-sm"><i class="fas fa-heartbeat"></i> État Robot</h3>
+                <div class="control-state-grid">
+                    <div class="control-state-item"><div class="control-state-label">Connexion</div><div id="controlStatusValue" class="control-state-value">HORS LIGNE</div></div>
+                    <div class="control-state-item"><div class="control-state-label">Mode</div><div id="controlModeValue" class="control-state-value">AUTO</div></div>
+                    <div class="control-state-item"><div class="control-state-label">Batterie</div><div id="controlBatteryValue" class="control-state-value">94%</div></div>
+                    <div class="control-state-item"><div class="control-state-label">Vitesse</div><div id="controlSpeedValue" class="control-state-value">0.00 m/s</div></div>
+                </div>
+            </section>
+
+            <section class="panel control-map-zone">
+                <h3 class="subsection-header-sm"><i class="fas fa-map"></i> Cartographie</h3>
+                <div class="map-head">
+                    <span>Trace temps réel</span>
+                    <span id="controlMapStatus">LIVE</span>
+                </div>
+                <canvas id="trackCanvasControl" class="control-track-canvas" width="900" height="320"></canvas>
+            </section>
+
+            <section class="panel control-pad-zone">
+                <h3 class="subsection-header-sm"><i class="fas fa-gamepad"></i> Pavé de Commande</h3>
+                <div class="control-pad">
+                    <button class="pad-btn pad-empty" aria-hidden="true" tabindex="-1"></button>
+                    <button class="pad-btn" data-cmd="forward" title="Avancer" aria-label="Avancer"><i class="fas fa-arrow-up"></i></button>
+                    <button class="pad-btn pad-empty" aria-hidden="true" tabindex="-1"></button>
+                    <button class="pad-btn" data-cmd="left" title="Tourner à gauche" aria-label="Tourner à gauche"><i class="fas fa-arrow-left"></i></button>
+                    <button class="pad-btn" data-cmd="stop" title="Arrêt" aria-label="Arrêt"><i class="fas fa-stop"></i></button>
+                    <button class="pad-btn" data-cmd="right" title="Tourner à droite" aria-label="Tourner à droite"><i class="fas fa-arrow-right"></i></button>
+                    <button class="pad-btn pad-empty" aria-hidden="true" tabindex="-1"></button>
+                    <button class="pad-btn" data-cmd="backward" title="Reculer" aria-label="Reculer"><i class="fas fa-arrow-down"></i></button>
+                    <button class="pad-btn pad-empty" aria-hidden="true" tabindex="-1"></button>
+                </div>
+            </section>
+
+            <section class="panel control-actions-zone">
+                <h3 class="subsection-header-sm"><i class="fas fa-bolt"></i> Actions Rapides</h3>
+                <div class="control-actions-row">
+                    <button class="btn" data-trigger-id="startRobotBtn"><i class="fas fa-play"></i> Start</button>
+                    <button class="btn" data-trigger-id="emergencyStop"><i class="fas fa-stop-circle"></i> Urgence</button>
+                    <button class="btn btn-outline" data-trigger-id="mpuStartBtn"><i class="fas fa-wave-square"></i> MPU Start</button>
+                    <button class="btn btn-outline" data-trigger-id="mpuCalibrateBtn"><i class="fas fa-sliders-h"></i> Calibrer MPU</button>
+                </div>
+            </section>
+
+            <section class="panel control-mission-zone">
+                <h3 class="subsection-header-sm"><i class="fas fa-list-check"></i> Missions</h3>
+                <div id="controlMissionList" class="control-mission-list"></div>
+            </section>
+
+            <section class="panel control-log-zone">
+                <h3 class="subsection-header-sm"><i class="fas fa-terminal"></i> Journal</h3>
+                <div id="controlLogBox" class="control-log-box"></div>
+            </section>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo"><img src="images/ghost-b.jpeg" alt="Logo"><span>GHOSTBUSTER</span></div>
+            <div class="footer-links">
+                <a href="index.html">Accueil</a>
+                <a href="robot.html">Robot</a>
+                <a href="documentation.html">Docs</a>
+                <a href="interface.html">Interface</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="footer-social">
+                <a href="#" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="#" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+        <div class="copyright"><p>© 2025 GHOSTBUSTER - Interface Robot</p></div>
+    </footer>
+
+    <script src="scripts/preferences-sync.js?v=20260409c"></script>
+    <script>
+        // Variables globales
+        let connected = false;
+        let demoMode = false;
+        let currentMode = 'auto';
+        let socket = null;
+        let showTrackGrid = true;
+        let runSeconds = 0;
+        let hasLiveTelemetry = false;
+
+        // Éléments DOM
+        const logBox = document.getElementById('logBox');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const speedValue = document.getElementById('speedValue');
+        const obstacleValue = document.getElementById('obstacleValue');
+        const aiStatus = document.getElementById('aiStatus');
+        const batteryLevel = document.getElementById('batteryLevel');
+        const latencyKpi = document.getElementById('latencyKpi');
+        const controlView = document.getElementById('controlView');
+        const controlLogBox = document.getElementById('controlLogBox');
+        const missionList = document.getElementById('missionList');
+        const controlMissionList = document.getElementById('controlMissionList');
+
+        function syncControlStatePanel() {
+            const cStatus = document.getElementById('controlStatusValue');
+            const cMode = document.getElementById('controlModeValue');
+            const cBattery = document.getElementById('controlBatteryValue');
+            const cSpeed = document.getElementById('controlSpeedValue');
+            if (cStatus) cStatus.textContent = connected ? 'CONNECTE' : demoMode ? 'MODE DEMO' : 'HORS LIGNE';
+            if (cMode) cMode.textContent = currentMode.toUpperCase();
+            if (cBattery) cBattery.textContent = batteryLevel.textContent;
+            if (cSpeed) cSpeed.textContent = speedValue.textContent;
+        }
+
+        function refreshConnectionUi() {
+            const connectionStatus = document.getElementById('connectionStatus');
+            if (connectionStatus) {
+                connectionStatus.classList.remove('connection-status-offline', 'connection-status-demo');
+                if (connected) {
+                    connectionStatus.textContent = 'CONNECTÉ';
+                } else if (demoMode) {
+                    connectionStatus.textContent = 'MODE DÉMO';
+                    connectionStatus.classList.add('connection-status-demo');
+                } else {
+                    connectionStatus.textContent = 'HORS LIGNE';
+                    connectionStatus.classList.add('connection-status-offline');
+                }
+            }
+
+            if (statusDot) {
+                statusDot.classList.remove('online');
+                statusDot.classList.toggle('demo', demoMode && !connected);
+                if (connected) {
+                    statusDot.classList.add('online');
+                }
+            }
+
+            if (statusText) {
+                statusText.textContent = connected ? 'En ligne' : demoMode ? 'Mode démo' : 'Hors ligne';
+            }
+
+            syncControlStatePanel();
+        }
+
+        function activateDemoMode() {
+            demoMode = true;
+            hasLiveTelemetry = false;
+            refreshConnectionUi();
+        }
+
+        function simulateRobotCommand(command, speedLimit) {
+            activateDemoMode();
+            mpuState.active = true;
+
+            const pace = Math.max(0.35, Math.min(1.6, Number(speedLimit || 55) / 55));
+            const dt = 0.18;
+            let ax = 0;
+            let ay = 0;
+            let gz = 0;
+
+            if (command === 'forward') {
+                ay = 0.18 * pace;
+            } else if (command === 'backward') {
+                ay = -0.16 * pace;
+            } else if (command === 'left') {
+                gz = -0.25 * pace;
+            } else if (command === 'right') {
+                gz = 0.25 * pace;
+            } else if (command === 'stop') {
+                mpuState.vx = 0;
+                mpuState.vy = 0;
+                speedValue.textContent = '0.00 m/s';
+                aiStatus.textContent = 'PRÊT';
+                obstacleValue.textContent = 'Libre';
+                drawTrack();
+                return;
+            }
+
+            handleMpuSample(dt, ax, ay, gz);
+
+            const demoSpeed = Math.max(0.12, Math.min(1.8, (Math.abs(ax) + Math.abs(ay) + Math.abs(gz)) * 2.4 + Math.random() * 0.18));
+            speedValue.textContent = demoSpeed.toFixed(2) + ' m/s';
+            aiStatus.textContent = command === 'forward' ? 'NAV' : command === 'backward' ? 'RECUL' : command === 'left' || command === 'right' ? 'CAP' : 'DEMO';
+            obstacleValue.textContent = 'Libre';
+
+            const currentBattery = parseInt(batteryLevel.textContent, 10) || 94;
+            const nextBattery = Math.max(15, currentBattery - 1);
+            batteryLevel.textContent = nextBattery + '%';
+            document.getElementById('batteryKpi').textContent = nextBattery + '%';
+            refreshConnectionUi();
+        }
+
+        function syncControlMissions() {
+            if (!missionList || !controlMissionList) return;
+            controlMissionList.innerHTML = missionList.innerHTML;
+        }
+
+        function getWsUrl() {
+            const host = (document.getElementById('robotHost')?.value || '').trim();
+            const port = (document.getElementById('robotPort')?.value || '').trim();
+            let path = (document.getElementById('robotWsPath')?.value || '/ws').trim();
+            if (!host) return null;
+            if (!path.startsWith('/')) path = `/${path}`;
+            const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+            const endpoint = port ? `${host}:${port}` : host;
+            return `${protocol}://${endpoint}${path}`;
+        }
+
+        // MPU State
+        const mpuState = {
+            active: false,
+            x: 0, y: 0,
+            vx: 0, vy: 0,
+            yaw: 0,
+            distance: 0,
+            lastTs: Date.now(),
+            points: [{ x: 0, y: 0 }]
+        };
+
+        // Canvas Track
+        const trackCanvas = document.getElementById('trackCanvas');
+        let trackCtx = trackCanvas ? trackCanvas.getContext('2d') : null;
+        const trackCanvasControl = document.getElementById('trackCanvasControl');
+        let trackCtxControl = trackCanvasControl ? trackCanvasControl.getContext('2d') : null;
+
+        // Fonctions
+        function log(message) {
+            if (!logBox) return;
+            const stamp = new Date().toLocaleTimeString();
+            const line = document.createElement('div');
+            line.textContent = `[${stamp}] ${message}`;
+            logBox.prepend(line);
+            while (logBox.children.length > 50) logBox.removeChild(logBox.lastChild);
+
+            if (controlLogBox) {
+                const clone = document.createElement('div');
+                clone.textContent = line.textContent;
+                controlLogBox.prepend(clone);
+                while (controlLogBox.children.length > 80) controlLogBox.removeChild(controlLogBox.lastChild);
+            }
+        }
+
+        function drawTrackOn(targetCtx, targetCanvas) {
+            if (!targetCtx || !targetCanvas) return;
+            const w = targetCanvas.width;
+            const h = targetCanvas.height;
+            targetCtx.clearRect(0, 0, w, h);
+            targetCtx.fillStyle = 'rgba(10, 12, 16, 0.95)';
+            targetCtx.fillRect(0, 0, w, h);
+
+            if (showTrackGrid) {
+                targetCtx.strokeStyle = 'rgba(46, 204, 113, 0.15)';
+                targetCtx.lineWidth = 1;
+                for (let x = 0; x < w; x += 40) {
+                    targetCtx.beginPath();
+                    targetCtx.moveTo(x, 0);
+                    targetCtx.lineTo(x, h);
+                    targetCtx.stroke();
+                }
+                for (let y = 0; y < h; y += 40) {
+                    targetCtx.beginPath();
+                    targetCtx.moveTo(0, y);
+                    targetCtx.lineTo(w, y);
+                    targetCtx.stroke();
+                }
+            }
+
+            const cx = w / 2;
+            const cy = h / 2;
+            let minX = 0;
+            let maxX = 0;
+            let minY = 0;
+            let maxY = 0;
+            for (const p of mpuState.points) {
+                if (p.x < minX) minX = p.x;
+                if (p.x > maxX) maxX = p.x;
+                if (p.y < minY) minY = p.y;
+                if (p.y > maxY) maxY = p.y;
+            }
+            const spanX = Math.max(0.2, maxX - minX);
+            const spanY = Math.max(0.2, maxY - minY);
+            const scaleX = (w * 0.82) / spanX;
+            const scaleY = (h * 0.82) / spanY;
+            const scale = Math.max(22, Math.min(260, Math.min(scaleX, scaleY)));
+
+            targetCtx.strokeStyle = '#2ecc71';
+            targetCtx.lineWidth = 3;
+            targetCtx.shadowColor = 'rgba(46, 204, 113, 0.5)';
+            targetCtx.shadowBlur = 6;
+            targetCtx.beginPath();
+            for (let i = 0; i < mpuState.points.length; i++) {
+                const p = mpuState.points[i];
+                const px = cx + (p.x - (minX + maxX) / 2) * scale;
+                const py = cy - (p.y - (minY + maxY) / 2) * scale;
+                if (i === 0) targetCtx.moveTo(px, py);
+                else targetCtx.lineTo(px, py);
+            }
+            targetCtx.stroke();
+            targetCtx.shadowBlur = 0;
+
+            const last = mpuState.points[mpuState.points.length - 1];
+            const lx = cx + (last.x - (minX + maxX) / 2) * scale;
+            const ly = cy - (last.y - (minY + maxY) / 2) * scale;
+            targetCtx.fillStyle = '#4ac0e4';
+            targetCtx.beginPath();
+            targetCtx.arc(lx, ly, 7, 0, Math.PI * 2);
+            targetCtx.fill();
+        }
+
+        function drawTrack() {
+            drawTrackOn(trackCtx, trackCanvas);
+            drawTrackOn(trackCtxControl, trackCanvasControl);
+        }
+
+        function pushTrackPoint(x, y) {
+            const last = mpuState.points[mpuState.points.length - 1];
+            const dx = x - last.x;
+            const dy = y - last.y;
+            mpuState.distance += Math.sqrt(dx * dx + dy * dy);
+            mpuState.points.push({ x, y });
+            if (mpuState.points.length > 20000) mpuState.points.shift();
+            
+            document.getElementById('totalDistanceAdv').textContent = mpuState.distance.toFixed(2) + ' m';
+            document.getElementById('distanceAdv').textContent = mpuState.distance.toFixed(2);
+            document.getElementById('posXAdv').textContent = mpuState.x.toFixed(2);
+            document.getElementById('posYAdv').textContent = mpuState.y.toFixed(2);
+            document.getElementById('trackPointsAdv').textContent = mpuState.points.length;
+            drawTrack();
+        }
+
+        function handleMpuSample(dt, ax, ay, gz) {
+            const drift = 0.002;
+            mpuState.yaw += (gz - drift) * dt;
+            mpuState.vx = (mpuState.vx + ax * dt) * 0.985;
+            mpuState.vy = (mpuState.vy + ay * dt) * 0.985;
+            mpuState.x += mpuState.vx * dt;
+            mpuState.y += mpuState.vy * dt;
+
+            document.getElementById('axValue').textContent = ax.toFixed(2);
+            document.getElementById('ayValue').textContent = ay.toFixed(2);
+            document.getElementById('gzValue').textContent = gz.toFixed(2);
+            document.getElementById('yawValue').textContent = (mpuState.yaw * 57.2958).toFixed(2);
+            document.getElementById('mapStatusText').textContent = socket ? 'LIVE-MPU6050' : 'SIM-MPU6050';
+            const controlMapStatus = document.getElementById('controlMapStatus');
+            if (controlMapStatus) controlMapStatus.textContent = socket ? 'LIVE' : 'SIM';
+            
+            pushTrackPoint(mpuState.x, mpuState.y);
+        }
+
+        function simulateMpu() {
+            if (!connected && !mpuState.active) return;
+            const now = Date.now();
+            const dt = Math.min(0.05, (now - mpuState.lastTs) / 1000);
+            mpuState.lastTs = now;
+            const t = now / 800;
+            handleMpuSample(dt, Math.cos(t) * 0.15, Math.sin(t * 0.7) * 0.12, Math.sin(t * 0.5) * 0.08);
+        }
+
+        function sendRobotMessage(payload) {
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify(payload));
+                return true;
+            }
+            return false;
+        }
+
+        function applyTelemetry(payload) {
+            if (!payload || typeof payload !== 'object') return;
+            hasLiveTelemetry = true;
+
+            if (payload.battery !== undefined) {
+                const val = `${Math.max(0, Math.min(100, Number(payload.battery))).toFixed(0)}%`;
+                batteryLevel.textContent = val;
+                document.getElementById('batteryKpi').textContent = val;
+            }
+            if (payload.speed !== undefined) {
+                const speed = `${Number(payload.speed).toFixed(2)} m/s`;
+                speedValue.textContent = speed;
+            }
+            if (payload.obstacle !== undefined) obstacleValue.textContent = String(payload.obstacle);
+            if (payload.mode !== undefined) {
+                currentMode = String(payload.mode).toLowerCase();
+                document.getElementById('modeKpi').textContent = currentMode.toUpperCase();
+            }
+
+            const mpu = payload.mpu || payload.imu || null;
+            if (mpu) {
+                const ax = Number(mpu.ax ?? 0);
+                const ay = Number(mpu.ay ?? 0);
+                const gz = Number(mpu.gz ?? 0);
+                const dt = Number(mpu.dt ?? 0.05);
+                handleMpuSample(dt, ax, ay, gz);
+            }
+            if (payload.position && payload.position.x !== undefined && payload.position.y !== undefined) {
+                mpuState.x = Number(payload.position.x);
+                mpuState.y = Number(payload.position.y);
+                pushTrackPoint(mpuState.x, mpuState.y);
+            }
+            if (payload.latencyMs !== undefined) latencyKpi.textContent = `${Number(payload.latencyMs).toFixed(0)} ms`;
+            syncControlStatePanel();
+        }
+
+        function setConnection(state) {
+            connected = state;
+            statusDot.classList.toggle('online', state);
+            statusText.textContent = state ? 'En ligne' : 'Hors ligne';
+            document.getElementById('connectionStatus').textContent = state ? 'CONNECTÉ' : 'HORS LIGNE';
+            log(state ? 'Robot connecté' : 'Robot déconnecté');
+            if (state) {
+                demoMode = false;
+                mpuState.active = true;
+            } else {
+                hasLiveTelemetry = false;
+            }
+            refreshConnectionUi();
+        }
+
+        // Événements
+        document.getElementById('openControlPageBtn').addEventListener('click', () => {
+            if (!controlView) return;
+            controlView.classList.add('active');
+            controlView.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('control-open');
+            syncControlStatePanel();
+            syncControlMissions();
+            drawTrack();
+        });
+
+        document.getElementById('closeControlPageBtn').addEventListener('click', () => {
+            if (!controlView) return;
+            controlView.classList.remove('active');
+            controlView.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('control-open');
+        });
+
+        controlView?.addEventListener('click', (e) => {
+            if (e.target === controlView) {
+                controlView.classList.remove('active');
+                controlView.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('control-open');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && controlView?.classList.contains('active')) {
+                controlView.classList.remove('active');
+                controlView.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('control-open');
+            }
+        });
+
+        document.querySelectorAll('[data-trigger-id]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const target = document.getElementById(btn.dataset.triggerId);
+                if (target) target.click();
+            });
+        });
+
+        document.getElementById('connectBtn').addEventListener('click', () => {
+            const wsUrl = getWsUrl();
+            if (!wsUrl) {
+                log('Adresse robot invalide');
+                return;
+            }
+
+            if (socket && socket.readyState === WebSocket.OPEN) socket.close();
+
+            const startedAt = performance.now();
+            hasLiveTelemetry = false;
+            try {
+                socket = new WebSocket(wsUrl);
+                socket.onopen = () => {
+                    setConnection(true);
+                    latencyKpi.textContent = `${Math.max(1, Math.round(performance.now() - startedAt))} ms`;
+                    log(`Connecté au robot: ${wsUrl}`);
+                };
+                socket.onmessage = (event) => {
+                    try {
+                        const payload = JSON.parse(event.data);
+                        applyTelemetry(payload);
+                    } catch (err) {
+                        log('Message non JSON reçu du robot');
+                    }
+                };
+                socket.onerror = () => {
+                    log('Erreur WebSocket: vérifie IP/port/chemin');
+                };
+                socket.onclose = () => {
+                    setConnection(false);
+                    socket = null;
+                };
+            } catch (err) {
+                log(`Connexion impossible: ${err.message || err}`);
+            }
+        });
+
+        document.getElementById('disconnectBtn').addEventListener('click', () => {
+            if (socket) socket.close();
+            setConnection(false);
+        });
+
+        document.getElementById('startRobotBtn').addEventListener('click', () => {
+            if (!connected) {
+                simulateRobotCommand('start', Number(document.getElementById('speedLimit')?.value || 55));
+                log('START simulé en mode démo');
+                aiStatus.textContent = 'DEMO';
+                return;
+            }
+            const ok = sendRobotMessage({ type: 'command', command: 'start' });
+            if (ok) {
+                aiStatus.textContent = 'RUNNING';
+                log('START envoyé au robot');
+            } else {
+                log('Impossible d\'envoyer START (socket fermée)');
+            }
+        });
+
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentMode = btn.dataset.mode;
+                aiStatus.textContent = currentMode === 'auto' ? 'AUTO' : currentMode === 'assist' ? 'ASSIST' : 'MANUAL';
+                document.getElementById('modeKpi').textContent = currentMode.toUpperCase();
+                if (connected) sendRobotMessage({ type: 'mode', mode: currentMode });
+                log(`Mode changé: ${currentMode.toUpperCase()}`);
+                syncControlStatePanel();
+            });
+        });
+
+        document.querySelectorAll('[data-cmd]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const cmd = btn.dataset.cmd;
+                const speedLimit = Number(document.getElementById('speedLimit')?.value || 55);
+                if (!connected) {
+                    simulateRobotCommand(cmd, speedLimit);
+                    log(`Commande simulée: ${cmd}`);
+                    return;
+                }
+                sendRobotMessage({ type: 'command', command: cmd, speedLimit });
+                log(`Commande envoyée: ${cmd}`);
+                speedValue.textContent = cmd === 'stop' ? '0.00 m/s' : (Math.random() * 1.2 + 0.2).toFixed(2) + ' m/s';
+            });
+        });
+
+        document.getElementById('emergencyStop').addEventListener('click', () => {
+            if (connected) sendRobotMessage({ type: 'command', command: 'emergency_stop' });
+            speedValue.textContent = '0.00 m/s';
+            obstacleValue.textContent = 'URGENCE';
+            aiStatus.textContent = 'HALT';
+            log('!!! ARRÊT D\'URGENCE !!!');
+        });
+
+        document.getElementById('clearLogs').addEventListener('click', () => {
+            if (logBox) logBox.innerHTML = '';
+            if (controlLogBox) controlLogBox.innerHTML = '';
+            log('Logs effacés');
+        });
+
+        document.getElementById('clearTrackBtn').addEventListener('click', () => {
+            mpuState.x = 0; mpuState.y = 0; mpuState.vx = 0; mpuState.vy = 0;
+            mpuState.yaw = 0; mpuState.distance = 0;
+            mpuState.points = [{ x: 0, y: 0 }];
+            drawTrack();
+            log('Trajectoire effacée');
+        });
+
+        document.getElementById('exportTrackBtn').addEventListener('click', () => {
+            const data = JSON.stringify(mpuState.points);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `track_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            log('Trajectoire exportée');
+        });
+
+        document.getElementById('toggleGridBtn').addEventListener('click', function() {
+            showTrackGrid = !showTrackGrid;
+            this.classList.toggle('active', showTrackGrid);
+            drawTrack();
+        });
+
+        document.getElementById('mpuClearBtn').addEventListener('click', () => {
+            mpuState.x = 0; mpuState.y = 0; mpuState.vx = 0; mpuState.vy = 0;
+            mpuState.yaw = 0; mpuState.distance = 0;
+            mpuState.points = [{ x: 0, y: 0 }];
+            drawTrack();
+            log('MPU réinitialisé');
+        });
+
+        document.getElementById('mpuStartBtn').addEventListener('click', () => {
+            mpuState.active = true;
+            mpuState.lastTs = Date.now();
+            if (connected) {
+                sendRobotMessage({ type: 'command', command: 'start_mpu' });
+                log('MPU6050 démarré');
+            } else {
+                activateDemoMode();
+                log('MPU6050 démarré en mode démo');
+            }
+        });
+
+        document.getElementById('mpuCalibrateBtn').addEventListener('click', () => {
+            mpuState.vx = 0; mpuState.vy = 0;
+            if (connected) {
+                sendRobotMessage({ type: 'command', command: 'calibrate_mpu' });
+                log('MPU6050 calibré');
+            } else {
+                activateDemoMode();
+                log('MPU6050 calibré en mode démo');
+            }
+        });
+
+        document.querySelectorAll('[data-mission]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const mission = btn.dataset.mission;
+                const list = document.getElementById('missionList');
+                if (!list) return;
+                const item = document.createElement('div');
+                item.className = 'mission-item';
+                item.innerHTML = `<span>${mission}</span><span class="mission-tag">QUEUE</span>`;
+                list.prepend(item);
+                syncControlMissions();
+                log(`Mission ajoutée: ${mission}`);
+            });
+        });
+
+        function updateSensors() {
+            const batteryAdv = document.getElementById('batteryAdv');
+            const speedAdv = document.getElementById('speedAdv');
+            if (batteryAdv) batteryAdv.textContent = batteryLevel.textContent;
+            if (speedAdv) speedAdv.textContent = speedValue.textContent;
+            syncControlStatePanel();
+        }
+
+        // Timers
+        setInterval(() => { if (connected || demoMode) updateSensors(); }, 800);
+        setInterval(() => {
+            if ((connected || demoMode) && !hasLiveTelemetry) simulateMpu();
+        }, 100);
+        setInterval(() => {
+            if (connected || demoMode) {
+                runSeconds++;
+                const mm = String(Math.floor(runSeconds / 60)).padStart(2, '0');
+                const ss = String(runSeconds % 60).padStart(2, '0');
+                document.getElementById('runTimeAdv').textContent = `${mm}:${ss}`;
+            }
+        }, 1000);
+        
+        // Battery simulation
+        setInterval(() => {
+            if (connected || demoMode) {
+                let bat = parseInt(batteryLevel.textContent) || 94;
+                bat = Math.max(15, bat - (Math.random() < 0.2 ? 1 : 0));
+                batteryLevel.textContent = bat + '%';
+                document.getElementById('batteryKpi').textContent = bat + '%';
+            }
+        }, 5000);
+
+        // Back to top
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('backToTop');
+            if (btn) btn.classList.toggle('visible', window.scrollY > 300);
+        });
+        window.scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Theme toggle
+        // Initialisation
+        syncControlStatePanel();
+        syncControlMissions();
+        drawTrack();
+        log('Interface initialisée');
+        refreshConnectionUi();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -6,7 +6,7 @@
     <meta name="description" content="GhostBuster - Projet de robot suiveur de ligne et eviteur d'obstacles, documentation technique et suivi d'avancement.">
     <link rel="icon" type="image/jpeg" href="images/ghost-b.jpeg">
     <script src="scripts/boot-preferences.js"></script>
-    <title>GhostBuster - Notre Équipe</title>
+    <title>GhostBuster - Schémas et Diagrammes</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts - Inter -->
@@ -23,6 +23,7 @@
             --primary: #2ecc71;
             --primary-dark: #27ae60;
             --secondary: #8fa8c0;
+            --accent: #e74c3c;
             --bg-primary: #0a0c10;
             --bg-secondary: #14181c;
             --bg-card: #1a1f24;
@@ -34,7 +35,6 @@
             --icon-color: #4ac0e4;
             --icon-hover: #27ae60;
             
-            /* Tailles de police */
             --font-size-xs: 0.75rem;
             --font-size-sm: 0.875rem;
             --font-size-base: 1rem;
@@ -71,12 +71,23 @@
         /* ===== ANIMATIONS ===== */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-25px); }
+            50% { transform: translateY(-10px); }
         }
 
         @keyframes glowPulse {
-            0%, 100% { filter: drop-shadow(0 0 25px var(--primary)); }
-            50% { filter: drop-shadow(0 0 50px var(--primary)); }
+            0%, 100% { filter: drop-shadow(0 0 15px var(--primary)); }
+            50% { filter: drop-shadow(0 0 30px var(--primary)); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .animate-float {
@@ -86,27 +97,7 @@
         .animate-glow {
             animation: glowPulse 3s ease-in-out infinite;
         }
-        /* Lint utility helpers */
-        .ghost-hidden { display: none; }
-        .text-center { text-align: center; }
-        .text-muted-center { text-align: center; color: var(--text-secondary); font-size: var(--font-size-xs); }
-        .mb-15 { margin-bottom: 1.5rem; }
-        .mb-10 { margin-bottom: 1rem; }
-        .mt-15 { margin-top: 1.5rem; }
-        .mt-10 { margin-top: 1rem; }
-        .w-100 { width: 100%; }
-        .btn-outline-primary-flat { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-        .icon-color-accent { color: var(--icon-color); }
-        .icon-primary { color: var(--primary); }
-        .icon-secondary { color: var(--secondary); }
-        .flex-col-gap-08 { display: flex; flex-direction: column; gap: 0.8rem; }
-        .progress-100 { width: 100%; }
-        .progress-95 { width: 95%; }
-        .progress-92 { width: 92%; }
-        .progress-90 { width: 90%; }
-        .progress-80 { width: 80%; }
-        .progress-75 { width: 75%; }
-        .progress-0 { width: 0%; }
+
         /* ===== THEME TOGGLE ===== */
         .theme-toggle {
             position: fixed;
@@ -157,6 +148,7 @@
         .lang-toggle:hover {
             transform: scale(1.1);
         }
+
         /* ===== BACK TO TOP ===== */
         .back-to-top {
             position: fixed;
@@ -173,11 +165,11 @@
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
+            box-shadow: var(--glow);
+            transition: all 0.3s ease;
             color: var(--bg-primary);
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
-            box-shadow: var(--glow);
         }
 
         .back-to-top.visible {
@@ -186,10 +178,10 @@
         }
 
         .back-to-top:hover {
-            transform: scale(1.1);
-            background: var(--primary-dark);
+            transform: translateY(-5px);
         }
-        /* ===== NAVIGATION COMPLÈTE ===== */
+
+        /* ===== NAVIGATION ===== */
         nav {
             position: fixed;
             top: 0;
@@ -200,6 +192,8 @@
             align-items: center;
             z-index: 1000;
             background: rgba(10, 12, 16, 0.98);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
             transition: all 0.3s ease;
         }
@@ -218,10 +212,10 @@
             gap: 8px;
         }
 
-        .logo img {
-            height: 35px;
-            width: auto;
-            border-radius: 8px;
+        
+
+        .logo-fallback {
+            display: none;
         }
 
         .nav-links {
@@ -261,9 +255,6 @@
 
         /* Menu mobile */
         @media (max-width: 768px) {
-            body {
-                padding-top: 60px;
-            }
             nav {
                 padding: 0.6rem 3%;
             }
@@ -274,9 +265,11 @@
             .logo {
                 font-size: 1rem;
             }
-            .logo img {
-                height: 28px;
-            }
+            
+
+        .logo-fallback {
+            display: none;
+        }
         }
 
         /* ===== CONTENU PRINCIPAL ===== */
@@ -288,144 +281,180 @@
             width: 100%;
         }
 
-        /* En-tête de la page */
+        /* En-tête de page */
         .page-header {
-            margin-bottom: 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.6s ease-out;
         }
 
         .page-header h1 {
-            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-size: var(--font-size-4xl);
             color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .page-header h1 i {
+            color: var(--icon-color);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: var(--font-size-base);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Bouton retour */
+        .doc-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-card);
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .doc-back:hover {
+            transform: translateX(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        /* Grille principale */
+        .doc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .doc-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 1.8rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .doc-card:nth-child(1) { animation-delay: 0.1s; }
+        .doc-card:nth-child(2) { animation-delay: 0.2s; }
+        .doc-card:nth-child(3) { animation-delay: 0.3s; }
+
+        .doc-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .doc-card h2 {
+            font-size: var(--font-size-xl);
+            color: var(--primary);
+            margin-bottom: 1.2rem;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .page-header p {
+        .doc-card h2 i {
+            color: var(--icon-color);
+            font-size: 1.5rem;
+        }
+
+        .doc-card p {
             color: var(--text-secondary);
-            margin-top: 0.5rem;
+            font-size: var(--font-size-sm);
+            line-height: 1.6;
+        }
+
+        .doc-card ul {
+            list-style: none;
+        }
+
+        .doc-card ul li {
+            padding: 0.6rem 0;
+            border-bottom: 1px dashed var(--border-color);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
             font-size: var(--font-size-sm);
         }
 
-        /* Liste des membres */
-        .membres-liste {
-            display: flex;
-            flex-direction: column;
-            gap: 1.2rem;
-            max-width: 900px;
-            margin: 0 auto;
+        .doc-card ul li:last-child {
+            border-bottom: none;
         }
 
-        /* Carte membre */
-        .membre-item {
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-            background: var(--bg-card);
-            padding: 1rem 1.2rem;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-
-        .membre-item:hover {
-            border-color: var(--primary);
-            box-shadow: var(--glow);
-            transform: translateX(5px);
-        }
-
-        /* Petit cercle pour la photo */
-        .membre-photo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--primary);
-            box-shadow: var(--glow);
-            flex-shrink: 0;
-        }
-
-        /* Conteneur des infos */
-        .membre-infos {
-            flex: 1;
-        }
-
-        .membre-infos h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
+        .doc-card ul li i {
             color: var(--primary);
-            margin-bottom: 0.2rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            width: 20px;
         }
 
-        .chef-badge {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: var(--bg-primary);
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 0.2rem 0.6rem;
-            border-radius: 50px;
+        /* Galerie d'images */
+        .doc-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
         }
 
-        .membre-role {
-            font-size: 0.85rem;
-            color: var(--secondary);
-            font-weight: 600;
-            margin-bottom: 0.3rem;
+        .doc-gallery figure {
+            margin: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
 
-        .membre-niveau {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            margin-bottom: 0.5rem;
+        .doc-gallery figure:hover {
+            transform: scale(1.02);
+            box-shadow: var(--glow);
         }
 
-        .membre-niveau i {
-            color: var(--icon-color);
-            font-size: 0.85rem;
+        .doc-gallery img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            transition: transform 0.3s ease;
         }
 
-        .membre-desc {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-            line-height: 1.5;
+        .doc-gallery figure:hover img {
+            transform: scale(1.05);
         }
 
-        .membre-contacts {
-            display: flex;
-            gap: 0.6rem;
-        }
-
-        .membre-contacts a {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+        .doc-gallery figcaption {
+            padding: 0.8rem;
             background: var(--bg-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--icon-color);
-            text-decoration: none;
-            transition: all 0.3s;
-            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-size: var(--font-size-xs);
+            text-align: center;
+        }
+
+        .tech-tag {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--primary);
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-size: var(--font-size-xs);
+            font-weight: 500;
             border: 1px solid var(--border-color);
         }
 
-        .membre-contacts a:hover {
-            background: var(--icon-hover);
-            color: white;
-            transform: scale(1.1);
-            border-color: var(--icon-hover);
-        }
-
-        /* ===== FOOTER COMPLET ===== */
+        /* FOOTER */
         footer {
             background: var(--bg-card);
             padding: 2rem 5%;
@@ -524,18 +553,14 @@
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .main-content {
-                padding: 1.5rem 4%;
+            .doc-gallery {
+                grid-template-columns: 1fr;
             }
 
-            .membre-item {
-                padding: 1rem;
-                gap: 1rem;
-            }
-
-            .membre-photo {
-                width: 70px;
-                height: 70px;
+            .page-header h1 {
+                font-size: var(--font-size-3xl);
+                flex-direction: column;
+                gap: 5px;
             }
 
             .footer-content {
@@ -549,25 +574,16 @@
         }
 
         @media (max-width: 480px) {
-            .membre-item {
-                flex-direction: column;
-                text-align: center;
+            .main-content {
+                padding: 1.5rem 4%;
             }
 
-            .membre-infos h3 {
-                justify-content: center;
+            .doc-card {
+                padding: 1.2rem;
             }
 
-            .membre-niveau {
-                justify-content: center;
-            }
-
-            .membre-contacts {
-                justify-content: center;
-            }
-
-            .page-header h1 {
-                font-size: 1.8rem;
+            .doc-card h2 {
+                font-size: var(--font-size-lg);
             }
         }
 
@@ -585,8 +601,9 @@
         }
     </style>
     <link rel="stylesheet" href="styles/pro-competition.css?v=20260409c">
+    <link rel="stylesheet" href="styles/documentation-detail.css">
 </head>
-<body data-theme="light" data-lang="en">
+<body class="doc-detail-page" data-theme="light" data-lang="en">
     <!-- ===== THEME TOGGLE ===== -->
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Basculer le thème">
         <span id="themeIcon">👻</span>
@@ -596,15 +613,17 @@
     <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">
         <span id="langIcon">FR</span>
     </button>
+
     <!-- ===== BACK TO TOP ===== -->
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
         <i class="fas fa-arrow-up"></i>
     </button>
-    <!-- ===== NAVIGATION COMPLÈTE ===== -->
+
+    <!-- ===== NAVIGATION ===== -->
     <nav id="navbar">
         <div class="logo">
             <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <span class="ghost-hidden">&#128123;</span>
+            <span hidden>&#128123;</span>
             <span>GHOSTBUSTER</span>
         </div>
         <div class="nav-links">
@@ -612,7 +631,7 @@
                 <span class="lang-fr">Accueil</span>
                 <span class="lang-en">Home</span>
             </a>
-            <a href="equipe.html" class="active" id="nav-equipe" title="Équipe">
+            <a href="equipe.html" id="nav-equipe" title="Équipe">
                 <span class="lang-fr">Équipe</span>
                 <span class="lang-en">Team</span>
             </a>
@@ -628,7 +647,7 @@
                 <span class="lang-fr">Roadmap</span>
                 <span class="lang-en">Roadmap</span>
             </a>
-            <a href="index.html#contact" id="nav-contact" title="Contact">
+            <a href="contact.html" id="nav-contact" title="Contact">
                 <span class="lang-fr">Contact</span>
                 <span class="lang-en">Contact</span>
             </a>
@@ -636,189 +655,65 @@
     </nav>
 
     <!-- ===== CONTENU PRINCIPAL ===== -->
-    <div class="main-content">
-        <div class="page-header">
+    <div class="main-content doc-main">
+        <a href="documentation.html" class="doc-back" title="Retour à la documentation">
+            <i class="fas fa-arrow-left"></i>
+            <span class="lang-fr">Retour au sommaire documentation</span>
+            <span class="lang-en">Back to documentation summary</span>
+        </a>
+
+        <div class="page-header doc-header">
             <h1>
-                <i class="fas fa-users"></i> 
-                <span class="lang-fr">Notre Équipe</span>
-                <span class="lang-en">Our Team</span>
+                <i class="fas fa-project-diagram"></i>
+                <span class="lang-fr">Schémas et diagrammes</span>
+                <span class="lang-en">Schemas and Diagrams</span>
             </h1>
             <p>
-                <span class="lang-fr">7 membres passionnés - 3 pôles techniques</span>
-                <span class="lang-en">7 passionate members - 3 technical poles</span>
+                <span class="lang-fr">Références visuelles consolidées pour les blocs, séquences, états et schémas d'architecture.</span>
+                <span class="lang-en">Consolidated visual references for blocks, sequences, states and architecture diagrams.</span>
             </p>
         </div>
 
-        <div class="membres-liste">
-            <!-- Melkisedeck - Chef d'équipe -->
-            <div class="membre-item">
-                <img src="images/mel.jpeg" alt="Melkisedeck DJIMADJO" class="membre-photo" onerror="this.src='images/placeholder.svg'">
-                <div class="membre-infos">
-                    <h3>Melkisedeck DJIMADJO <span class="chef-badge">Chef</span></h3>
-                    <div class="membre-role">Pôle Mécanique</div>
-                    <div class="membre-niveau">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>Informatique Industrielle - Niveau 2</span>
-                    </div>
-                    <p class="membre-desc">
-                        <span class="lang-fr">Responsable de la conception mécanique et chef d'équipe.</span>
-                        <span class="lang-en">Head of mechanical design and team leader.</span>
-                    </p>
-                    <div class="membre-contacts">
-                        <a href="mailto:djimadjomelkisedeck@gmail.com" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                        <a href="https://wa.me/22967836762" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="https://github.com/melnos" title="melnos" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                    </div>
-                </div>
-            </div>
+        <!-- Grille principale -->
+        <div class="doc-grid">
+            <article class="doc-card">
+                <h2><i class="fas fa-book"></i> <span class="lang-fr">Références visuelles</span><span class="lang-en">Visual References</span></h2>
+                <p>
+                    <span class="lang-fr">Cette page centralise les schémas de fonctionnement, les diagrammes de flux et les vues d'architecture du projet.</span>
+                    <span class="lang-en">This page centralizes the functional diagrams, flow diagrams and architecture views of the project.</span>
+                </p>
+            </article>
 
-            <!-- Bérenger - Chef IT -->
-            <div class="membre-item">
-                <img src="images/berenger.jpeg" alt="Bérenger BOTON" class="membre-photo" onerror="this.src='images/placeholder.svg'">
-                <div class="membre-infos">
-                    <h3>Bérenger BOTON</h3>
-                    <div class="membre-role">Pôle Informatique</div>
-                    <div class="membre-niveau">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>Informatique Industrielle - Niveau 2</span>
-                    </div>
-                    <p class="membre-desc">
-                        <span class="lang-fr">Développement des algorithmes de suivi de ligne et PID.</span>
-                        <span class="lang-en">Development of line following and PID algorithms.</span>
-                    </p>
-                    <div class="membre-contacts">
-                        <a href="mailto:berenger.b@ghostbuster.bj" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                        <a href="https://wa.me/22968744354" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                    </div>
+            <article class="doc-card">
+                <h2><i class="fas fa-images"></i> <span class="lang-fr">Bibliothèque de schémas</span><span class="lang-en">Schemas Library</span></h2>
+                <div class="doc-gallery">
+                    <figure>
+                        <img src="https://placehold.co/700x420/2ecc71/1a1f24?text=Schema+Bloc" alt="Schema bloc">
+                        <figcaption><span class="lang-fr">Schéma bloc fonctionnel</span><span class="lang-en">Functional block diagram</span></figcaption>
+                    </figure>
+                    <figure>
+                        <img src="https://placehold.co/700x420/2ecc71/1a1f24?text=Diagramme+Sequence" alt="Diagramme sequence">
+                        <figcaption><span class="lang-fr">Diagramme de séquence</span><span class="lang-en">Sequence diagram</span></figcaption>
+                    </figure>
+                    <figure>
+                        <img src="https://placehold.co/700x420/2ecc71/1a1f24?text=Diagramme+Etats" alt="Diagramme etats">
+                        <figcaption><span class="lang-fr">Diagramme d'états</span><span class="lang-en">State diagram</span></figcaption>
+                    </figure>
+                    <figure>
+                        <img src="https://placehold.co/700x420/2ecc71/1a1f24?text=Schema+Electrique" alt="Schema electrique">
+                        <figcaption><span class="lang-fr">Schéma électrique détaillé</span><span class="lang-en">Detailed electrical diagram</span></figcaption>
+                    </figure>
                 </div>
-            </div>
-
-            <!-- Valérie - Chef Électronique -->
-            <div class="membre-item">
-                <img src="images/valerie.jpeg" alt="Valérie KLOKPE" class="membre-photo" onerror="this.src='images/placeholder.svg'">
-                <div class="membre-infos">
-                    <h3>Valérie KLOKPE</h3>
-                    <div class="membre-role">Pôle Électronique</div>
-                    <div class="membre-niveau">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>Électrotechnique - Niveau 2</span>
-                    </div>
-                    <p class="membre-desc">
-                        <span class="lang-fr">Conception des circuits et du PCB.</span>
-                        <span class="lang-en">Circuit and PCB design.</span>
-                    </p>
-                    <div class="membre-contacts">
-                        <a href="mailto:klokpevalerie@gmail.com" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                        <a href="https://wa.me/22944998978" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Steav - Membre IT -->
-            <div class="membre-item">
-                <img src="images/steav.jpeg" alt="Steav BINOUYO" class="membre-photo" onerror="this.src='images/placeholder.svg'">
-                <div class="membre-infos">
-                    <h3>Steav BINOUYO</h3>
-                    <div class="membre-role">Pôle Informatique</div>
-                    <div class="membre-niveau">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>Électrotechnique - Niveau 2</span>
-                    </div>
-                    <p class="membre-desc">
-                        <span class="lang-fr">Tests et calibration des algorithmes.</span>
-                        <span class="lang-en">Algorithm testing and calibration.</span>
-                    </p>
-                    <div class="membre-contacts">
-                        <a href="mailto:binouyotobi@gmail.com" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                        <a href="https://wa.me/22998733638" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Zaénab - Membre Électronique -->
-            <div class="membre-item">
-                <img src="images/zaenab.jpeg" alt="Zaénab OKE" class="membre-photo" onerror="this.src='images/placeholder.svg'">
-                <div class="membre-infos">
-                    <h3>Zaénab OKE</h3>
-                    <div class="membre-role">Pôle Électronique</div>
-                    <div class="membre-niveau">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>Électrotechnique - Niveau 2</span>
-                    </div>
-                    <p class="membre-desc">
-                        <span class="lang-fr">Câblage et tests électroniques.</span>
-                        <span class="lang-en">Wiring and electronic testing.</span>
-                    </p>
-                    <div class="membre-contacts">
-                        <a href="mailto:zaenaboke05@gmail.com" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                        <a href="https://wa.me/22999393164" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Delphin - Membre Mécanique -->
-            <div class="membre-item">
-                <img src="images/delphin.jpeg" alt="Delphin ZINZINSOUHOU" class="membre-photo" onerror="this.src='images/placeholder.svg'">
-                <div class="membre-infos">
-                    <h3>Delphin ZINZINSOUHOU</h3>
-                    <div class="membre-role">Pôle Mécanique</div>
-                    <div class="membre-niveau">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>Informatique Industrielle - Niveau 2</span>
-                    </div>
-                    <p class="membre-desc">
-                        <span class="lang-fr">Assemblage et impression 3D.</span>
-                        <span class="lang-en">Assembly and 3D printing.</span>
-                    </p>
-                    <div class="membre-contacts">
-                        <a href="mailto:delphin.z@ghostbuster.bj" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                        <a href="https://wa.me/22952696537" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Lucrèce - Membre Mécanique -->
-            <div class="membre-item">
-                <img src="images/lucrece.jpeg" alt="SACCA Lucrèce" class="membre-photo" onerror="this.src='images/placeholder.svg'">
-                <div class="membre-infos">
-                    <h3>SACCA Lucrèce</h3>
-                    <div class="membre-role">Pôle Mécanique</div>
-                    <div class="membre-niveau">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>Informatique Industrielle - Niveau 2</span>
-                    </div>
-                    <p class="membre-desc">
-                        <span class="lang-fr">Conception des supports et documentation.</span>
-                        <span class="lang-en">Support design and documentation.</span>
-                    </p>
-                    <div class="membre-contacts">
-                        <a href="mailto:lucrecesacca@gmail.com" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                        <a href="https://wa.me/22944912961" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                    </div>
-                </div>
-            </div>
+            </article>
         </div>
     </div>
 
-    <!-- ===== FOOTER COMPLET ===== -->
+    <!-- ===== FOOTER ===== -->
     <footer>
         <div class="footer-content">
             <div class="footer-logo">
                 <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
-                <span class="ghost-hidden">&#128123;</span>
+                <span hidden>&#128123;</span>
                 <span>GHOSTBUSTER</span>
             </div>
             <div class="footer-links">
@@ -842,16 +737,16 @@
                     <span class="lang-fr">Roadmap</span>
                     <span class="lang-en">Roadmap</span>
                 </a>
-                <a href="index.html#contact" title="Contact">
+                <a href="contact.html" title="Contact">
                     <span class="lang-fr">Contact</span>
                     <span class="lang-en">Contact</span>
                 </a>
             </div>
             <div class="footer-social">
-                <a href="djimadjomelkisedeck@gmail.com" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                <a href="https://github.com/melnos" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="#" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                <a href="#" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
                 <a href="#" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                <a href="https://wa.me/+2290167836762" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
             </div>
         </div>
         <div class="copyright">
@@ -865,18 +760,41 @@
     </footer>
 
     <script>
-        function toggleTheme() {
+        // ===== THEME TOGGLE =====
+        const THEME_STORAGE_KEY = 'ghostbuster-theme';
+
+        function applySavedTheme() {
+            const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
             const body = document.body;
             const icon = document.getElementById('themeIcon');
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.setAttribute('data-theme', 'light');
-                icon.innerHTML = '<i class="fas fa-sun" aria-hidden="true"></i>';
+
+            if (savedTheme === 'light' || savedTheme === 'dark') {
+                body.setAttribute('data-theme', savedTheme);
             } else {
-                body.setAttribute('data-theme', 'dark');
-                icon.innerHTML = '<i class="fas fa-moon" aria-hidden="true"></i>';
+                localStorage.setItem(THEME_STORAGE_KEY, body.getAttribute('data-theme') || 'light');
+            }
+
+            if (icon) {
+                icon.textContent = '👻';
             }
         }
 
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('themeIcon');
+            const nextTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+
+            body.setAttribute('data-theme', nextTheme);
+            localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+
+            if (icon) {
+                icon.textContent = '👻';
+            }
+        }
+
+        applySavedTheme();
+
+        // ===== LANGUAGE TOGGLE =====
         function toggleLanguage() {
             const body = document.body;
             const icon = document.getElementById('langIcon');
@@ -924,15 +842,18 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('img').forEach(img => {
                 img.onerror = function() {
-                    this.src = 'images/placeholder.svg';
+                    this.src = 'https://placehold.co/700x420/2ecc71/1a1f24?text=Image';
                 };
             });
         });
     </script>
-    <script src="scripts/pro-competition.js?v=20260409c"></script>
     <script src="scripts/preferences-sync.js?v=20260409c"></script>
+    <script src="scripts/pro-competition.js?v=20260409c"></script>
 </body>
 </html>
+
+
+
 
 
 

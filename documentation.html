@@ -2,12 +2,17 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GhostBuster - Projet de robot suiveur de ligne et eviteur d'obstacles, documentation technique et suivi d'avancement.">
+    <link rel="icon" type="image/jpeg" href="images/ghost-b.jpeg">
+    <script src="scripts/boot-preferences.js"></script>
     <title>GhostBuster - Documentation Technique</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts - Fira Code -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Prism.js pour coloration syntaxique -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <style>
@@ -20,7 +25,7 @@
         :root {
             --primary: #2ecc71;
             --primary-dark: #27ae60;
-            --secondary: #f1c40f;
+            --secondary: #8fa8c0;
             --accent: #e74c3c;
             --bg-primary: #0a0c10;
             --bg-secondary: #14181c;
@@ -34,8 +39,8 @@
             --icon-hover: #27ae60;
             
             --font-size-xs: 0.75rem;
-            --font-size-sm: 0.875rem;
-            --font-size-base: 1rem;
+            --font-size-sm: 0.95rem;
+            --font-size-base: 1.1rem;
             --font-size-lg: 1.125rem;
             --font-size-xl: 1.25rem;
             --font-size-2xl: 1.5rem;
@@ -129,6 +134,7 @@
             align-items: center;
             z-index: 1000;
             background: rgba(10, 12, 16, 0.98);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
             transition: all 0.3s ease;
@@ -264,13 +270,16 @@
             padding: 0.8rem;
             border-radius: 8px;
             transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
         }
 
         .toc-item:hover {
             background: rgba(46, 204, 113, 0.1);
         }
 
-        .toc-item a {
+        .toc-main {
             color: var(--text-secondary);
             text-decoration: none;
             display: flex;
@@ -279,13 +288,59 @@
             font-size: var(--font-size-sm);
         }
 
-        .toc-item a:hover {
+        .toc-main:hover {
             color: var(--primary);
+        }
+
+        .toc-pole-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: var(--font-size-xs);
+            padding-left: 28px;
+            opacity: 0.9;
+            transition: all 0.3s;
+        }
+
+        .toc-pole-link:hover {
+            color: var(--icon-color);
+            text-decoration: underline;
+            opacity: 1;
         }
 
         .toc-item i {
             color: var(--icon-color);
             width: 20px;
+        }
+
+        /* Ajustements de dimensions des cases pour une meilleure lisibilite */
+        body.documentation-page .table-of-contents {
+            max-width: 980px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        body.documentation-page .toc-grid {
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        }
+
+        body.documentation-page .toc-item {
+            min-height: 92px;
+            padding: 1rem;
+            justify-content: center;
+        }
+
+        body.documentation-page .doc-section {
+            padding: 1.6rem;
+            border-radius: 18px;
+            margin-bottom: 2.4rem;
+        }
+
+        body.documentation-page .resources-list {
+            padding: 1.2rem;
+        }
+
+        body.documentation-page .resources-list li {
+            padding: 0.65rem 0;
         }
 
         /* Sections de documentation */
@@ -470,8 +525,8 @@
         /* Grille d'images */
         .image-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
             margin: 2rem 0;
         }
 
@@ -483,9 +538,11 @@
 
         .image-grid-item img {
             width: 100%;
-            height: 200px;
-            object-fit: cover;
+            height: 150px;
+            object-fit: contain;
+            background: #fff;
             display: block;
+            padding: 10px;
         }
 
         .image-grid-caption {
@@ -546,6 +603,97 @@
         .resource-size {
             color: var(--text-secondary);
             font-size: var(--font-size-xs);
+        }
+
+        .resources-list-spaced {
+            margin-top: 1rem;
+        }
+
+        .engagement-card {
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.12), rgba(74, 192, 228, 0.1));
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .engagement-card h3 {
+            margin-top: 0 !important;
+            color: var(--primary);
+        }
+
+        .engagement-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            margin-top: 0.8rem;
+        }
+
+        .engagement-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            border-radius: 50px;
+            padding: 0.55rem 1rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: var(--font-size-sm);
+            transition: all 0.3s ease;
+        }
+
+        .engagement-btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .engagement-btn.vote {
+            background: var(--primary);
+            color: var(--bg-primary);
+            border-color: var(--primary);
+        }
+
+        .engagement-btn.vote:hover {
+            background: var(--primary-dark);
+            color: var(--bg-primary);
+        }
+
+        .logo-fallback {
+            display: none;
+        }
+
+        /* ===== BACK TO TOP ===== */
+        .back-to-top {
+            position: fixed;
+            bottom: 140px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            cursor: pointer;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--glow);
+            transition: all 0.3s ease;
+            color: var(--bg-primary);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
         }
 
         /* FOOTER */
@@ -640,6 +788,21 @@
             margin-right: auto;
         }
 
+        .copyright p {
+            margin: 3px 0;
+        }
+
+        .copyright a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .copyright a:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .content-block {
@@ -647,12 +810,22 @@
                 gap: 1rem;
             }
 
+            body.documentation-page .doc-section {
+                padding: 1rem;
+                border-radius: 14px;
+            }
+
+            body.documentation-page .toc-item {
+                min-height: 0;
+            }
+
             .content-block.reverse {
                 direction: ltr;
             }
 
             .toc-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
             }
 
             .image-grid {
@@ -669,6 +842,60 @@
             }
         }
 
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 1.5rem 3%;
+            }
+
+            .table-of-contents {
+                padding: 1rem;
+            }
+
+            .toc-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .toc-main {
+                font-size: 0.75rem;
+            }
+
+            .toc-pole-link {
+                font-size: 0.75rem;
+                padding-left: 26px;
+            }
+
+            .page-header h1 {
+                font-size: var(--font-size-2xl);
+            }
+
+            .page-header p {
+                font-size: var(--font-size-sm);
+            }
+
+            .doc-section h2 {
+                font-size: var(--font-size-xl);
+            }
+
+            .content-block {
+                gap: 1rem;
+            }
+
+            .code-header {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: flex-start;
+            }
+
+            .engagement-actions {
+                flex-direction: column;
+            }
+
+            .copy-btn {
+                width: 100%;
+            }
+        }
+
         /* Langue */
         .lang-fr, .lang-en {
             transition: opacity 0.3s;
@@ -681,11 +908,32 @@
         [data-lang="en"] .lang-fr {
             display: none;
         }
+
+        .admin-gate-trigger {
+            width: 12px;
+            height: 12px;
+            margin-left: 0.55rem;
+            border: 0;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            opacity: 0.14;
+            cursor: pointer;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            vertical-align: middle;
+        }
+
+        .admin-gate-trigger:hover,
+        .admin-gate-trigger:focus-visible {
+            opacity: 0.55;
+            transform: scale(1.12);
+            outline: none;
+        }
     </style>
+    <link rel="stylesheet" href="styles/pro-competition.css?v=20260409c">
 </head>
-<body data-theme="dark" data-lang="fr">
+<body class="documentation-page" data-theme="light" data-lang="en">
     <!-- ===== THEME TOGGLE ===== -->
-    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Basculer le thème">
         <span id="themeIcon">👻</span>
     </button>
 
@@ -694,35 +942,40 @@
         <span id="langIcon">FR</span>
     </button>
 
+    <!-- ===== BACK TO TOP ===== -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <!-- ===== NAVIGATION ===== -->
     <nav id="navbar">
         <div class="logo">
             <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <span style="display:none;">👻</span>
+            <span class="logo-fallback">&#128123;</span>
             <span>GHOSTBUSTER</span>
         </div>
         <div class="nav-links">
-            <a href="index.html" id="nav-accueil">
+            <a href="index.html" id="nav-accueil" title="Accueil">
                 <span class="lang-fr">Accueil</span>
                 <span class="lang-en">Home</span>
             </a>
-            <a href="equipe.html" id="nav-equipe">
+            <a href="equipe.html" id="nav-equipe" title="Équipe">
                 <span class="lang-fr">Équipe</span>
                 <span class="lang-en">Team</span>
             </a>
-            <a href="robot.html" id="nav-robot">
+            <a href="robot.html" id="nav-robot" title="Robot">
                 <span class="lang-fr">Robot</span>
                 <span class="lang-en">Robot</span>
             </a>
-            <a href="documentation.html" class="active" id="nav-documentation">
+            <a href="documentation.html" class="active" id="nav-documentation" title="Documentation">
                 <span class="lang-fr">Documentation</span>
                 <span class="lang-en">Docs</span>
             </a>
-            <a href="roadmap.html" id="nav-roadmap">
+            <a href="roadmap.html" id="nav-roadmap" title="Roadmap">
                 <span class="lang-fr">Roadmap</span>
                 <span class="lang-en">Roadmap</span>
             </a>
-            <a href="contact.html" id="nav-contact">
+            <a href="contact.html" id="nav-contact" title="Contact">
                 <span class="lang-fr">Contact</span>
                 <span class="lang-en">Contact</span>
             </a>
@@ -745,25 +998,31 @@
 
         <!-- Sommaire -->
         <div class="table-of-contents">
-            <h2><i class="fas fa-list"></i> Sommaire</h2>
+            <h2><i class="fas fa-list"></i> <span class="lang-fr">Sommaire</span><span class="lang-en">Table of Contents</span></h2>
             <div class="toc-grid">
                 <div class="toc-item">
-                    <a href="#informatique"><i class="fas fa-code"></i> Informatique</a>
+                    <a class="toc-main" href="#informatique" title="Informatique / Software"><i class="fas fa-code"></i> <span class="lang-fr">Informatique</span><span class="lang-en">Software</span></a>
+                    <a class="toc-pole-link" href="documentation-informatique.html" title="Ouvrir la page du pôle informatique"><span class="lang-fr">Voir la page du pôle</span><span class="lang-en">Open pole page</span></a>
                 </div>
                 <div class="toc-item">
-                    <a href="#electronique"><i class="fas fa-microchip"></i> Électronique</a>
+                    <a class="toc-main" href="#electronique" title="Électronique / Electronics"><i class="fas fa-microchip"></i> <span class="lang-fr">Électronique</span><span class="lang-en">Electronics</span></a>
+                    <a class="toc-pole-link" href="documentation-electronique.html" title="Ouvrir la page du pôle électronique"><span class="lang-fr">Voir la page du pôle</span><span class="lang-en">Open pole page</span></a>
                 </div>
                 <div class="toc-item">
-                    <a href="#mecanique"><i class="fas fa-cogs"></i> Mécanique</a>
+                    <a class="toc-main" href="#mecanique" title="Mécanique / Mechanics"><i class="fas fa-cogs"></i> <span class="lang-fr">Mécanique</span><span class="lang-en">Mechanics</span></a>
+                    <a class="toc-pole-link" href="documentation-mecanique.html" title="Ouvrir la page du pôle mécanique"><span class="lang-fr">Voir la page du pôle</span><span class="lang-en">Open pole page</span></a>
                 </div>
                 <div class="toc-item">
-                    <a href="#algorithmes"><i class="fas fa-brain"></i> Algorithmes</a>
+                    <a class="toc-main" href="#algorithmes" title="Algorithmes / Algorithms"><i class="fas fa-brain"></i> <span class="lang-fr">Algorithmes</span><span class="lang-en">Algorithms</span></a>
+                    <a class="toc-pole-link" href="documentation-algorithmes.html" title="Ouvrir la page du pôle algorithmes"><span class="lang-fr">Voir la page du pôle</span><span class="lang-en">Open pole page</span></a>
                 </div>
                 <div class="toc-item">
-                    <a href="#schemas"><i class="fas fa-project-diagram"></i> Schémas</a>
+                    <a class="toc-main" href="#schemas" title="Schémas / Diagrams"><i class="fas fa-project-diagram"></i> <span class="lang-fr">Schémas</span><span class="lang-en">Diagrams</span></a>
+                    <a class="toc-pole-link" href="documentation-schemas.html" title="Ouvrir la page du pôle schémas"><span class="lang-fr">Voir la page du pôle</span><span class="lang-en">Open pole page</span></a>
                 </div>
                 <div class="toc-item">
-                    <a href="#code"><i class="fas fa-file-code"></i> Code source</a>
+                    <a class="toc-main" href="#code" title="Code source / Source code"><i class="fas fa-file-code"></i> <span class="lang-fr">Code source</span><span class="lang-en">Source Code</span></a>
+                    <a class="toc-pole-link" href="documentation-code-source.html" title="Ouvrir la page du pôle code source"><span class="lang-fr">Voir la page du pôle</span><span class="lang-en">Open pole page</span></a>
                 </div>
             </div>
         </div>
@@ -776,8 +1035,8 @@
             <div class="content-block">
                 <div class="block-media">
                     <!-- ICI : METTEZ VOTRE LIEN D'IMAGE -->
-                    <img src="https://via.placeholder.com/600x400?text=Architecture+logicielle" alt="Architecture logicielle">
-                    <div class="media-caption">Architecture logicielle du robot</div>
+                    <img src="images/placeholder.svg" alt="Média en cours de traitement">
+                    <div class="media-caption">Média en cours de traitement</div>
                 </div>
                 <div class="block-text">
                     <h3>Présentation du pôle informatique</h3>
@@ -796,7 +1055,7 @@
             <div class="content-block reverse">
                 <div class="block-media">
                     <!-- ICI : METTEZ VOTRE LIEN VIDÉO -->
-                    <video controls poster="https://via.placeholder.com/600x400?text=Video+preview">
+                    <video controls poster="images/placeholder.svg">
                         <source src="#" type="video/mp4">
                         Votre navigateur ne supporte pas la vidéo.
                     </video>
@@ -808,7 +1067,7 @@
                     <ul>
                         <li>La réaction du PID dans les virages serrés</li>
                         <li>La stabilité à haute vitesse</li>
-                        <li>La détection et l'évitement d'obstacles</li>
+                        <li>La détection et l'Évitement d'obstacles</li>
                     </ul>
                     <p>Les performances actuelles atteignent 1.5 m/s avec un taux de réussite de 95% sur piste standard.</p>
                 </div>
@@ -818,7 +1077,7 @@
             <h3>Diagramme de classes UML</h3>
             <div class="diagram-container">
                 <!-- ICI : METTEZ VOTRE DIAGRAMME UML -->
-                <img src="https://via.placeholder.com/800x500?text=Diagramme+UML" alt="Diagramme UML">
+                <img src="images/uml_class_diagram_robot_pid.svg" alt="Diagramme de classes UML PID">
                 <div class="diagram-caption">Diagramme de classes de l'architecture logicielle</div>
             </div>
 
@@ -874,12 +1133,12 @@ public:
             <div class="content-block">
                 <div class="block-media">
                     <!-- ICI : METTEZ VOTRE IMAGE DE PCB -->
-                    <img src="https://via.placeholder.com/600x400?text=PCB+Design" alt="PCB Design">
-                    <div class="media-caption">Circuit imprimé principal</div>
+                    <img src="images/placeholder.svg" alt="Conception électronique">
+                    <div class="media-caption">En cours de traitement</div>
                 </div>
                 <div class="block-text">
-                    <h3>Conception électronique</h3>
-                    <p>Le pôle électronique conçoit et réalise tous les circuits nécessaires au fonctionnement du robot :</p>
+                    <h3>Conception Électronique</h3>
+                    <p>Le pôle Électronique conçoit et réalise tous les circuits nécessaires au fonctionnement du robot :</p>
                     <ul>
                         <li>Carte mère avec microcontrôleur ESP32</li>
                         <li>Circuit d'alimentation et régulation</li>
@@ -895,19 +1154,19 @@ public:
             <div class="image-grid">
                 <div class="image-grid-item">
                     <!-- ICI : METTEZ VOS IMAGES -->
-                    <img src="https://via.placeholder.com/300x200?text=Capteur+IR" alt="Capteur IR">
+                    <img src="images/ir.jpg" alt="Capteur IR">
                     <div class="image-grid-caption">Capteurs infrarouges</div>
                 </div>
                 <div class="image-grid-item">
-                    <img src="https://via.placeholder.com/300x200?text=Moteur+DC" alt="Moteur DC">
+                    <img src="images/moteurs dc.jpg" alt="Moteur DC">
                     <div class="image-grid-caption">Moteurs à courant continu</div>
                 </div>
                 <div class="image-grid-item">
-                    <img src="https://via.placeholder.com/300x200?text=ESP32" alt="ESP32">
+                    <img src="images/esp 32.jpg" alt="ESP32">
                     <div class="image-grid-caption">Microcontrôleur ESP32</div>
                 </div>
                 <div class="image-grid-item">
-                    <img src="https://via.placeholder.com/300x200?text=Alimentation" alt="Alimentation">
+                    <img src="images/batteries.jpg" alt="Alimentation">
                     <div class="image-grid-caption">Circuit d'alimentation</div>
                 </div>
             </div>
@@ -916,12 +1175,12 @@ public:
             <h3>Schéma de câblage</h3>
             <div class="diagram-container">
                 <!-- ICI : METTEZ VOTRE SCHÉMA -->
-                <img src="https://via.placeholder.com/800x600?text=Schéma+de+câblage" alt="Schéma de câblage">
-                <div class="diagram-caption">Schéma détaillé des connexions</div>
+                <img src="images/placeholder.svg" alt="Schéma de câblage">
+                <div class="diagram-caption">Schéma détaillé des connexions (En cours de traitement)</div>
             </div>
         </section>
 
-        <!-- SECTION MÉCANIQUE -->
+        <!-- SECTION MECANIQUE -->
         <section id="mecanique" class="doc-section">
             <h2><i class="fas fa-cogs"></i> Mécanique</h2>
             
@@ -929,15 +1188,15 @@ public:
             <div class="content-block">
                 <div class="block-media">
                     <!-- ICI : METTEZ VOTRE IMAGE CAO -->
-                    <img src="https://via.placeholder.com/600x400?text=Modele+CAO" alt="Modèle CAO">
-                    <div class="media-caption">Modèle CAO du châssis</div>
+                    <img src="images/placeholder.svg" alt="Modèle CAO">
+                    <div class="media-caption">En cours de traitement</div>
                 </div>
                 <div class="block-text">
                     <h3>Conception mécanique</h3>
                     <p>Le pôle mécanique conçoit l'ensemble des pièces et l'assemblage du robot :</p>
                     <ul>
                         <li>Châssis en PLA imprimé 3D</li>
-                        <li>Supports pour capteurs et électronique</li>
+                        <li>Supports pour capteurs et Électronique</li>
                         <li>Système de motorisation</li>
                         <li>Fixations et renforts</li>
                     </ul>
@@ -945,11 +1204,11 @@ public:
                 </div>
             </div>
 
-            <!-- Vidéo d'assemblage -->
+            <!-- Video d'assemblage -->
             <div class="content-block reverse">
                 <div class="block-media">
                     <!-- ICI : METTEZ VOTRE VIDÉO D'ASSEMBLAGE -->
-                    <video controls poster="https://via.placeholder.com/600x400?text=Assembly+video">
+                    <video controls poster="images/placeholder.svg">
                         <source src="#" type="video/mp4">
                     </video>
                     <div class="media-caption">Processus d'assemblage</div>
@@ -970,7 +1229,7 @@ public:
             <h3>Algorithme de suivi de ligne</h3>
             <div class="diagram-container">
                 <!-- ICI : METTEZ VOTRE DIAGRAMME D'ALGORITHME -->
-                <img src="https://via.placeholder.com/800x500?text=Diagramme+algorithme" alt="Diagramme algorithme">
+                <img src="images/placeholder.svg" alt="Diagramme algorithme">
                 <div class="diagram-caption">Logique de l'algorithme de suivi de ligne</div>
             </div>
 
@@ -1009,19 +1268,19 @@ void followLine() {
             <div class="image-grid">
                 <div class="image-grid-item">
                     <!-- ICI : METTEZ VOS SCHÉMAS -->
-                    <img src="https://via.placeholder.com/400x300?text=Schéma+1" alt="Schéma 1">
+                    <img src="images/placeholder.svgéma+1" alt="Schéma 1">
                     <div class="image-grid-caption">Schéma bloc fonctionnel</div>
                 </div>
                 <div class="image-grid-item">
-                    <img src="https://via.placeholder.com/400x300?text=Schéma+2" alt="Schéma 2">
+                    <img src="images/placeholder.svgéma+2" alt="Schéma 2">
                     <div class="image-grid-caption">Diagramme de séquence</div>
                 </div>
                 <div class="image-grid-item">
-                    <img src="https://via.placeholder.com/400x300?text=Schéma+3" alt="Schéma 3">
+                    <img src="images/placeholder.svgéma+3" alt="Schéma 3">
                     <div class="image-grid-caption">Diagramme d'états</div>
                 </div>
                 <div class="image-grid-item">
-                    <img src="https://via.placeholder.com/400x300?text=Schéma+4" alt="Schéma 4">
+                    <img src="images/placeholder.svgéma+4" alt="Schéma 4">
                     <div class="image-grid-caption">Schéma électrique détaillé</div>
                 </div>
             </div>
@@ -1074,11 +1333,11 @@ void followLine() {
             </div>
 
             <!-- Dépôt GitHub -->
-            <div class="resources-list" style="margin-top: 1rem;">
+            <div class="resources-list resources-list-spaced">
                 <h3>Liens externes</h3>
                 <ul>
                     <li>
-                        <a href="https://github.com/Yoane2194/Olympiades-de-Robotique-UCAO-Benin">
+                        <a href="https://github.com/Olympiades-de-Robotique-UCAO-Benin">
                             <i class="fab fa-github"></i>
                             <span>Dépôt GitHub - Code source complet</span>
                         </a>
@@ -1097,6 +1356,7 @@ void followLine() {
                     </li>
                 </ul>
             </div>
+
         </section>
     </div>
 
@@ -1105,26 +1365,32 @@ void followLine() {
         <div class="footer-content">
             <div class="footer-logo">
                 <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
-                <span style="display:none;">👻</span>
+                <span class="logo-fallback">👻</span>
                 <span>GHOSTBUSTER</span>
             </div>
             <div class="footer-links">
-                <a href="index.html">Accueil</a>
-                <a href="equipe.html">Équipe</a>
-                <a href="robot.html">Robot</a>
-                <a href="documentation.html">Documentation</a>
-                <a href="roadmap.html">Roadmap</a>
-                <a href="contact.html">Contact</a>
+                <a href="index.html" title="Accueil"><span class="lang-fr">Accueil</span><span class="lang-en">Home</span></a>
+                <a href="equipe.html" title="Équipe"><span class="lang-fr">Équipe</span><span class="lang-en">Team</span></a>
+                <a href="robot.html" title="Robot"><span class="lang-fr">Robot</span><span class="lang-en">Robot</span></a>
+                <a href="documentation.html" title="Documentation"><span class="lang-fr">Documentation</span><span class="lang-en">Docs</span></a>
+                <a href="roadmap.html" title="Roadmap"><span class="lang-fr">Roadmap</span><span class="lang-en">Roadmap</span></a>
+                <a href="contact.html" title="Contact"><span class="lang-fr">Contact</span><span class="lang-en">Contact</span></a>
             </div>
             <div class="footer-social">
-                <a href="#"><i class="fas fa-envelope"></i></a>
-                <a href="#"><i class="fab fa-github"></i></a>
-                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="mailto:djimadjomelkisedeck@gmail.com" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                <a href="https://github.com/melnos" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/djimadjo-melkisedeck-0b2b6b1a9/" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://wa.me/+2290167836762" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
             </div>
         </div>
         <div class="copyright">
             <p>© 2025 GHOSTBUSTER - Olympiades de Robotique UCAO-Bénin</p>
+            <p>
+                <span class="lang-fr">Template personnalisé par le chef de l'Équipe GhostBuster</span>
+                <span class="lang-en">Custom template by the chief of GhostBuster team</span>
+                <button type="button" class="admin-gate-trigger" id="adminGateTrigger" title="Admin Access" aria-label="Admin Access"></button>
+                | <a href="https://github.com/Yoane2194/Olympiades-de-Robotique-UCAO-Benin">GitHub</a>
+            </p>
         </div>
     </footer>
 
@@ -1133,17 +1399,38 @@ void followLine() {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
     <script>
         // ===== THEME TOGGLE =====
-        function toggleTheme() {
+        const THEME_STORAGE_KEY = 'ghostbuster-theme';
+
+        function applySavedTheme() {
+            const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
             const body = document.body;
             const icon = document.getElementById('themeIcon');
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.setAttribute('data-theme', 'light');
-                icon.textContent = '👻';
+
+            if (savedTheme === 'light' || savedTheme === 'dark') {
+                body.setAttribute('data-theme', savedTheme);
             } else {
-                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem(THEME_STORAGE_KEY, body.getAttribute('data-theme') || 'light');
+            }
+
+            if (icon) {
                 icon.textContent = '👻';
             }
         }
+
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('themeIcon');
+            const nextTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+
+            body.setAttribute('data-theme', nextTheme);
+            localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+
+            if (icon) {
+                icon.textContent = '👻';
+            }
+        }
+
+        applySavedTheme();
 
         // ===== LANGUAGE TOGGLE =====
         function toggleLanguage() {
@@ -1156,6 +1443,21 @@ void followLine() {
                 body.setAttribute('data-lang', 'fr');
                 icon.textContent = 'FR';
             }
+        }
+
+        // ===== BACK TO TOP =====
+        const backToTop = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // ===== COPY CODE =====
@@ -1191,10 +1493,216 @@ void followLine() {
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('img').forEach(img => {
                 img.onerror = function() {
-                    this.src = 'https://via.placeholder.com/600x400?text=Image+non+disponible';
+                    this.src = 'images/placeholder.svg';
                 };
             });
         });
+
+        // ===== TRADUCTION DU CONTENU PRINCIPAL =====
+        const docTextTranslations = {
+            'Informatique': 'Software',
+            'Architecture logicielle du robot': 'Robot software architecture',
+            'Présentation du pôle informatique': 'Software department overview',
+            'Le pôle informatique est responsable du développement de tous les algorithmes qui permettent au robot de fonctionner de manière autonome. Notre travail couvre plusieurs aspects critiques :': 'The software department is responsible for developing all algorithms that allow the robot to operate autonomously. Our work covers several critical areas:',
+            'Suivi de ligne': 'Line following',
+            'Algorithmes PID pour suivre précisément la ligne noire': 'PID algorithms to precisely follow the black line',
+            "Évitement d'obstacles": 'Obstacle avoidance',
+            'Détection en temps réel et contournement': 'Real-time detection and bypassing',
+            'Calibration': 'Calibration',
+            'Ajustement automatique des capteurs': 'Automatic sensor tuning',
+            'Communication': 'Communication',
+            'Échange de données entre modules': 'Data exchange between modules',
+            "Notre approche privilégie la robustesse et la rapidité d'exécution, avec des temps de réaction inférieurs à 10ms.": 'Our approach prioritizes robustness and fast execution, with reaction times below 10ms.',
+            'Démonstration du suivi de ligne': 'Line-following demo',
+            'Démonstration vidéo': 'Video demonstration',
+            'Cette vidéo montre notre robot en action, effectuant un suivi de ligne précis à différentes vitesses. Vous pouvez observer :': 'This video shows our robot in action, performing precise line following at different speeds. You can observe:',
+            'La réaction du PID dans les virages serrés': 'PID response in tight turns',
+            'La stabilité à haute vitesse': 'High-speed stability',
+            "La détection et l'Évitement d'obstacles": 'Obstacle detection and avoidance',
+            'Les performances actuelles atteignent 1.5 m/s avec un taux de réussite de 95% sur piste standard.': 'Current performance reaches 1.5 m/s with a 95% success rate on a standard track.',
+            'Diagramme de classes UML': 'UML class diagram',
+            "Diagramme de classes de l'architecture logicielle": 'Class diagram of the software architecture',
+            'Extrait de code - PID Controller': 'Code snippet - PID Controller',
+            'Électronique': 'Electronics',
+            'Circuit imprimé principal': 'Main PCB',
+            'Conception Électronique': 'Electronics design',
+            'Le pôle Électronique conçoit et réalise tous les circuits nécessaires au fonctionnement du robot :': 'The electronics department designs and builds all circuits required for robot operation:',
+            'Carte mère avec microcontrôleur ESP32': 'Main board with ESP32 microcontroller',
+            "Circuit d'alimentation et régulation": 'Power and regulation circuit',
+            'Interface capteurs (IR, ultrasons)': 'Sensor interface (IR, ultrasonic)',
+            'Pont en H pour contrôle moteurs': 'H-bridge for motor control',
+            'Nos PCB sont conçus sous KiCad et optimisés pour minimiser le bruit et la consommation.': 'Our PCBs are designed in KiCad and optimized to minimize noise and power consumption.',
+            'Galerie de composants': 'Components gallery',
+            'Capteurs infrarouges': 'Infrared sensors',
+            'Moteurs à courant continu': 'DC motors',
+            'Microcontrôleur ESP32': 'ESP32 microcontroller',
+            "Circuit d'alimentation": 'Power circuit',
+            'Schéma de câblage': 'Wiring diagram',
+            'Schéma détaillé des connexions': 'Detailed connection diagram',
+            'Mécanique': 'Mechanics',
+            'Modèle CAO du châssis': 'Chassis CAD model',
+            'Conception mécanique': 'Mechanical design',
+            "Le pôle mécanique conçoit l'ensemble des pièces et l'assemblage du robot :": 'The mechanical department designs all parts and the robot assembly:',
+            'Châssis en PLA imprimé 3D': '3D-printed PLA chassis',
+            'Supports pour capteurs et Électronique': 'Sensor and electronics mounts',
+            'Système de motorisation': 'Drive system',
+            'Fixations et renforts': 'Fasteners and reinforcements',
+            "Toutes les pièces sont modélisées sous SolidWorks et optimisées pour l'impression 3D.": 'All parts are modeled in SolidWorks and optimized for 3D printing.',
+            "Processus d'assemblage": 'Assembly process',
+            'Assemblage pas à pas': 'Step-by-step assembly',
+            "Cette vidéo montre le processus complet d'assemblage du robot, de l'impression 3D à l'intégration finale.": 'This video shows the full robot assembly process, from 3D printing to final integration.',
+            'Durée totale d\'assemblage : environ 2 heures pour un robot complet.': 'Total assembly time: about 2 hours for a complete robot.',
+            'Algorithmes': 'Algorithms',
+            'Algorithme de suivi de ligne': 'Line-following algorithm',
+            "Logique de l'algorithme de suivi de ligne": 'Line-following algorithm logic',
+            'Implémentation': 'Implementation',
+            'Schémas et diagrammes': 'Schematics and diagrams',
+            'Schéma bloc fonctionnel': 'Functional block diagram',
+            'Diagramme de séquence': 'Sequence diagram',
+            "Diagramme d'états": 'State diagram',
+            'Schéma électrique détaillé': 'Detailed electrical schematic',
+            'Code source': 'Source code',
+            'Fichiers disponibles': 'Available files',
+            'Liens externes': 'External links',
+            'Dépôt GitHub - Code source complet': 'GitHub repository - full source code',
+            'Playlist vidéos de démonstration': 'Demo videos playlist',
+            'Documentation PDF complète': 'Complete PDF documentation',
+            'Copier': 'Copy',
+            'Copié !': 'Copied!'
+        };
+
+        const docTextNodes = [];
+        const docTextOriginal = new WeakMap();
+
+        function collectDocTextNodes() {
+            const root = document.querySelector('.main-content');
+            if (!root) {
+                return;
+            }
+
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+                acceptNode(node) {
+                    if (!node.nodeValue || !node.nodeValue.trim()) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+
+                    const parent = node.parentElement;
+                    if (!parent) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+
+                    if (parent.closest('script, style, pre, code, .lang-fr, .lang-en')) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+
+                    return NodeFilter.FILTER_ACCEPT;
+                }
+            });
+
+            let node;
+            while ((node = walker.nextNode())) {
+                docTextNodes.push(node);
+                docTextOriginal.set(node, node.nodeValue);
+            }
+        }
+
+        function applyDocLanguage() {
+            const lang = document.body.getAttribute('data-lang') || 'en';
+
+            docTextNodes.forEach((node) => {
+                const original = docTextOriginal.get(node);
+                if (!original) {
+                    return;
+                }
+
+                if (lang === 'fr') {
+                    node.nodeValue = original;
+                    return;
+                }
+
+                const trimmed = original.trim();
+                const translated = docTextTranslations[trimmed];
+
+                if (!translated) {
+                    node.nodeValue = original;
+                    return;
+                }
+
+                const leading = original.match(/^\s*/)[0];
+                const trailing = original.match(/\s*$/)[0];
+                node.nodeValue = leading + translated + trailing;
+            });
+        }
+
+        const ADMIN_USERNAME = 'Mel';
+        const ADMIN_PASSWORD = 'Mel 25';
+
+        function openAdminInterface() {
+            const lang = document.body.getAttribute('data-lang') || 'en';
+
+            const usernamePrompt = lang === 'fr' ? 'Nom admin :' : 'Admin username:';
+            const passwordPrompt = lang === 'fr' ? 'Mot de passe admin :' : 'Admin password:';
+
+            const username = window.prompt(usernamePrompt, '');
+            if (username === null) {
+                return;
+            }
+
+            const password = window.prompt(passwordPrompt, '');
+            if (password === null) {
+                return;
+            }
+
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                window.location.href = 'interface.html';
+                return;
+            }
+
+            window.alert(lang === 'fr' ? 'Accès refusé.' : 'Access denied.');
+        }
+
+        function initAdminGate() {
+            const trigger = document.getElementById('adminGateTrigger');
+            if (!trigger) {
+                return;
+            }
+
+            trigger.addEventListener('click', openAdminInterface);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            collectDocTextNodes();
+            applyDocLanguage();
+            initAdminGate();
+
+            const observer = new MutationObserver(() => applyDocLanguage());
+            observer.observe(document.body, {
+                attributes: true,
+                attributeFilter: ['data-lang']
+            });
+        });
     </script>
+    <script src="scripts/pro-competition.js?v=20260409c"></script>
+    <script src="scripts/preferences-sync.js?v=20260409c"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

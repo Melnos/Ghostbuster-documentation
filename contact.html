@@ -2,12 +2,16 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GhostBuster - Projet de robot suiveur de ligne et eviteur d'obstacles, documentation technique et suivi d'avancement.">
+    <link rel="icon" type="image/jpeg" href="images/ghost-b.jpeg">
+    <script src="scripts/boot-preferences.js"></script>
     <title>GhostBuster - Contact</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -18,7 +22,7 @@
         :root {
             --primary: #2ecc71;
             --primary-dark: #27ae60;
-            --secondary: #f1c40f;
+            --secondary: #8fa8c0;
             --bg-primary: #0a0c10;
             --bg-secondary: #14181c;
             --bg-card: #1a1f24;
@@ -81,7 +85,27 @@
         .animate-glow {
             animation: glowPulse 3s ease-in-out infinite;
         }
-
+        /* Lint utility helpers */
+        .ghost-hidden { display: none; }
+        .text-center { text-align: center; }
+        .text-muted-center { text-align: center; color: var(--text-secondary); font-size: var(--font-size-xs); }
+        .mb-15 { margin-bottom: 1.5rem; }
+        .mb-10 { margin-bottom: 1rem; }
+        .mt-15 { margin-top: 1.5rem; }
+        .mt-10 { margin-top: 1rem; }
+        .w-100 { width: 100%; }
+        .btn-outline-primary-flat { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .icon-color-accent { color: var(--icon-color); }
+        .icon-primary { color: var(--primary); }
+        .icon-secondary { color: var(--secondary); }
+        .flex-col-gap-08 { display: flex; flex-direction: column; gap: 0.8rem; }
+        .progress-100 { width: 100%; }
+        .progress-95 { width: 95%; }
+        .progress-92 { width: 92%; }
+        .progress-90 { width: 90%; }
+        .progress-80 { width: 80%; }
+        .progress-75 { width: 75%; }
+        .progress-0 { width: 0%; }
         /* ===== THEME TOGGLE ===== */
         .theme-toggle {
             position: fixed;
@@ -133,6 +157,39 @@
             transform: scale(1.1);
         }
 
+        /* ===== BACK TO TOP ===== */
+        .back-to-top {
+            position: fixed;
+            bottom: 140px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            cursor: pointer;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--bg-primary);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: var(--glow);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: scale(1.1);
+            background: var(--primary-dark);
+        }
+
         /* ===== NAVIGATION ===== */
         nav {
             position: fixed;
@@ -144,7 +201,6 @@
             align-items: center;
             z-index: 1000;
             background: rgba(10, 12, 16, 0.98);
-            backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
             transition: all 0.3s ease;
         }
@@ -230,7 +286,7 @@
             width: 100%;
         }
 
-        /* En-tête de page */
+        /* En-t&ecirc;te de page */
         .page-header {
             text-align: center;
             margin-bottom: 3rem;
@@ -345,7 +401,7 @@
             color: var(--primary);
         }
 
-        /* Réseaux sociaux */
+        /* R&eacute;seaux sociaux */
         .social-section {
             margin-top: 2rem;
             padding-top: 2rem;
@@ -692,10 +748,11 @@
             display: none;
         }
     </style>
+    <link rel="stylesheet" href="styles/pro-competition.css?v=20260409c">
 </head>
-<body data-theme="dark" data-lang="fr">
+<body data-theme="light" data-lang="en">
     <!-- ===== THEME TOGGLE ===== -->
-    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Basculer le thème">
         <span id="themeIcon">👻</span>
     </button>
 
@@ -704,35 +761,40 @@
         <span id="langIcon">FR</span>
     </button>
 
+    <!-- ===== BACK TO TOP ===== -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <!-- ===== NAVIGATION ===== -->
     <nav id="navbar">
         <div class="logo">
             <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <span style="display:none;">👻</span>
+            <span class="ghost-hidden">&#128123;</span>
             <span>GHOSTBUSTER</span>
         </div>
         <div class="nav-links">
-            <a href="index.html" id="nav-accueil">
+            <a href="index.html" id="nav-accueil" title="Accueil">
                 <span class="lang-fr">Accueil</span>
                 <span class="lang-en">Home</span>
             </a>
-            <a href="equipe.html" id="nav-equipe">
-                <span class="lang-fr">Équipe</span>
+            <a href="equipe.html" id="nav-equipe" title="Équipe">
+                <span class="lang-fr">&Eacute;quipe</span>
                 <span class="lang-en">Team</span>
             </a>
-            <a href="robot.html" id="nav-robot">
+            <a href="robot.html" id="nav-robot" title="Robot">
                 <span class="lang-fr">Robot</span>
                 <span class="lang-en">Robot</span>
             </a>
-            <a href="documentation.html" id="nav-documentation">
+            <a href="documentation.html" id="nav-documentation" title="Documentation">
                 <span class="lang-fr">Documentation</span>
                 <span class="lang-en">Docs</span>
             </a>
-            <a href="roadmap.html" id="nav-roadmap">
+            <a href="roadmap.html" id="nav-roadmap" title="Roadmap">
                 <span class="lang-fr">Roadmap</span>
                 <span class="lang-en">Roadmap</span>
             </a>
-            <a href="contact.html" class="active" id="nav-contact">
+            <a href="contact.html" class="active" id="nav-contact" title="Contact">
                 <span class="lang-fr">Contact</span>
                 <span class="lang-en">Contact</span>
             </a>
@@ -748,7 +810,7 @@
                 <span class="lang-en">Contact Us</span>
             </h1>
             <p>
-                <span class="lang-fr">Une question ? Un projet ? N'hésitez pas à nous contacter !</span>
+                <span class="lang-fr">Une question ? Un projet ? N'h&eacute;sitez pas &agrave; nous contacter !</span>
                 <span class="lang-en">A question? A project? Feel free to contact us!</span>
             </p>
         </div>
@@ -770,7 +832,7 @@
                         </div>
                         <div class="info-content">
                             <h3>Adresse</h3>
-                            <p>UCAO-Bénin, Cotonou<br>République du Bénin</p>
+                            <p>UCAO-B&eacute;nin, Cotonou<br>R&eacute;publique du B&eacute;nin</p>
                         </div>
                     </div>
 
@@ -781,7 +843,6 @@
                         <div class="info-content">
                             <h3>Email</h3>
                             <p><a href="mailto:djimadjomelkisedeck@gmail.com">djimadjomelkisedeck@gmail.com</a></p>
-                            <p><a href="mailto:contact@ghostbuster.bj">contact@ghostbuster.bj</a></p>
                         </div>
                     </div>
 
@@ -790,13 +851,12 @@
                             <i class="fas fa-phone-alt"></i>
                         </div>
                         <div class="info-content">
-                            <h3>Téléphone</h3>
+                            <h3>T&eacute;l&eacute;phone</h3>
                             <p><a href="tel:+22967836762">+229 67 83 67 62</a></p>
-                            <p><a href="tel:+22968744354">+229 68 74 43 54</a></p>
                         </div>
                     </div>
 
-                    <div class="info-item">
+                     <div class="info-item">
                         <div class="info-icon">
                             <i class="fas fa-clock"></i>
                         </div>
@@ -813,12 +873,12 @@
                         <span class="lang-en">Follow us</span>
                     </h3>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="https://github.com/Yoane2194/Olympiades-de-Robotique-UCAO-Benin"><i class="fab fa-github"></i></a>
+                        <a href="#" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" title="Twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" title="Instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" title="YouTube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="https://github.com/Olympiades-de-Robotique-UCAO-Benin" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
             </div>
@@ -834,7 +894,7 @@
                 <form id="contactForm" onsubmit="return handleSubmit(event)">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="prenom">Prénom / First name</label>
+                            <label for="prenom">Pr&eacute;nom / First name</label>
                             <input type="text" id="prenom" name="prenom" placeholder="John" required>
                         </div>
                         <div class="form-group">
@@ -865,7 +925,7 @@
                         <textarea id="message" name="message" placeholder="Votre message..." required></textarea>
                     </div>
 
-                    <button type="submit" class="submit-btn">
+                    <button type="submit" class="submit-btn" title="Envoyer le message">
                         <i class="fas fa-paper-plane"></i>
                         <span class="lang-fr">Envoyer le message</span>
                         <span class="lang-en">Send message</span>
@@ -883,16 +943,16 @@
                     <span class="lang-en">Find us</span>
                 </h2>
                 <div class="map-placeholder">
-                    <!-- Carte Google Maps intégrée (UCAO-Bénin) -->
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.184486524157!2d2.40862131476982!3d6.367026795399247!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x102354dcfdaaecd3%3A0xe9a8c8b3b8b3f8b3!2sUCAO%20B%C3%A9nin!5e0!3m2!1sfr!2sfr!4v1620000000000!5m2!1sfr!2sfr" 
+                    <!-- Carte Google Maps int&eacute;gr&eacute;e (UCAO-B&eacute;nin) -->
+                    <iframe title="Localisation GhostBuster" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.184486524157!2d2.40862131476982!3d6.367026795399247!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x102354dcfdaaecd3%3A0xe9a8c8b3b8b3f8b3!2sUCAO%20B%C3%A9nin!5e0!3m2!1sfr!2sfr!4v1620000000000!5m2!1sfr!2sfr" 
                             allowfullscreen="" 
                             loading="lazy">
                     </iframe>
                     <div class="map-overlay"></div>
                 </div>
-                <p style="margin-top: 1rem; color: var(--text-secondary); font-size: var(--font-size-xs); text-align: center;">
-                    <i class="fas fa-map-pin" style="color: var(--primary);"></i>
-                    UCAO-Bénin, Cotonou
+                <p class="text-muted-center mt-10">
+                    <i class="fas fa-map-pin icon-primary"></i>
+                    UCAO-B&eacute;nin, Cotonou
                 </p>
             </div>
         </div>
@@ -903,65 +963,90 @@
         <div class="footer-content">
             <div class="footer-logo">
                 <img src="images/ghost-b.jpeg" alt="GhostBuster Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
-                <span style="display:none;">👻</span>
+                <span class="ghost-hidden">&#128123;</span>
                 <span>GHOSTBUSTER</span>
             </div>
             <div class="footer-links">
-                <a href="index.html">
+                <a href="index.html" title="Accueil">
                     <span class="lang-fr">Accueil</span>
                     <span class="lang-en">Home</span>
                 </a>
-                <a href="equipe.html">
-                    <span class="lang-fr">Équipe</span>
+                <a href="equipe.html" title="Équipe">
+                    <span class="lang-fr">&Eacute;quipe</span>
                     <span class="lang-en">Team</span>
                 </a>
-                <a href="robot.html">
+                <a href="robot.html" title="Robot">
                     <span class="lang-fr">Robot</span>
                     <span class="lang-en">Robot</span>
                 </a>
-                <a href="documentation.html">
+                <a href="documentation.html" title="Documentation">
                     <span class="lang-fr">Documentation</span>
                     <span class="lang-en">Docs</span>
                 </a>
-                <a href="roadmap.html">
+                <a href="roadmap.html" title="Roadmap">
                     <span class="lang-fr">Roadmap</span>
                     <span class="lang-en">Roadmap</span>
                 </a>
-                <a href="contact.html">
+                <a href="contact.html" title="Contact">
                     <span class="lang-fr">Contact</span>
                     <span class="lang-en">Contact</span>
                 </a>
             </div>
             <div class="footer-social">
-                <a href="#"><i class="fas fa-envelope"></i></a>
-                <a href="#"><i class="fab fa-github"></i></a>
-                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="mailto:djimadjomelkisedeck@gmail.com" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                <a href="https://github.com/melnos" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/djimadjo-melkisedeck-0b2b6b1a9/" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://wa.me/+2290167836762" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
             </div>
         </div>
         <div class="copyright">
-            <p>© 2025 GHOSTBUSTER - Olympiades de Robotique UCAO-Bénin</p>
+            <p>&copy; 2025 GHOSTBUSTER - Olympiades de Robotique UCAO-B&eacute;nin</p>
             <p>
-                <span class="lang-fr">Template personnalisé par le chef de l'équipe GhostBuster</span>
+                <span class="lang-fr">Template personnalis&eacute; par le chef de l'&eacute;quipe GhostBuster</span>
                 <span class="lang-en">Custom template by the chief of GhostBuster team</span>
-                | <a href="https://github.com/Yoane2194/Olympiades-de-Robotique-UCAO-Benin">GitHub</a>
+                | <a href="https://github.com/Olympiades-de-Robotique-UCAO-Benin">GitHub</a>
             </p>
         </div>
     </footer>
 
     <script>
         // ===== THEME TOGGLE =====
+        const THEME_STORAGE_KEY = 'ghostbuster-theme';
+
+        function applySavedTheme() {
+            const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            const body = document.body;
+            const icon = document.getElementById('themeIcon');
+
+            if (savedTheme === 'light' || savedTheme === 'dark') {
+                body.setAttribute('data-theme', savedTheme);
+            } else {
+                localStorage.setItem(THEME_STORAGE_KEY, body.getAttribute('data-theme') || 'light');
+            }
+
+            if (icon) {
+                icon.innerHTML = body.getAttribute('data-theme') === 'dark'
+                    ? '<i class="fas fa-moon" aria-hidden="true"></i>'
+                    : '<i class="fas fa-sun" aria-hidden="true"></i>';
+            }
+        }
+
         function toggleTheme() {
             const body = document.body;
             const icon = document.getElementById('themeIcon');
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.setAttribute('data-theme', 'light');
-                icon.textContent = '👻';
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                icon.textContent = '👻';
+            const nextTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+
+            body.setAttribute('data-theme', nextTheme);
+            localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+
+            if (icon) {
+                icon.innerHTML = nextTheme === 'dark'
+                    ? '<i class="fas fa-moon" aria-hidden="true"></i>'
+                    : '<i class="fas fa-sun" aria-hidden="true"></i>';
             }
         }
+
+        applySavedTheme();
 
         // ===== LANGUAGE TOGGLE =====
         function toggleLanguage() {
@@ -976,9 +1061,31 @@
             }
         }
 
+        // ===== BACK TO TOP =====
+        const backToTop = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         // ===== GESTION DU FORMULAIRE =====
         function handleSubmit(event) {
             event.preventDefault();
+            
+            const btn = event.target.querySelector('.submit-btn');
+            const originalBtnContent = btn.innerHTML;
+            
+            // Simulation de chargement
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span class="lang-fr">Envoi en cours...</span><span class="lang-en">Sending...</span>';
             
             // Récupération des données
             const formData = {
@@ -989,11 +1096,30 @@
                 message: document.getElementById('message').value
             };
 
-            // Simulation d'envoi (à remplacer par un vrai envoi)
-            alert('Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.');
-            
-            // Réinitialisation du formulaire
-            document.getElementById('contactForm').reset();
+            // Simulation d'un délai réseau
+            setTimeout(() => {
+                // Succès
+                btn.classList.add('success');
+                btn.innerHTML = '<i class="fas fa-check"></i> <span class="lang-fr">Message envoyé !</span><span class="lang-en">Message sent!</span>';
+                
+                // Notification toast (optionnel si on veut plus de visuel)
+                const toast = document.createElement('div');
+                toast.style.cssText = 'position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:var(--primary); color:var(--bg-primary); padding:1rem 2rem; border-radius:50px; font-weight:bold; box-shadow:0 10px 30px rgba(0,0,0,0.3); z-index:9999; animation: fadeInUp 0.4s ease-out;';
+                toast.innerHTML = '<i class="fas fa-check-circle"></i> <span class="lang-fr">Merci ! Votre message a été transmis.</span><span class="lang-en">Thank you! Your message has been sent.</span>';
+                document.body.appendChild(toast);
+                
+                // Réinitialisation du formulaire
+                document.getElementById('contactForm').reset();
+                
+                // Retour à l'état initial après 3 secondes
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.classList.remove('success');
+                    btn.innerHTML = originalBtnContent;
+                    toast.style.animation = 'fadeInUp 0.4s ease-in reverse';
+                    setTimeout(() => toast.remove(), 400);
+                }, 3000);
+            }, 1500);
             
             return false;
         }
@@ -1018,10 +1144,32 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('img').forEach(img => {
                 img.onerror = function() {
-                    this.src = 'https://via.placeholder.com/35x35?text=Logo';
+                    this.src = 'images/placeholder.svg';
                 };
             });
         });
     </script>
+    <script src="scripts/pro-competition.js?v=20260409c"></script>
+    <script src="scripts/preferences-sync.js?v=20260409c"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
