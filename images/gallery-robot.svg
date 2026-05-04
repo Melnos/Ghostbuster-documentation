@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="title">
+  <title id="title">Robot gallery placeholder</title>
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0c2238"/>
+      <stop offset="1" stop-color="#14395d"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#g)"/>
+  <rect x="55" y="185" width="290" height="46" rx="12" fill="#8dffbe"/>
+  <rect x="100" y="140" width="200" height="48" rx="12" fill="#6fdcff"/>
+  <circle cx="120" cy="235" r="26" fill="#17283c"/>
+  <circle cx="280" cy="235" r="26" fill="#17283c"/>
+  <text x="200" y="46" fill="#deebf5" font-size="22" font-family="Arial, sans-serif" text-anchor="middle">GhostBuster Robot</text>
+</svg>

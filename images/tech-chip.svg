@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" role="img" aria-labelledby="title">
+  <title id="title">Tech icon</title>
+  <rect width="80" height="80" rx="16" fill="#0f2740"/>
+  <rect x="18" y="18" width="44" height="44" rx="8" fill="#66d9ff"/>
+  <rect x="28" y="28" width="24" height="24" rx="4" fill="#0b1a2d"/>
+  <g stroke="#9ef6be" stroke-width="3" stroke-linecap="round">
+    <line x1="8" y1="24" x2="18" y2="24"/>
+    <line x1="8" y1="40" x2="18" y2="40"/>
+    <line x1="8" y1="56" x2="18" y2="56"/>
+    <line x1="62" y1="24" x2="72" y2="24"/>
+    <line x1="62" y1="40" x2="72" y2="40"/>
+    <line x1="62" y1="56" x2="72" y2="56"/>
+  </g>
+</svg>

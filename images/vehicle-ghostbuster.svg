@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 840" role="img" aria-labelledby="title desc">
+  <title id="title">GhostBuster Vehicle</title>
+  <desc id="desc">Stylized racing robot vehicle illustration</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#081a30"/>
+      <stop offset="1" stop-color="#0f2e4f"/>
+    </linearGradient>
+    <linearGradient id="car" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#8be8ff"/>
+      <stop offset="1" stop-color="#8dffbe"/>
+    </linearGradient>
+  </defs>
+  <rect width="1400" height="840" fill="url(#bg)"/>
+  <ellipse cx="700" cy="660" rx="520" ry="90" fill="#06111f" opacity="0.75"/>
+  <g transform="translate(260 280)">
+    <path d="M70 240 L180 150 L620 120 L760 180 L860 240 L860 300 L70 300 Z" fill="url(#car)"/>
+    <path d="M225 150 L350 86 L595 92 L700 170 Z" fill="#1f3042"/>
+    <rect x="730" y="212" width="95" height="26" rx="10" fill="#1f3042"/>
+    <circle cx="220" cy="300" r="68" fill="#182536"/>
+    <circle cx="220" cy="300" r="32" fill="#9ec6d6"/>
+    <circle cx="690" cy="300" r="68" fill="#182536"/>
+    <circle cx="690" cy="300" r="32" fill="#9ec6d6"/>
+    <rect x="94" y="238" width="68" height="16" rx="8" fill="#ffd572"/>
+    <rect x="762" y="244" width="66" height="14" rx="7" fill="#ff9a7b"/>
+  </g>
+  <text x="700" y="760" fill="#c9d9ea" font-size="42" font-family="Arial, sans-serif" text-anchor="middle">GhostBuster Vehicle</text>
+</svg>
