@@ -1,0 +1,245 @@
+.doc-detail-page {
+    padding-top: 76px;
+}
+
+.doc-detail-page .vote-cta,
+.doc-detail-page .share-fab,
+.doc-detail-page .share-panel,
+.doc-detail-page .countdown-widget {
+    display: none !important;
+}
+
+.doc-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 5% 2.4rem;
+}
+
+.doc-detail-page #navbar {
+    border-bottom: 1px solid var(--hero-card-border);
+}
+
+.doc-detail-page .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.doc-detail-page .logo-fallback {
+    display: none;
+}
+
+.doc-detail-page .logo img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.doc-detail-page .logo span {
+    font-size: 0.96rem;
+    letter-spacing: 0.06em;
+}
+
+.doc-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+    color: var(--primary, #2ecc71);
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--hero-card-border);
+    background: rgba(46, 204, 113, 0.08);
+}
+
+.doc-back:hover {
+    background: rgba(46, 204, 113, 0.16);
+}
+
+.doc-header {
+    margin-bottom: 1.4rem;
+    padding: 1.1rem 1.2rem;
+    border-radius: 18px;
+    background: var(--bg-card, var(--hero-card));
+    border: 1px solid var(--hero-card-border);
+    border-left: 4px solid var(--primary, #2ecc71);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+}
+
+.doc-header h1 {
+    margin: 0 0 0.45rem;
+    color: var(--hero-ink);
+    font-size: clamp(1.6rem, 3.8vw, 2.25rem);
+}
+
+.doc-header h1 i {
+    color: var(--hero-accent);
+}
+
+.doc-header p {
+    margin: 0;
+    color: var(--hero-muted);
+    font-size: 1.02rem;
+    line-height: 1.65;
+}
+
+.doc-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.doc-card {
+    grid-column: span 12;
+    padding: 1.2rem;
+    border-radius: 16px;
+    background: var(--bg-card, var(--hero-card));
+    border: 1px solid var(--hero-card-border);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.doc-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(102, 217, 255, 0.45);
+}
+
+.doc-card h2 {
+    margin: 0 0 0.8rem;
+    color: var(--primary, #2ecc71);
+    font-size: 1.28rem;
+}
+
+.doc-card p,
+.doc-card li {
+    color: var(--hero-muted);
+    font-size: 1.04rem;
+    line-height: 1.62;
+}
+
+.spec-card h4,
+.tech-header h3 {
+    font-size: 1.12rem;
+    line-height: 1.3;
+}
+
+.doc-card ul {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.doc-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+}
+
+.doc-gallery figure {
+    margin: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--hero-card-border);
+    background: var(--bg-secondary, rgba(255, 255, 255, 0.06));
+}
+
+.doc-gallery img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    display: block;
+}
+
+.doc-gallery figcaption {
+    font-size: 0.84rem;
+    color: var(--hero-muted);
+    padding: 0.55rem 0.7rem;
+}
+
+.doc-resources {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.doc-resources li {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.9rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed var(--hero-card-border);
+}
+
+.doc-resources li:last-child {
+    border-bottom: none;
+}
+
+.doc-resources a {
+    color: var(--hero-ink);
+    text-decoration: none;
+}
+
+.doc-resources a:hover {
+    color: var(--hero-accent);
+}
+
+.doc-code {
+    margin: 0;
+    border-radius: 12px;
+    overflow: auto;
+}
+
+.doc-code code {
+    font-size: 0.92rem;
+}
+
+.doc-detail-page .footer-social a {
+    border: 1px solid var(--hero-card-border);
+}
+
+.doc-detail-page footer {
+    margin-top: 1.6rem;
+}
+
+.doc-detail-page .lang-fr,
+.doc-detail-page .lang-en {
+    transition: opacity 0.3s ease;
+}
+
+.doc-detail-page[data-lang="fr"] .lang-en {
+    display: none;
+}
+
+.doc-detail-page[data-lang="en"] .lang-fr {
+    display: none;
+}
+
+@media (max-width: 980px) {
+    .doc-main {
+        padding-left: 4%;
+        padding-right: 4%;
+    }
+}
+
+@media (max-width: 760px) {
+    .doc-detail-page .logo img {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+    }
+
+    .doc-detail-page .logo span {
+        font-size: 0.86rem;
+    }
+
+    .doc-gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .doc-card {
+        padding: 1rem;
+    }
+}
